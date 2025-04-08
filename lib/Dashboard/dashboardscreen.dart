@@ -225,6 +225,10 @@ class _DashboardscreenState extends State<Dashboardscreen> {
 class KledoDrawer extends StatelessWidget {
   final menuItems = [
     {
+      'icon': Icons.house,
+      'title': 'Beranda',
+    },
+    {
       'icon': Icons.shopping_bag,
       'title': 'Penjualan',
       'children': [
