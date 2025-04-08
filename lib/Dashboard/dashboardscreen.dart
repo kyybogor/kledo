@@ -92,8 +92,8 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(
-                              'Navigasi ke ${item['label']} belum tersedia'),
+                          content:
+                              Text('Navigasi ke ${item['label']} belum tersedia'),
                         ),
                       );
                     },
@@ -313,13 +313,7 @@ class KledoDrawer extends StatelessWidget {
     {
       'icon': Icons.shopping_bag,
       'title': 'Penjualan',
-      'children': [
-        'Overview',
-        'Tagihan',
-        'Pengiriman',
-        'Pemesanan',
-        'Penawaran'
-      ]
+      'children': ['Overview', 'Tagihan', 'Pengiriman', 'Pemesanan', 'Penawaran']
     },
     {
       'icon': Icons.shopping_cart,
@@ -365,10 +359,7 @@ class KledoDrawer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Kledo',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold)),
+                      style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   Text('Zahlfan Wiranto',
                       style: TextStyle(color: Colors.white, fontSize: 16)),
@@ -387,8 +378,7 @@ class KledoDrawer extends StatelessWidget {
                       child: Icon(Icons.info, size: 16, color: Colors.black),
                     ),
                     TextSpan(
-                      text:
-                          '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
+                      text: '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
                       style: TextStyle(color: Colors.black),
                     ),
                     TextSpan(
@@ -416,8 +406,7 @@ class KledoDrawer extends StatelessWidget {
                   child: ExpansionTile(
                     collapsedIconColor: Colors.white,
                     iconColor: Colors.white,
-                    leading:
-                        Icon(item['icon'] as IconData, color: Colors.white),
+                    leading: Icon(item['icon'] as IconData, color: Colors.white),
                     title: Text(item['title'] as String,
                         style: const TextStyle(color: Colors.white)),
                     children: (item['children'] as List<String>).map((subItem) {
