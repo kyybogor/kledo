@@ -27,7 +27,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         elevation: 0,
-        title: const Text('contoh toko'),
+        title: const Text('bogorstore'),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
@@ -38,6 +38,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
       drawer: KledoDrawer(),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
             Container(
@@ -48,7 +49,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Text(
-                    'Hi pengguna!',
+                    'Hi rizky!',
                     style: TextStyle(fontSize: 22, color: Colors.white),
                   ),
                   SizedBox(height: 4),
@@ -60,7 +61,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
               ),
             ),
 
-            // Menu grid
+            // Menu Grid
             Container(
               margin: const EdgeInsets.all(12),
               padding: const EdgeInsets.all(12),
@@ -168,7 +169,24 @@ class _DashboardscreenState extends State<Dashboardscreen> {
 
             const SizedBox(height: 16),
 
-            // Kas & Bank section
+            // Judul "Kas & Bank"
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Kas & Bank',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Kas & Bank Cards
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
@@ -191,6 +209,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 ],
               ),
             ),
+
             const SizedBox(height: 20),
           ],
         ),
@@ -198,8 +217,11 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     );
   }
 
-  Widget _buildKasCard(
-      {required String label, required String amount, required Color color}) {
+  Widget _buildKasCard({
+    required String label,
+    required String amount,
+    required Color color,
+  }) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
