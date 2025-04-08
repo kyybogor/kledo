@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+void main() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: Dashboardscreen(),
+  ));
+}
+
 class Dashboardscreen extends StatefulWidget {
   const Dashboardscreen({super.key});
 
@@ -27,7 +34,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         elevation: 0,
-        centerTitle: true, // ini yang bikin teks di tengah
+        centerTitle: true,
         title: const Text('contoh toko'),
         actions: const [
           Padding(
@@ -36,7 +43,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
           )
         ],
       ),
-      drawer: KledoDrawer(),
+      drawer: const KledoDrawer(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,9 +53,9 @@ class _DashboardscreenState extends State<Dashboardscreen> {
               width: double.infinity,
               color: Colors.blueAccent,
               padding: const EdgeInsets.all(16),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Hi pengguna!',
                     style: TextStyle(fontSize: 22, color: Colors.white),
@@ -81,20 +88,30 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 ),
                 itemBuilder: (context, index) {
                   var item = menuItems[index];
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.blue[50],
-                        child: Icon(item['icon'], color: Colors.blue),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        item['label'],
-                        style: const TextStyle(fontSize: 12),
-                        textAlign: TextAlign.center,
-                      )
-                    ],
+                  return InkWell(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              'Navigasi ke ${item['label']} belum tersedia'),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.blue[50],
+                          child: Icon(item['icon'], color: Colors.blue),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          item['label'],
+                          style: const TextStyle(fontSize: 12),
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    ),
                   );
                 },
               ),
@@ -110,13 +127,13 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
-                  children: [
-                    const Icon(Icons.computer, size: 40),
-                    const SizedBox(width: 12),
+                  children: const [
+                    Icon(Icons.computer, size: 40),
+                    SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text('Demo dan konsultasi Online',
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           Text('Gratis'),
@@ -173,7 +190,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
             // Judul "Kas & Bank"
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Align(
+              child: const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Kas & Bank',
@@ -226,7 +243,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     );
   }
 
-  Widget _buildKasCard({
+  static Widget _buildKasCard({
     required String label,
     required String amount,
     required Color color,
@@ -289,7 +306,9 @@ class _DashboardscreenState extends State<Dashboardscreen> {
 }
 
 class KledoDrawer extends StatelessWidget {
-  final menuItems = [
+  const KledoDrawer({super.key});
+
+  final menuItems = const [
     {'icon': Icons.house, 'title': 'Beranda'},
     {
       'icon': Icons.shopping_bag,
@@ -362,7 +381,7 @@ class KledoDrawer extends StatelessWidget {
               color: Colors.yellowAccent,
               padding: const EdgeInsets.all(10),
               child: RichText(
-                text: TextSpan(
+                text: const TextSpan(
                   children: [
                     WidgetSpan(
                       child: Icon(Icons.info, size: 16, color: Colors.black),
