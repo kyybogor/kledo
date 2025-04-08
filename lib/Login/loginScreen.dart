@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/SignUp/dashboardSignUp.dart';
 
 void main() {
@@ -57,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
 
           const SizedBox(height: 24),
 
-          // Form Login
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
@@ -96,7 +95,9 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Text("MASUK"),
+                  child: const Text("MASUK",
+                  style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 const Text("Atau login dengan"),
@@ -105,7 +106,14 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PackageSelectionPage(),
+                          ),
+                        );
+                      },
                       icon: const Icon(Icons.g_mobiledata),
                       label: const Text("Google"),
                     ),
