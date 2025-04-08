@@ -224,17 +224,60 @@ class _DashboardscreenState extends State<Dashboardscreen> {
 
 class KledoDrawer extends StatelessWidget {
   final menuItems = [
-    {'icon': Icons.home, 'title': 'Beranda'},
-    {'icon': Icons.shopping_bag, 'title': 'Penjualan'},
-    {'icon': Icons.shopping_cart, 'title': 'Pembelian'},
-    {'icon': Icons.account_balance_wallet, 'title': 'Biaya'},
-    {'icon': Icons.inventory_2, 'title': 'Produk'},
-    {'icon': Icons.local_shipping, 'title': 'Inventori'},
-    {'icon': Icons.bar_chart, 'title': 'Laporan'},
-    {'icon': Icons.account_balance, 'title': 'Kas & Bank'},
-    {'icon': Icons.settings, 'title': 'Pengaturan'},
-    {'icon': Icons.help_outline, 'title': 'FAQ'},
-    {'icon': Icons.exit_to_app, 'title': 'Keluar'},
+    {
+      'icon': Icons.shopping_bag,
+      'title': 'Penjualan',
+      'children': [
+        'Overview',
+        'Tagihan',
+        'Pengiriman',
+        'Pemesanan',
+        'Penawaran',
+      ],
+    },
+    {
+      'icon': Icons.shopping_cart,
+      'title': 'Pembelian',
+      'children': [
+        'Overview',
+        'Tagihan Pembelian',
+        'Pengiriman Pembelian',
+        'Pesanan Pembelian',
+        'Penawaran Pembelian',
+      ],
+    },
+    {
+      'icon': Icons.account_balance_wallet,
+      'title': 'Biaya',
+    },
+    {
+      'icon': Icons.inventory_2,
+      'title': 'Produk',
+    },
+    {
+      'icon': Icons.local_shipping,
+      'title': 'Inventori',
+    },
+    {
+      'icon': Icons.bar_chart,
+      'title': 'Laporan',
+    },
+    {
+      'icon': Icons.account_balance,
+      'title': 'Kas & Bank',
+    },
+    {
+      'icon': Icons.settings,
+      'title': 'Pengaturan',
+    },
+    {
+      'icon': Icons.help_outline,
+      'title': 'FAQ',
+    },
+    {
+      'icon': Icons.exit_to_app,
+      'title': 'Keluar',
+    },
   ];
 
   @override
@@ -274,7 +317,7 @@ class KledoDrawer extends StatelessWidget {
             ),
             Container(
               color: Colors.yellowAccent,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: RichText(
                 text: TextSpan(
                   children: [
@@ -302,14 +345,45 @@ class KledoDrawer extends StatelessWidget {
               ),
             ),
             ...menuItems.map((item) {
-              return ListTile(
-                leading: Icon(item['icon'] as IconData, color: Colors.white),
-                title: Text(item['title'] as String,
-                    style: const TextStyle(color: Colors.white)),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              );
+              if (item.containsKey('children')) {
+                return Theme(
+                  data: Theme.of(context).copyWith(
+                    dividerColor: Colors.transparent,
+                    unselectedWidgetColor: Colors.white70,
+                    textTheme: const TextTheme(
+                      bodyMedium: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  child: ExpansionTile(
+                    collapsedIconColor: Colors.white,
+                    iconColor: Colors.white,
+                    leading:
+                        Icon(item['icon'] as IconData, color: Colors.white),
+                    title: Text(item['title'] as String,
+                        style: const TextStyle(color: Colors.white)),
+                    children: (item['children'] as List<String>).map((subItem) {
+                      return ListTile(
+                        contentPadding:
+                            const EdgeInsets.only(left: 72, right: 16),
+                        title: Text(subItem,
+                            style: const TextStyle(color: Colors.white)),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      );
+                    }).toList(),
+                  ),
+                );
+              } else {
+                return ListTile(
+                  leading: Icon(item['icon'] as IconData, color: Colors.white),
+                  title: Text(item['title'] as String,
+                      style: const TextStyle(color: Colors.white)),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                );
+              }
             }).toList(),
             Padding(
               padding: const EdgeInsets.all(16.0),
