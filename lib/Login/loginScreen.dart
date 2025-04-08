@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/Login/forget.dart';
 import 'package:flutter_application_kledo/SignUp/dashboardSignUp.dart';
+import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart'; // Sesuaikan path
 
 void main() {
   runApp(const MaterialApp(
@@ -82,12 +84,20 @@ class _LoginPageState extends State<LoginPage> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LupaPasswordPage()));
+                    },
                     child: const Text("Lupa password?"),
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Dashboardscreen()));
+                  },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
                     backgroundColor: Colors.blue.shade700,
@@ -119,7 +129,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(width: 10),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PackageSelectionPage()));
+                      },
                       icon: const Icon(Icons.lock),
                       label: const Text("OTP"),
                     ),
