@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+void main() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: Dashboardscreen(),
+  ));
+}
+
 class Dashboardscreen extends StatefulWidget {
   const Dashboardscreen({super.key});
 
@@ -15,7 +22,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     {'icon': Icons.money_off, 'label': 'Biaya'},
     {'icon': Icons.inventory, 'label': 'Produk'},
     {'icon': Icons.bar_chart, 'label': 'Laporan'},
-    {'icon': Icons.account_balance_wallet, 'label': 'Kas & Bank'},
+    {'icon': Icons.account_balance, 'label': 'Kas & Bank'},
     {'icon': Icons.domain, 'label': 'Aset Tetap'},
     {'icon': Icons.contacts, 'label': 'Kontak'},
   ];
@@ -27,7 +34,8 @@ class _DashboardscreenState extends State<Dashboardscreen> {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         elevation: 0,
-        title: const Text('bogorstore'),
+        centerTitle: true,
+        title: const Text('contoh toko'),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
@@ -35,20 +43,21 @@ class _DashboardscreenState extends State<Dashboardscreen> {
           )
         ],
       ),
-      drawer: KledoDrawer(),
+      drawer: const KledoDrawer(),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
             Container(
               width: double.infinity,
               color: Colors.blueAccent,
               padding: const EdgeInsets.all(16),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    'Hi rizky!',
+                    'Hi pengguna!',
                     style: TextStyle(fontSize: 22, color: Colors.white),
                   ),
                   SizedBox(height: 4),
@@ -60,7 +69,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
               ),
             ),
 
-            // Menu grid
+            // Menu Grid
             Container(
               margin: const EdgeInsets.all(12),
               padding: const EdgeInsets.all(12),
@@ -79,20 +88,30 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 ),
                 itemBuilder: (context, index) {
                   var item = menuItems[index];
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.blue[50],
-                        child: Icon(item['icon'], color: Colors.blue),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        item['label'],
-                        style: const TextStyle(fontSize: 12),
-                        textAlign: TextAlign.center,
-                      )
-                    ],
+                  return InkWell(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text('Navigasi ke ${item['label']} belum tersedia'),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.blue[50],
+                          child: Icon(item['icon'], color: Colors.blue),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          item['label'],
+                          style: const TextStyle(fontSize: 12),
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    ),
                   );
                 },
               ),
@@ -108,13 +127,13 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
-                  children: [
-                    const Icon(Icons.computer, size: 40),
-                    const SizedBox(width: 12),
+                  children: const [
+                    Icon(Icons.computer, size: 40),
+                    SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text('Demo dan konsultasi Online',
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           Text('Gratis'),
@@ -168,29 +187,55 @@ class _DashboardscreenState extends State<Dashboardscreen> {
 
             const SizedBox(height: 16),
 
-            // Kas & Bank section
+            // Judul "Kas & Bank"
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildKasCard(
+              child: const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Kas & Bank',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Kas & Bank Cards (Scroll Horizontal)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildKasCard(
                       label: 'Kas',
                       amount: 'Rp 28.454.329',
                       color: Colors.pink[100]!,
+                      abbreviation: 'K',
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildKasCard(
+                    const SizedBox(width: 12),
+                    _buildKasCard(
                       label: 'Rekening Bank',
                       amount: 'Rp 34.848.928',
                       color: Colors.blue[100]!,
+                      abbreviation: 'RB',
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 12),
+                    _buildKasCard(
+                      label: 'Giro',
+                      amount: 'Rp 12.342.000',
+                      color: Colors.green[100]!,
+                      abbreviation: 'G',
+                    ),
+                  ],
+                ),
               ),
             ),
+
             const SizedBox(height: 20),
           ],
         ),
@@ -198,24 +243,62 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     );
   }
 
-  Widget _buildKasCard(
-      {required String label, required String amount, required Color color}) {
+  static Widget _buildKasCard({
+    required String label,
+    required String amount,
+    required Color color,
+    required String abbreviation,
+  }) {
     return Container(
+      width: 180,
+      height: 80,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(label,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-          const SizedBox(height: 6),
-          Text(amount,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Text(
+                abbreviation,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 14),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  amount,
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w600),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -223,15 +306,34 @@ class _DashboardscreenState extends State<Dashboardscreen> {
 }
 
 class KledoDrawer extends StatelessWidget {
-  final menuItems = [
-    {'icon': Icons.home, 'title': 'Beranda'},
-    {'icon': Icons.shopping_bag, 'title': 'Penjualan'},
-    {'icon': Icons.shopping_cart, 'title': 'Pembelian'},
-    {'icon': Icons.account_balance_wallet, 'title': 'Biaya'},
+  const KledoDrawer({super.key});
+
+  final menuItems = const [
+    {'icon': Icons.house, 'title': 'Beranda'},
+    {
+      'icon': Icons.shopping_bag,
+      'title': 'Penjualan',
+      'children': ['Overview', 'Tagihan', 'Pengiriman', 'Pemesanan', 'Penawaran']
+    },
+    {
+      'icon': Icons.shopping_cart,
+      'title': 'Pembelian',
+      'children': [
+        'Overview',
+        'Tagihan Pembelian',
+        'Pengiriman Pembelian',
+        'Pesanan Pembelian',
+        'Penawaran Pembelian',
+      ]
+    },
+    {'icon': Icons.money_off, 'title': 'Biaya'},
     {'icon': Icons.inventory_2, 'title': 'Produk'},
     {'icon': Icons.local_shipping, 'title': 'Inventori'},
     {'icon': Icons.bar_chart, 'title': 'Laporan'},
     {'icon': Icons.account_balance, 'title': 'Kas & Bank'},
+    {'icon': Icons.person, 'title': 'Akun'},
+    {'icon': Icons.domain, 'title': 'Aset Tetap'},
+    {'icon': Icons.contacts, 'title': 'Kontak'},
     {'icon': Icons.settings, 'title': 'Pengaturan'},
     {'icon': Icons.help_outline, 'title': 'FAQ'},
     {'icon': Icons.exit_to_app, 'title': 'Keluar'},
@@ -256,14 +358,8 @@ class KledoDrawer extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Kledo',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text('Kledo',
+                      style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   Text('Zahlfan Wiranto',
                       style: TextStyle(color: Colors.white, fontSize: 16)),
@@ -274,16 +370,15 @@ class KledoDrawer extends StatelessWidget {
             ),
             Container(
               color: Colors.yellowAccent,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: RichText(
-                text: TextSpan(
+                text: const TextSpan(
                   children: [
                     WidgetSpan(
                       child: Icon(Icons.info, size: 16, color: Colors.black),
                     ),
                     TextSpan(
-                      text:
-                          '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
+                      text: '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
                       style: TextStyle(color: Colors.black),
                     ),
                     TextSpan(
@@ -302,14 +397,37 @@ class KledoDrawer extends StatelessWidget {
               ),
             ),
             ...menuItems.map((item) {
-              return ListTile(
-                leading: Icon(item['icon'] as IconData, color: Colors.white),
-                title: Text(item['title'] as String,
-                    style: const TextStyle(color: Colors.white)),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              );
+              if (item.containsKey('children')) {
+                return Theme(
+                  data: Theme.of(context).copyWith(
+                    dividerColor: Colors.transparent,
+                    unselectedWidgetColor: Colors.white70,
+                  ),
+                  child: ExpansionTile(
+                    collapsedIconColor: Colors.white,
+                    iconColor: Colors.white,
+                    leading: Icon(item['icon'] as IconData, color: Colors.white),
+                    title: Text(item['title'] as String,
+                        style: const TextStyle(color: Colors.white)),
+                    children: (item['children'] as List<String>).map((subItem) {
+                      return ListTile(
+                        contentPadding:
+                            const EdgeInsets.only(left: 72, right: 16),
+                        title: Text(subItem,
+                            style: const TextStyle(color: Colors.white)),
+                        onTap: () => Navigator.pop(context),
+                      );
+                    }).toList(),
+                  ),
+                );
+              } else {
+                return ListTile(
+                  leading: Icon(item['icon'] as IconData, color: Colors.white),
+                  title: Text(item['title'] as String,
+                      style: const TextStyle(color: Colors.white)),
+                  onTap: () => Navigator.pop(context),
+                );
+              }
             }).toList(),
             Padding(
               padding: const EdgeInsets.all(16.0),
