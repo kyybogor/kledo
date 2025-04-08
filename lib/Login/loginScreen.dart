@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 
-class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
+class Loginscreen extends StatefulWidget {
+  const Loginscreen({super.key});
 
   @override
-  State<MyWidget> createState() => _MyWidgetState();
+  State<Loginscreen> createState() => _LoginscreenState();
 }
 
-class _MyWidgetState extends State<MyWidget> {
+class _LoginscreenState extends State<Loginscreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Container(
+          margin: EdgeInsets.all(10),
+        ),
+      ),
+    );
   }
 }
