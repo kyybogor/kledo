@@ -27,7 +27,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         elevation: 0,
-        title: const Text('bogorstore'),
+        title: const Text('contoh toko'),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
@@ -48,7 +48,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Text(
-                    'Hi rizky!',
+                    'Hi pengguna!',
                     style: TextStyle(fontSize: 22, color: Colors.white),
                   ),
                   SizedBox(height: 4),
