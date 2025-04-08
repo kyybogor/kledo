@@ -15,7 +15,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     {'icon': Icons.money_off, 'label': 'Biaya'},
     {'icon': Icons.inventory, 'label': 'Produk'},
     {'icon': Icons.bar_chart, 'label': 'Laporan'},
-    {'icon': Icons.account_balance_wallet, 'label': 'Kas & Bank'},
+    {'icon': Icons.account_balance, 'label': 'Kas & Bank'},
     {'icon': Icons.domain, 'label': 'Aset Tetap'},
     {'icon': Icons.contacts, 'label': 'Kontak'},
   ];
@@ -25,16 +25,18 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        elevation: 0,
-        title: const Text('bogorstore'),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.notifications_none),
-          )
-        ],
-      ),
+  backgroundColor: Colors.blueAccent,
+  elevation: 0,
+  centerTitle: true, // ini yang bikin teks di tengah
+  title: const Text('contoh toko'),
+  actions: const [
+    Padding(
+      padding: EdgeInsets.only(right: 12),
+      child: Icon(Icons.notifications_none),
+    )
+  ],
+),
+
       drawer: KledoDrawer(),
       body: SingleChildScrollView(
         child: Column(
@@ -49,7 +51,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Text(
-                    'Hi rizky!',
+                    'Hi pengguna!',
                     style: TextStyle(fontSize: 22, color: Colors.white),
                   ),
                   SizedBox(height: 4),
@@ -186,27 +188,35 @@ class _DashboardscreenState extends State<Dashboardscreen> {
             ),
             const SizedBox(height: 8),
 
-            // Kas & Bank Cards
+            // Kas & Bank Cards (Scroll Horizontal)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildKasCard(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildKasCard(
                       label: 'Kas',
                       amount: 'Rp 28.454.329',
                       color: Colors.pink[100]!,
+                      abbreviation: 'K',
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildKasCard(
+                    const SizedBox(width: 12),
+                    _buildKasCard(
                       label: 'Rekening Bank',
                       amount: 'Rp 34.848.928',
                       color: Colors.blue[100]!,
+                      abbreviation: 'RB',
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 12),
+                    _buildKasCard(
+                      label: 'Giro',
+                      amount: 'Rp 12.342.000',
+                      color: Colors.green[100]!,
+                      abbreviation: 'G',
+                    ),
+                  ],
+                ),
               ),
             ),
 
@@ -221,23 +231,58 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     required String label,
     required String amount,
     required Color color,
+    required String abbreviation,
   }) {
     return Container(
+      width: 180,
+      height: 80,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(label,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-          const SizedBox(height: 6),
-          Text(amount,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Text(
+                abbreviation,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 14),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  amount,
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w600),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -246,20 +291,11 @@ class _DashboardscreenState extends State<Dashboardscreen> {
 
 class KledoDrawer extends StatelessWidget {
   final menuItems = [
-    {
-      'icon': Icons.house,
-      'title': 'Beranda',
-    },
+    {'icon': Icons.house, 'title': 'Beranda'},
     {
       'icon': Icons.shopping_bag,
       'title': 'Penjualan',
-      'children': [
-        'Overview',
-        'Tagihan',
-        'Pengiriman',
-        'Pemesanan',
-        'Penawaran',
-      ],
+      'children': ['Overview', 'Tagihan', 'Pengiriman', 'Pemesanan', 'Penawaran']
     },
     {
       'icon': Icons.shopping_cart,
@@ -270,40 +306,19 @@ class KledoDrawer extends StatelessWidget {
         'Pengiriman Pembelian',
         'Pesanan Pembelian',
         'Penawaran Pembelian',
-      ],
+      ]
     },
-    {
-      'icon': Icons.account_balance_wallet,
-      'title': 'Biaya',
-    },
-    {
-      'icon': Icons.inventory_2,
-      'title': 'Produk',
-    },
-    {
-      'icon': Icons.local_shipping,
-      'title': 'Inventori',
-    },
-    {
-      'icon': Icons.bar_chart,
-      'title': 'Laporan',
-    },
-    {
-      'icon': Icons.account_balance,
-      'title': 'Kas & Bank',
-    },
-    {
-      'icon': Icons.settings,
-      'title': 'Pengaturan',
-    },
-    {
-      'icon': Icons.help_outline,
-      'title': 'FAQ',
-    },
-    {
-      'icon': Icons.exit_to_app,
-      'title': 'Keluar',
-    },
+    {'icon': Icons.money_off, 'title': 'Biaya'},
+    {'icon': Icons.inventory_2, 'title': 'Produk'},
+    {'icon': Icons.local_shipping, 'title': 'Inventori'},
+    {'icon': Icons.bar_chart, 'title': 'Laporan'},
+    {'icon': Icons.account_balance, 'title': 'Kas & Bank'},
+    {'icon': Icons.person, 'title': 'Akun'},
+    {'icon': Icons.domain, 'title': 'Aset Tetap'},
+    {'icon': Icons.contacts, 'title': 'Kontak'},
+    {'icon': Icons.settings, 'title': 'Pengaturan'},
+    {'icon': Icons.help_outline, 'title': 'FAQ'},
+    {'icon': Icons.exit_to_app, 'title': 'Keluar'},
   ];
 
   @override
@@ -325,14 +340,8 @@ class KledoDrawer extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Kledo',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text('Kledo',
+                      style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   Text('Zahlfan Wiranto',
                       style: TextStyle(color: Colors.white, fontSize: 16)),
@@ -351,8 +360,7 @@ class KledoDrawer extends StatelessWidget {
                       child: Icon(Icons.info, size: 16, color: Colors.black),
                     ),
                     TextSpan(
-                      text:
-                          '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
+                      text: '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
                       style: TextStyle(color: Colors.black),
                     ),
                     TextSpan(
@@ -376,15 +384,11 @@ class KledoDrawer extends StatelessWidget {
                   data: Theme.of(context).copyWith(
                     dividerColor: Colors.transparent,
                     unselectedWidgetColor: Colors.white70,
-                    textTheme: const TextTheme(
-                      bodyMedium: TextStyle(color: Colors.white),
-                    ),
                   ),
                   child: ExpansionTile(
                     collapsedIconColor: Colors.white,
                     iconColor: Colors.white,
-                    leading:
-                        Icon(item['icon'] as IconData, color: Colors.white),
+                    leading: Icon(item['icon'] as IconData, color: Colors.white),
                     title: Text(item['title'] as String,
                         style: const TextStyle(color: Colors.white)),
                     children: (item['children'] as List<String>).map((subItem) {
@@ -393,9 +397,7 @@ class KledoDrawer extends StatelessWidget {
                             const EdgeInsets.only(left: 72, right: 16),
                         title: Text(subItem,
                             style: const TextStyle(color: Colors.white)),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
+                        onTap: () => Navigator.pop(context),
                       );
                     }).toList(),
                   ),
@@ -405,9 +407,7 @@ class KledoDrawer extends StatelessWidget {
                   leading: Icon(item['icon'] as IconData, color: Colors.white),
                   title: Text(item['title'] as String,
                       style: const TextStyle(color: Colors.white)),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop(context),
                 );
               }
             }).toList(),
