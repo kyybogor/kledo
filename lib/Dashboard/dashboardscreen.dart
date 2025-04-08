@@ -35,7 +35,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
           )
         ],
       ),
-      drawer: Drawer(), // Tambahkan isi drawer jika perlu
+      drawer: KledoDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -241,7 +241,7 @@ class KledoDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF1A75CF), Color(0xFF007BFF)],
             begin: Alignment.topLeft,
@@ -251,7 +251,7 @@ class KledoDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(color: Colors.transparent),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,7 +273,7 @@ class KledoDrawer extends StatelessWidget {
               ),
             ),
             Container(
-              color: Colors.yellow[100],
+              color: Colors.yellowAccent,
               padding: EdgeInsets.all(10),
               child: RichText(
                 text: TextSpan(
@@ -305,7 +305,7 @@ class KledoDrawer extends StatelessWidget {
               return ListTile(
                 leading: Icon(item['icon'] as IconData, color: Colors.white),
                 title: Text(item['title'] as String,
-                    style: TextStyle(color: Colors.white)),
+                    style: const TextStyle(color: Colors.white)),
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -317,12 +317,12 @@ class KledoDrawer extends StatelessWidget {
                 onPressed: () {
                   // WhatsApp action
                 },
-                icon: FaIcon(FontAwesomeIcons.whatsapp),
-                label: Text('Halo, ada yang bisa saya bantu?'),
+                icon: const FaIcon(FontAwesomeIcons.whatsapp),
+                label: const Text('Halo, ada yang bisa saya bantu?'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   foregroundColor: Colors.white,
-                  minimumSize: Size(double.infinity, 40),
+                  minimumSize: const Size(double.infinity, 40),
                 ),
               ),
             ),
