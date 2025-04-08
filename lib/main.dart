@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Login/forget.dart';
-import 'package:flutter_application_kledo/Login/loginScreen.dart';
 import 'package:flutter_application_kledo/Splashscreen/splashscreen.dart'; // Sesuaikan path
 
 void main() {

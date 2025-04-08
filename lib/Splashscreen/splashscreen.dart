@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/Login/loginScreen.dart'; // Sesuaikan path
 
 class Splashscreen extends StatefulWidget {
