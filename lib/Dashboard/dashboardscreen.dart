@@ -35,7 +35,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
         backgroundColor: Colors.blueAccent,
         elevation: 0,
         centerTitle: true,
-        title: const Text('contoh toko'),
+        title: const Text('Hayami'),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
@@ -48,7 +48,6 @@ class _DashboardscreenState extends State<Dashboardscreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Container(
               width: double.infinity,
               color: Colors.blueAccent,
@@ -56,20 +55,14 @@ class _DashboardscreenState extends State<Dashboardscreen> {
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Hi pengguna!',
-                    style: TextStyle(fontSize: 22, color: Colors.white),
-                  ),
+                  Text('Hi pengguna!',
+                      style: TextStyle(fontSize: 22, color: Colors.white)),
                   SizedBox(height: 4),
-                  Text(
-                    'Yuk mudahkan keuangan bisnis dengan Kledo',
-                    style: TextStyle(color: Colors.white70),
-                  ),
+                  Text('Yuk mudahkan keuangan bisnis dengan Kledo',
+                      style: TextStyle(color: Colors.white70)),
                 ],
               ),
             ),
-
-            // Menu Grid
             Container(
               margin: const EdgeInsets.all(12),
               padding: const EdgeInsets.all(12),
@@ -91,10 +84,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                   return InkWell(
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content:
-                              Text('Navigasi ke ${item['label']} belum tersedia'),
-                        ),
+                        SnackBar(content: Text('Navigasi ke ${item['label']} belum tersedia')),
                       );
                     },
                     child: Column(
@@ -105,19 +95,13 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                           child: Icon(item['icon'], color: Colors.blue),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          item['label'],
-                          style: const TextStyle(fontSize: 12),
-                          textAlign: TextAlign.center,
-                        )
+                        Text(item['label'], style: const TextStyle(fontSize: 12), textAlign: TextAlign.center),
                       ],
                     ),
                   );
                 },
               ),
             ),
-
-            // Banner
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Container(
@@ -134,22 +118,18 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Demo dan konsultasi Online',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text('Demo dan konsultasi Online', style: TextStyle(fontWeight: FontWeight.bold)),
                           Text('Gratis'),
                           SizedBox(height: 4),
                           Text('Yuk Jadwalkan Sekarang'),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
             ),
-
             const SizedBox(height: 10),
-
-            // Dummy warning
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Container(
@@ -166,8 +146,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                     Expanded(
                       child: Text.rich(
                         TextSpan(
-                          text:
-                              'Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
+                          text: 'Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
                           children: [
                             TextSpan(
                               text: 'klik disini',
@@ -184,13 +163,10 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
-            // Judul "Kas & Bank"
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: const Align(
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Kas & Bank',
@@ -203,8 +179,6 @@ class _DashboardscreenState extends State<Dashboardscreen> {
               ),
             ),
             const SizedBox(height: 8),
-
-            // Kas & Bank Cards (Scroll Horizontal)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: SingleChildScrollView(
@@ -235,7 +209,6 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
           ],
         ),
@@ -283,19 +256,13 @@ class _DashboardscreenState extends State<Dashboardscreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 14),
-                  overflow: TextOverflow.ellipsis,
-                ),
+                Text(label,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 4),
-                Text(
-                  amount,
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.ellipsis,
-                ),
+                Text(amount,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis),
               ],
             ),
           ),
@@ -318,13 +285,7 @@ class KledoDrawer extends StatelessWidget {
     {
       'icon': Icons.shopping_cart,
       'title': 'Pembelian',
-      'children': [
-        'Overview',
-        'Tagihan Pembelian',
-        'Pengiriman Pembelian',
-        'Pesanan Pembelian',
-        'Penawaran Pembelian',
-      ]
+      'children': ['Overview', 'Tagihan Pembelian', 'Pengiriman Pembelian', 'Pesanan Pembelian', 'Penawaran Pembelian']
     },
     {'icon': Icons.money_off, 'title': 'Biaya'},
     {'icon': Icons.inventory_2, 'title': 'Produk'},
@@ -353,18 +314,28 @@ class KledoDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.transparent),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: Stack(
                 children: [
-                  Text('Kledo',
-                      style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 8),
-                  Text('Zahlfan Wiranto',
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
-                  Text('prt ayam',
-                      style: TextStyle(color: Colors.white70, fontSize: 14)),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text('Kledo',
+                          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 8),
+                      Text('Zahlfan Wiranto', style: TextStyle(color: Colors.white, fontSize: 16)),
+                      Text('prt ayam', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                    ],
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -374,60 +345,63 @@ class KledoDrawer extends StatelessWidget {
               child: RichText(
                 text: const TextSpan(
                   children: [
-                    WidgetSpan(
-                      child: Icon(Icons.info, size: 16, color: Colors.black),
-                    ),
+                    WidgetSpan(child: Icon(Icons.info, size: 16, color: Colors.black)),
                     TextSpan(
                       text: '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
                       style: TextStyle(color: Colors.black),
                     ),
                     TextSpan(
                       text: 'klik disini',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                      ),
+                      style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
                     ),
-                    TextSpan(
-                      text: ' untuk mengosongkan data.',
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    TextSpan(text: ' untuk mengosongkan data.', style: TextStyle(color: Colors.black)),
                   ],
                 ),
               ),
             ),
-            ...menuItems.map((item) {
+            ...menuItems.asMap().entries.map((entry) {
+              final index = entry.key;
+              final item = entry.value;
+
+              Widget listTile;
               if (item.containsKey('children')) {
-                return Theme(
-                  data: Theme.of(context).copyWith(
-                    dividerColor: Colors.transparent,
-                    unselectedWidgetColor: Colors.white70,
-                  ),
+                listTile = Theme(
+                  data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
                     collapsedIconColor: Colors.white,
                     iconColor: Colors.white,
                     leading: Icon(item['icon'] as IconData, color: Colors.white),
-                    title: Text(item['title'] as String,
-                        style: const TextStyle(color: Colors.white)),
+                    title: Text(item['title'] as String, style: const TextStyle(color: Colors.white)),
                     children: (item['children'] as List<String>).map((subItem) {
                       return ListTile(
-                        contentPadding:
-                            const EdgeInsets.only(left: 72, right: 16),
-                        title: Text(subItem,
-                            style: const TextStyle(color: Colors.white)),
+                        contentPadding: const EdgeInsets.only(left: 72, right: 16),
+                        title: Text(subItem, style: const TextStyle(color: Colors.white)),
                         onTap: () => Navigator.pop(context),
                       );
                     }).toList(),
                   ),
                 );
               } else {
-                return ListTile(
+                listTile = ListTile(
                   leading: Icon(item['icon'] as IconData, color: Colors.white),
-                  title: Text(item['title'] as String,
-                      style: const TextStyle(color: Colors.white)),
+                  title: Text(item['title'] as String, style: const TextStyle(color: Colors.white)),
                   onTap: () => Navigator.pop(context),
                 );
               }
+
+              bool needsDivider = false;
+              final String title = item['title'] as String;
+              if (title == 'Inventori' || title == 'Kontak' || title == 'FAQ' || title == 'Keluar') {
+                needsDivider = true;
+              }
+
+              return Column(
+                children: [
+                  listTile,
+                  if (needsDivider)
+                    const Divider(color: Colors.white54, indent: 16, endIndent: 16),
+                ],
+              );
             }).toList(),
             Padding(
               padding: const EdgeInsets.all(16.0),
