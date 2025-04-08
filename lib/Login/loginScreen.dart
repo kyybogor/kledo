@@ -11,12 +11,9 @@ class _LoginscreenState extends State<Loginscreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Container(
-          margin: EdgeInsets.all(10),
-        ),
-      ),
+        
+      )
     );
   }
 }
