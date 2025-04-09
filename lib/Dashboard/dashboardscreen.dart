@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
@@ -86,10 +87,18 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                   var item = menuItems[index];
                   return InkWell(
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Navigasi ke ${item['label']} belum tersedia')),
-                      );
-                    },
+  if (item['label'] == 'Penjualan') {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const Penjualanscreen()),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Navigasi ke ${item['label']} belum tersedia')),
+    );
+  }
+},
+
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
