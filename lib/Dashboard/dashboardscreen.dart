@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
-import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
@@ -463,32 +462,7 @@ class KledoDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              color: Colors.yellowAccent,
-              padding: const EdgeInsets.all(10),
-              child: RichText(
-                text: const TextSpan(
-                  children: [
-                    WidgetSpan(
-                        child: Icon(Icons.info, size: 16, color: Colors.black)),
-                    TextSpan(
-                      text:
-                          '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    TextSpan(
-                      text: 'klik disini',
-                      style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline),
-                    ),
-                    TextSpan(
-                        text: ' untuk mengosongkan data.',
-                        style: TextStyle(color: Colors.black)),
-                  ],
-                ),
-              ),
-            ),
+  
             ...menuItems.asMap().entries.map((entry) {
               final item = entry.value;
 
