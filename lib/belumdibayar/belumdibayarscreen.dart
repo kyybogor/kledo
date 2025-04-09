@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/tagihan/detail.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -7,10 +8,17 @@ void main() {
   ));
 }
 
-class BelumDibayar extends StatelessWidget {
+class BelumDibayar extends StatefulWidget {
   const BelumDibayar({super.key});
 
-  final List<Map<String, String>> invoices = const [
+  @override
+  State<BelumDibayar> createState() => _BelumDibayarState();
+}
+
+class _BelumDibayarState extends State<BelumDibayar> {
+  final TextEditingController _searchController = TextEditingController();
+
+  final List<Map<String, String>> invoices = [
     {
       "name": "Hilda Suartini M.M. Prastuti",
       "invoice": "INV/00042",
@@ -49,11 +57,35 @@ class BelumDibayar extends StatelessWidget {
     },
   ];
 
+  List<Map<String, String>> filteredInvoices = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredInvoices = invoices;
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    String keyword = _searchController.text.toLowerCase();
+    setState(() {
+      filteredInvoices = invoices.where((invoice) {
+        return invoice["name"]!.toLowerCase().contains(keyword);
+      }).toList();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true, // <-- Judul ditengah
+        centerTitle: true,
         title: const Text(
           "Belum Dibayar",
           style: TextStyle(color: Colors.blue),
@@ -70,10 +102,10 @@ class BelumDibayar extends StatelessWidget {
       ),
       body: Column(
         children: [
-          
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 hintText: "Cari",
                 prefixIcon: const Icon(Icons.search),
@@ -96,9 +128,9 @@ class BelumDibayar extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: invoices.length,
+              itemCount: filteredInvoices.length,
               itemBuilder: (context, index) {
-                final invoice = invoices[index];
+                final invoice = filteredInvoices[index];
                 return ListTile(
                   title: Text(invoice["name"] ?? ""),
                   subtitle: Column(
@@ -120,7 +152,19 @@ class BelumDibayar extends StatelessWidget {
                       style: const TextStyle(color: Colors.pink),
                     ),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InvoicePage(
+                          name: invoice["name"]!,
+                          invoice: invoice["invoice"]!,
+                          date: invoice["date"]!,
+                          amount: invoice["amount"]!,
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             ),
