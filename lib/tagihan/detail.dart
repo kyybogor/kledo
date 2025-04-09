@@ -11,7 +11,7 @@ class _InvoicePageState extends State<InvoicePage> {
   void _showPaymentBottomSheet() {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // biar tinggi sheet bisa penuh
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -58,13 +58,11 @@ class _InvoicePageState extends State<InvoicePage> {
                           const SizedBox(height: 4),
                           const Text("Rp9.980.000",
                               style: TextStyle(fontSize: 16)),
-
                           const SizedBox(height: 16),
                           const Text("Tgl transaksi"),
                           const SizedBox(height: 4),
                           const Text("09/04/2025",
                               style: TextStyle(fontSize: 16)),
-
                           const SizedBox(height: 16),
                           const Text("Dibayar ke"),
                           const SizedBox(height: 4),
@@ -78,11 +76,9 @@ class _InvoicePageState extends State<InvoicePage> {
                             }).toList(),
                             onChanged: (val) {},
                           ),
-
                           const SizedBox(height: 16),
                           const Text("Referensi"),
                           const TextField(),
-
                           const SizedBox(height: 16),
                           const Row(
                             children: [
@@ -98,14 +94,13 @@ class _InvoicePageState extends State<InvoicePage> {
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Colors.blueAccent,
                               minimumSize: const Size.fromHeight(45),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            child: const Text("Simpan",
-                            style: TextStyle(fontSize: 16, color: Colors.white)),
+                            child: const Text("Simpan", style: TextStyle(color: Colors.white),),
                           ),
                         ],
                       ),
@@ -117,48 +112,103 @@ class _InvoicePageState extends State<InvoicePage> {
           },
         );
       },
-      backgroundColor: Colors.blue, // Background atas biru
+      backgroundColor: Colors.blue,
     );
+  }
+
+  void _onMenuSelected(String value) {
+    // Handle menu action
+    print("Selected: $value");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          // Header tetap
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.blue, Colors.lightBlueAccent],
-              ),
-            ),
-            child: const Center(
-              child: Text(
-                "Tagihan",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text("Tagihan"),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: _onMenuSelected,
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem(
+                value: 'audit',
+                child: ListTile(
+                  leading: Icon(Icons.description),
+                  title: Text('Lihat Audit'),
                 ),
               ),
-            ),
+              const PopupMenuItem(
+                value: 'jurnal',
+                child: ListTile(
+                  leading: Icon(Icons.remove_red_eye),
+                  title: Text('Lihat entri jurnal'),
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'ulang',
+                child: ListTile(
+                  leading: Icon(Icons.repeat),
+                  title: Text('Transaksi Berulang'),
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'ubah',
+                child: ListTile(
+                  leading: Icon(Icons.edit),
+                  title: Text('Ubah'),
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'duplikat',
+                child: ListTile(
+                  leading: Icon(Icons.copy),
+                  title: Text('Duplikat'),
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'retur',
+                child: ListTile(
+                  leading: Icon(Icons.undo),
+                  title: Text('Retur'),
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'void',
+                child: ListTile(
+                  leading: Icon(Icons.block),
+                  title: Text('Void'),
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'hapus',
+                child: ListTile(
+                  leading: Icon(Icons.delete),
+                  title: Text('Hapus'),
+                ),
+              ),
+            ],
           ),
-
-          // Konten scrollable
+        ],
+      ),
+      body: Column(
+        children: [
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // Informasi Invoice
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.blue, Colors.lightBlueAccent],
+                        colors: [Colors.blueAccent, Colors.blueAccent],
                       ),
                     ),
                     child: const Column(
@@ -176,7 +226,14 @@ class _InvoicePageState extends State<InvoicePage> {
                                 fontWeight: FontWeight.bold)),
                         SizedBox(height: 4),
                         Text(
-                          "UD Wijayanti Prabowo (Persero) Tbk\nJl. Bass No. 719, Administrasi Jakarta Selatan\n31540, Sultra",
+                          "UD Wijayanti Prabowo (Persero) Tbk",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          "Jl. Bass No. 719, Administrasi Jakarta Selatan",
+                          style: TextStyle(color: Colors.white),
+                        ),                        Text(
+                          "31540, Sultra",
                           style: TextStyle(color: Colors.white),
                         ),
                         SizedBox(height: 8),
@@ -198,8 +255,6 @@ class _InvoicePageState extends State<InvoicePage> {
                       ],
                     ),
                   ),
-
-                  // List item
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -207,7 +262,8 @@ class _InvoicePageState extends State<InvoicePage> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: const Text("Chelsea Boots"),
-                        subtitle: const Text("Ukuran M\n2 Pcs x Rp 499.000"),
+                        subtitle:
+                            const Text("Ukuran M\n2 Pcs x Rp 499.000"),
                         trailing: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
@@ -220,8 +276,6 @@ class _InvoicePageState extends State<InvoicePage> {
                       );
                     },
                   ),
-
-                  // Ringkasan
                   const Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Column(
@@ -287,8 +341,6 @@ class _InvoicePageState extends State<InvoicePage> {
               ),
             ),
           ),
-
-          // Tombol
           SafeArea(
             child: GestureDetector(
               onTap: _showPaymentBottomSheet,
