@@ -16,27 +16,29 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const KledoDrawer(),
-      body: Column(
+      body: ListView(
+  padding: EdgeInsets.zero, // biar header gak kena padding
+  children: [
+    _buildAppBar(),
+    Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
         children: [
-          _buildAppBar(),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                const SizedBox(height: 12),
-                _buildIconMenu(),
-                const SizedBox(height: 16),
-                _buildToggleWaktu(),
-                const SizedBox(height: 16),
-                _buildStatCards(),
-                const SizedBox(height: 25),
-                _buildPieChartCard(),
-                const SizedBox(height: 24),
-              ],
-            ),
-          )
+          const SizedBox(height: 12),
+          _buildIconMenu(),
+          const SizedBox(height: 16),
+          _buildToggleWaktu(),
+          const SizedBox(height: 16),
+          _buildStatCards(),
+          const SizedBox(height: 25),
+          _buildPieChartCard(),
+          const SizedBox(height: 24),
         ],
       ),
+    ),
+  ],
+),
+
     );
   }
 
@@ -108,8 +110,10 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
   List<bool> waktuSelected = [true, false];
 
   return StatefulBuilder(
-    builder: (context, setState) {
-      return ToggleButtons(
+  builder: (context, setState) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ToggleButtons(
         isSelected: waktuSelected,
         onPressed: (int index) {
           setState(() {
@@ -128,9 +132,11 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
           Text('Bulan'),
           Text('Tahun'),
         ],
-      );
-    },
-  );
+      ),
+    );
+  },
+);
+
 }
 
 
