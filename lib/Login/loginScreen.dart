@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Login/forget.dart';
 import 'package:flutter_application_kledo/SignUp/dashboardSignUp.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart'; // Sesuaikan path
+import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:flutter_application_kledo/Login/otp.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -18,6 +19,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // Tambahkan state untuk mengontrol visibilitas password
+  bool _obscurePassword = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +62,6 @@ class _LoginPageState extends State<LoginPage> {
 
           const SizedBox(height: 24),
 
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
@@ -71,15 +74,27 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
+
+                // TextField Password dengan fitur lihat/sembunyi
                 TextField(
-                  obscureText: true,
+                  obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.lock_outline),
                     labelText: 'Password',
-                    suffixIcon: const Icon(Icons.visibility_off),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                 ),
+
                 const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerRight,
@@ -87,7 +102,8 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const LupaPasswordPage()));
+                        MaterialPageRoute(builder: (context) => const LupaPasswordPage()),
+                      );
                     },
                     child: const Text("Lupa password?"),
                   ),
@@ -96,7 +112,8 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const Dashboardscreen()));
+                      MaterialPageRoute(builder: (context) => const Dashboardscreen()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
@@ -105,8 +122,9 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Text("MASUK",
-                  style: TextStyle(color: Colors.white),
+                  child: const Text(
+                    "MASUK",
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -132,8 +150,8 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => const PackageSelectionPage()));
+                          MaterialPageRoute(builder: (context) => const OtpPage()),
+                        );
                       },
                       icon: const Icon(Icons.lock),
                       label: const Text("OTP"),

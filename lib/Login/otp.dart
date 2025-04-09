@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: LupaPasswordPage(),
+    home: OtpPage(),
     debugShowCheckedModeBanner: false,
   ));
 }
 
-class LupaPasswordPage extends StatelessWidget {
-  const LupaPasswordPage({Key? key}) : super(key: key);
+class OtpPage extends StatelessWidget {
+  const OtpPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class LupaPasswordPage extends StatelessWidget {
                     children: const [
                       SizedBox(height: 16),
                       Text(
-                        'Lupa Password',
+                        'Lanjutkan Dengan OTP',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 26,
@@ -44,7 +44,7 @@ class LupaPasswordPage extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Masukkan alamat email, dan kode untuk mereset password akan dikirim ke emailmu.',
+                        'Masukan email Anda, agar kami dapat mengirimkan kode OTP untuk proses login',
                         style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ],
@@ -74,7 +74,7 @@ class LupaPasswordPage extends StatelessWidget {
               backgroundColor: Color(0xFF1E3C72),
             ),
             child: const Text(
-              'Kirim Link Reset',
+              'Kirim Kode OTP',
               style: TextStyle(fontSize: 16, color: Colors.white),
             ),
           ),
