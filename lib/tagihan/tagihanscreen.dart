@@ -207,7 +207,7 @@ class TagihanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const KledoDrawer(), // pakai drawer dari KledoDrawer
+      drawer: const KledoDrawer(),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -246,14 +246,16 @@ class TagihanPage extends StatelessWidget {
                   ),
                   title: Text(item['label']),
                   trailing: Text("${item['count']}"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BelumDibayar(),
-                      ),
-                    );
-                  },
+                  onTap: item['label'] == "Belum Dibayar"
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BelumDibayar(),
+                            ),
+                          );
+                        }
+                      : null,
                 );
               },
             ),
