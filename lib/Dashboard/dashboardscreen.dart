@@ -84,7 +84,9 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                   return InkWell(
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Navigasi ke ${item['label']} belum tersedia')),
+                        SnackBar(
+                            content: Text(
+                                'Navigasi ke ${item['label']} belum tersedia')),
                       );
                     },
                     child: Column(
@@ -95,7 +97,9 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                           child: Icon(item['icon'], color: Colors.blue),
                         ),
                         const SizedBox(height: 8),
-                        Text(item['label'], style: const TextStyle(fontSize: 12), textAlign: TextAlign.center),
+                        Text(item['label'],
+                            style: const TextStyle(fontSize: 12),
+                            textAlign: TextAlign.center),
                       ],
                     ),
                   );
@@ -118,7 +122,8 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Demo dan konsultasi Online', style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text('Demo dan konsultasi Online',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                           Text('Gratis'),
                           SizedBox(height: 4),
                           Text('Yuk Jadwalkan Sekarang'),
@@ -146,7 +151,8 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                     Expanded(
                       child: Text.rich(
                         TextSpan(
-                          text: 'Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
+                          text:
+                              'Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
                           children: [
                             TextSpan(
                               text: 'klik disini',
@@ -257,11 +263,13 @@ class _DashboardscreenState extends State<Dashboardscreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 14),
                     overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 4),
                 Text(amount,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w600),
                     overflow: TextOverflow.ellipsis),
               ],
             ),
@@ -280,12 +288,24 @@ class KledoDrawer extends StatelessWidget {
     {
       'icon': Icons.shopping_bag,
       'title': 'Penjualan',
-      'children': ['Overview', 'Tagihan', 'Pengiriman', 'Pemesanan', 'Penawaran']
+      'children': [
+        'Overview',
+        'Tagihan',
+        'Pengiriman',
+        'Pemesanan',
+        'Penawaran'
+      ]
     },
     {
       'icon': Icons.shopping_cart,
       'title': 'Pembelian',
-      'children': ['Overview', 'Tagihan Pembelian', 'Pengiriman Pembelian', 'Pesanan Pembelian', 'Penawaran Pembelian']
+      'children': [
+        'Overview',
+        'Tagihan Pembelian',
+        'Pengiriman Pembelian',
+        'Pesanan Pembelian',
+        'Penawaran Pembelian'
+      ]
     },
     {'icon': Icons.money_off, 'title': 'Biaya'},
     {'icon': Icons.inventory_2, 'title': 'Produk'},
@@ -322,10 +342,16 @@ class KledoDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text('Kledo',
-                          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold)),
                       SizedBox(height: 8),
-                      Text('Zahlfan Wiranto', style: TextStyle(color: Colors.white, fontSize: 16)),
-                      Text('prt ayam', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                      Text('Zahlfan Wiranto',
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
+                      Text('prt ayam',
+                          style:
+                              TextStyle(color: Colors.white70, fontSize: 14)),
                     ],
                   ),
                   Positioned(
@@ -345,16 +371,22 @@ class KledoDrawer extends StatelessWidget {
               child: RichText(
                 text: const TextSpan(
                   children: [
-                    WidgetSpan(child: Icon(Icons.info, size: 16, color: Colors.black)),
+                    WidgetSpan(
+                        child: Icon(Icons.info, size: 16, color: Colors.black)),
                     TextSpan(
-                      text: '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
+                      text:
+                          '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
                       style: TextStyle(color: Colors.black),
                     ),
                     TextSpan(
                       text: 'klik disini',
-                      style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+                      style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline),
                     ),
-                    TextSpan(text: ' untuk mengosongkan data.', style: TextStyle(color: Colors.black)),
+                    TextSpan(
+                        text: ' untuk mengosongkan data.',
+                        style: TextStyle(color: Colors.black)),
                   ],
                 ),
               ),
@@ -366,16 +398,21 @@ class KledoDrawer extends StatelessWidget {
               Widget listTile;
               if (item.containsKey('children')) {
                 listTile = Theme(
-                  data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
                     collapsedIconColor: Colors.white,
                     iconColor: Colors.white,
-                    leading: Icon(item['icon'] as IconData, color: Colors.white),
-                    title: Text(item['title'] as String, style: const TextStyle(color: Colors.white)),
+                    leading:
+                        Icon(item['icon'] as IconData, color: Colors.white),
+                    title: Text(item['title'] as String,
+                        style: const TextStyle(color: Colors.white)),
                     children: (item['children'] as List<String>).map((subItem) {
                       return ListTile(
-                        contentPadding: const EdgeInsets.only(left: 72, right: 16),
-                        title: Text(subItem, style: const TextStyle(color: Colors.white)),
+                        contentPadding:
+                            const EdgeInsets.only(left: 72, right: 16),
+                        title: Text(subItem,
+                            style: const TextStyle(color: Colors.white)),
                         onTap: () => Navigator.pop(context),
                       );
                     }).toList(),
@@ -384,14 +421,18 @@ class KledoDrawer extends StatelessWidget {
               } else {
                 listTile = ListTile(
                   leading: Icon(item['icon'] as IconData, color: Colors.white),
-                  title: Text(item['title'] as String, style: const TextStyle(color: Colors.white)),
+                  title: Text(item['title'] as String,
+                      style: const TextStyle(color: Colors.white)),
                   onTap: () => Navigator.pop(context),
                 );
               }
 
               bool needsDivider = false;
               final String title = item['title'] as String;
-              if (title == 'Inventori' || title == 'Kontak' || title == 'FAQ' || title == 'Keluar') {
+              if (title == 'Inventori' ||
+                  title == 'Kontak' ||
+                  title == 'FAQ' ||
+                  title == 'Keluar') {
                 needsDivider = true;
               }
 
@@ -399,7 +440,8 @@ class KledoDrawer extends StatelessWidget {
                 children: [
                   listTile,
                   if (needsDivider)
-                    const Divider(color: Colors.white54, indent: 16, endIndent: 16),
+                    const Divider(
+                        color: Colors.white54, indent: 16, endIndent: 16),
                 ],
               );
             }).toList(),
