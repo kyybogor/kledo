@@ -17,14 +17,14 @@ class Dashboardscreen extends StatefulWidget {
 
 class _DashboardscreenState extends State<Dashboardscreen> {
   final List<Map<String, dynamic>> menuItems = [
-    {'icon': Icons.shopping_bag, 'label': 'Penjualan'},
-    {'icon': Icons.shopping_cart, 'label': 'Pembelian'},
-    {'icon': Icons.money_off, 'label': 'Biaya'},
-    {'icon': Icons.inventory, 'label': 'Produk'},
-    {'icon': Icons.bar_chart, 'label': 'Laporan'},
-    {'icon': Icons.account_balance, 'label': 'Kas & Bank'},
-    {'icon': Icons.domain, 'label': 'Aset Tetap'},
-    {'icon': Icons.contacts, 'label': 'Kontak'},
+    {'icon': Icons.shopping_bag, 'label': 'Penjualan', 'color': Colors.redAccent},
+    {'icon': Icons.shopping_cart, 'label': 'Pembelian', 'color': Colors.blueAccent},
+    {'icon': Icons.money_off, 'label': 'Biaya', 'color': Colors.orangeAccent},
+    {'icon': Icons.inventory, 'label': 'Produk', 'color': Colors.green},
+    {'icon': Icons.bar_chart, 'label': 'Laporan', 'color': Colors.purple},
+    {'icon': Icons.account_balance, 'label': 'Kas & Bank', 'color': Colors.teal},
+    {'icon': Icons.domain, 'label': 'Aset Tetap', 'color': Colors.indigo},
+    {'icon': Icons.contacts, 'label': 'Kontak', 'color': Colors.brown},
   ];
 
   @override
@@ -35,7 +35,10 @@ class _DashboardscreenState extends State<Dashboardscreen> {
         backgroundColor: Colors.blueAccent,
         elevation: 0,
         centerTitle: true,
-        title: const Text('Hayami'),
+        title: const Text(
+          'Hayami',
+          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+        ),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
@@ -91,8 +94,8 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CircleAvatar(
-                          backgroundColor: Colors.blue[50],
-                          child: Icon(item['icon'], color: Colors.blue),
+                          backgroundColor: item['color']?.withOpacity(0.2) ?? Colors.blue[50],
+                          child: Icon(item['icon'], color: item['color'] ?? Colors.blue),
                         ),
                         const SizedBox(height: 8),
                         Text(item['label'], style: const TextStyle(fontSize: 12), textAlign: TextAlign.center),
@@ -321,7 +324,7 @@ class KledoDrawer extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Text('Kledo',
+                      Text('Hayami',
                           style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                       SizedBox(height: 8),
                       Text('Zahlfan Wiranto', style: TextStyle(color: Colors.white, fontSize: 16)),
@@ -360,7 +363,6 @@ class KledoDrawer extends StatelessWidget {
               ),
             ),
             ...menuItems.asMap().entries.map((entry) {
-              final index = entry.key;
               final item = entry.value;
 
               Widget listTile;
@@ -389,11 +391,7 @@ class KledoDrawer extends StatelessWidget {
                 );
               }
 
-              bool needsDivider = false;
-              final String title = item['title'] as String;
-              if (title == 'Inventori' || title == 'Kontak' || title == 'FAQ' || title == 'Keluar') {
-                needsDivider = true;
-              }
+              bool needsDivider = ['Inventori', 'Kontak', 'FAQ', 'Keluar'].contains(item['title']);
 
               return Column(
                 children: [
