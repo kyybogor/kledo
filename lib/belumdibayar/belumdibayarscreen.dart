@@ -70,25 +70,7 @@ class BelumDibayar extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Container(
-            color: Colors.yellow[100],
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: RichText(
-              text: TextSpan(
-                style: const TextStyle(color: Colors.black),
-                children: [
-                  const TextSpan(
-                      text:
-                          'Data yang tampil saat ini adalah data dummy. Setelah Anda siap, '),
-                  TextSpan(
-                    text: 'klik disini',
-                    style: const TextStyle(color: Colors.blue),
-                  ),
-                  const TextSpan(text: ' untuk mengosongkan data.'),
-                ],
-              ),
-            ),
-          ),
+          
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: TextField(
