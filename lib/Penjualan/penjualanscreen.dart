@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
 
 class Penjualanscreen extends StatefulWidget {
@@ -15,13 +16,14 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(), // Ganti dengan KledoDrawer jika tersedia
-      body: Column(
+      drawer: const TagihanPage(),
+      body: ListView(
+        padding: EdgeInsets.zero,
         children: [
           _buildAppBar(),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
               children: [
                 const SizedBox(height: 12),
                 _buildIconMenu(),
@@ -34,7 +36,7 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
                 const SizedBox(height: 24),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -95,17 +97,18 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          GestureDetector(
+          _MenuIcon(
+            icon: Icons.receipt_long,
+            color: Colors.redAccent,
+            label: 'Tagihan',
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const TagihanPage()),
+                MaterialPageRoute(
+                  builder: (context) => const TagihanPage(),
+                ),
               );
             },
-            child: const _MenuIcon(
-                icon: Icons.receipt_long,
-                color: Colors.redAccent,
-                label: 'Tagihan'),
           ),
           const _MenuIcon(
               icon: Icons.local_shipping,
@@ -129,25 +132,28 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
 
     return StatefulBuilder(
       builder: (context, setState) {
-        return ToggleButtons(
-          isSelected: waktuSelected,
-          onPressed: (int index) {
-            setState(() {
-              for (int i = 0; i < waktuSelected.length; i++) {
-                waktuSelected[i] = i == index;
-              }
-            });
-          },
-          borderRadius: BorderRadius.circular(8),
-          selectedBorderColor: Colors.blue,
-          selectedColor: Colors.blue,
-          fillColor: Colors.blue.withOpacity(0.1),
-          color: Colors.black54,
-          constraints: const BoxConstraints(minHeight: 30, minWidth: 85),
-          children: const [
-            Text('Bulan'),
-            Text('Tahun'),
-          ],
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: ToggleButtons(
+            isSelected: waktuSelected,
+            onPressed: (int index) {
+              setState(() {
+                for (int i = 0; i < waktuSelected.length; i++) {
+                  waktuSelected[i] = i == index;
+                }
+              });
+            },
+            borderRadius: BorderRadius.circular(8),
+            selectedBorderColor: Colors.blue,
+            selectedColor: Colors.blue,
+            fillColor: Colors.blue.withOpacity(0.1),
+            color: Colors.black54,
+            constraints: const BoxConstraints(minHeight: 30, minWidth: 85),
+            children: const [
+              Text('Bulan'),
+              Text('Tahun'),
+            ],
+          ),
         );
       },
     );
@@ -232,8 +238,9 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
                                   child: Text(
                                     'Penjualan Per Produk Bulan Ini',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
                                 Icon(Icons.filter_alt_outlined),
@@ -315,26 +322,32 @@ class _MenuIcon extends StatelessWidget {
   final IconData icon;
   final Color color;
   final String label;
+  final VoidCallback? onTap;
 
   const _MenuIcon({
     required this.icon,
     required this.color,
     required this.label,
+    this.onTap,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 22,
-          backgroundColor: color.withOpacity(0.2),
-          child: Icon(icon, color: color),
-        ),
-        const SizedBox(height: 6),
-        Text(label, style: const TextStyle(fontSize: 12)),
-      ],
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 22,
+            backgroundColor: color.withOpacity(0.2),
+            child: Icon(icon, color: color),
+          ),
+          const SizedBox(height: 6),
+          Text(label, style: const TextStyle(fontSize: 12)),
+        ],
+      ),
     );
   }
 }
@@ -390,23 +403,6 @@ class _StatCard extends StatelessWidget {
             ],
           )
         ],
-      ),
-    );
-  }
-}
-
-class TagihanScreen extends StatelessWidget {
-  const TagihanScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tagihan'),
-        backgroundColor: Colors.blueAccent,
-      ),
-      body: const Center(
-        child: Text('Ini adalah halaman Tagihan'),
       ),
     );
   }
