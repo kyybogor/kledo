@@ -226,7 +226,14 @@ class _InvoicePageState extends State<InvoicePage> {
                                 fontWeight: FontWeight.bold)),
                         SizedBox(height: 4),
                         Text(
-                          "UD Wijayanti Prabowo (Persero) Tbk\nJl. Bass No. 719, Administrasi Jakarta Selatan\n31540, Sultra",
+                          "UD Wijayanti Prabowo (Persero) Tbk",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          "Jl. Bass No. 719, Administrasi Jakarta Selatan",
+                          style: TextStyle(color: Colors.white),
+                        ),                        Text(
+                          "31540, Sultra",
                           style: TextStyle(color: Colors.white),
                         ),
                         SizedBox(height: 8),
