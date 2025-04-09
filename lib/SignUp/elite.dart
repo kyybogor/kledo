@@ -20,6 +20,11 @@ class _EliteRegisState extends State<EliteRegis> {
   final TextEditingController companyController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController couponController = TextEditingController();
+
+
+  bool _showCouponField = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,13 +83,21 @@ class _EliteRegisState extends State<EliteRegis> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Masukkan Kode Kupon',
-                        style: TextStyle(color: Colors.blue),
+                      onPressed: () {
+                        setState(() {
+                          _showCouponField = !_showCouponField;
+                        });
+                      },
+                      child: Text(
+                        _showCouponField ? 'Sembunyikan Kode Kupon' : 'Masukkan Kode Kupon',
+                        style: const TextStyle(color: Colors.blue),
                       ),
                     ),
                   ),
+
+                  if (_showCouponField)
+                    _buildTextField(Icons.card_giftcard, "Kode Kupon", couponController),
+                    
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
@@ -97,6 +110,9 @@ class _EliteRegisState extends State<EliteRegis> {
                         ),
                       ),
                       onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Anda berhasil mendaftarkan akun, silakan masuk.')),
+                        );
                       },
                       child: const Text("DAFTAR",
                       style: TextStyle(color: Color.fromARGB(255, 243, 245, 247))

@@ -20,6 +20,9 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
   final TextEditingController companyController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController couponController = TextEditingController();
+
+  bool _showCouponField = false; // Tambahkan state
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,7 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
               padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 40),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.orange , Colors.orangeAccent],
+                  colors: [Colors.orange, Colors.orangeAccent],
                 ),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(50),
@@ -75,16 +78,25 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
                   const SizedBox(height: 16),
                   _buildTextField(Icons.email, "Email", emailController),
                   const SizedBox(height: 12),
+
                   Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Masukkan Kode Kupon',
-                        style: TextStyle(color: Colors.blue),
+                      onPressed: () {
+                        setState(() {
+                          _showCouponField = !_showCouponField;
+                        });
+                      },
+                      child: Text(
+                        _showCouponField ? 'Sembunyikan Kode Kupon' : 'Masukkan Kode Kupon',
+                        style: const TextStyle(color: Colors.blue),
                       ),
                     ),
                   ),
+
+                  if (_showCouponField)
+                    _buildTextField(Icons.card_giftcard, "Kode Kupon", couponController),
+
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
@@ -97,22 +109,24 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
                         ),
                       ),
                       onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Anda berhasil mendaftarkan akun, silakan masuk.')),
+                        );
                       },
                       child: const Text("DAFTAR",
-                      style: TextStyle(color: Color.fromARGB(255, 243, 245, 247))
-                      ),
+                          style: TextStyle(color: Color.fromARGB(255, 243, 245, 247))),
                     ),
                   ),
                   const SizedBox(height: 16),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                    },
                     child: const Text.rich(
                       TextSpan(
                         text: 'Sudah punya akun? ',
