@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Align, Alignment, BorderRadius, BoxDecoration, BuildContext, Color, Colors, Column, Container, CrossAxisAlignment, EdgeInsets, ElevatedButton, FontWeight, GestureDetector, Icon, IconButton, IconData, Icons, InputDecoration, LinearGradient, MaterialApp, MaterialPageRoute, Navigator, Padding, Radius, RoundedRectangleBorder, Scaffold, ScaffoldMessenger, SingleChildScrollView, SizedBox, SnackBar, State, StatefulWidget, Text, TextButton, TextEditingController, TextField, TextSpan, TextStyle, UnderlineInputBorder, Widget, runApp;
 import 'package:flutter_application_kledo/Login/loginScreen.dart';
 
 void main() {
@@ -44,10 +44,19 @@ class _EliteRegisState extends State<EliteRegis> {
                   bottomLeft: Radius.circular(50),
                 ),
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  const Text(
                     'Daftar!',
                     style: TextStyle(
                       fontSize: 26,
@@ -55,7 +64,7 @@ class _EliteRegisState extends State<EliteRegis> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
+                  const Text(
                     'Elite Free Trial',
                     style: TextStyle(
                       fontSize: 16,

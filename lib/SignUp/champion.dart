@@ -42,10 +42,19 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
                   bottomLeft: Radius.circular(50),
                 ),
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  const Text(
                     'Daftar!',
                     style: TextStyle(
                       fontSize: 26,
@@ -53,7 +62,7 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
+                  const Text(
                     'Champion Free Trial',
                     style: TextStyle(
                       fontSize: 16,

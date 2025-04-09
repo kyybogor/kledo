@@ -44,10 +44,19 @@ class _ProRegisState extends State<ProRegis> {
                   bottomLeft: Radius.circular(50),
                 ),
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  const Text(
                     'Daftar!',
                     style: TextStyle(
                       fontSize: 26,
@@ -55,7 +64,7 @@ class _ProRegisState extends State<ProRegis> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
+                  const Text(
                     'Pro Free Trial',
                     style: TextStyle(
                       fontSize: 16,

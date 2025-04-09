@@ -22,9 +22,7 @@ class _FreeRegis extends State<FreeRegis> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController couponController = TextEditingController();
 
-
   bool _showCouponField = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +36,27 @@ class _FreeRegis extends State<FreeRegis> {
               padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 40),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.blue , Colors.blueAccent],
+                  colors: [Colors.blue, Colors.blueAccent],
                 ),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(50),
                 ),
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  // Tombol Back
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
                     'Daftar!',
                     style: TextStyle(
                       fontSize: 26,
@@ -55,7 +64,7 @@ class _FreeRegis extends State<FreeRegis> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
+                  const Text(
                     'Free',
                     style: TextStyle(
                       fontSize: 16,
@@ -115,7 +124,7 @@ class _FreeRegis extends State<FreeRegis> {
                         );
                       },
                       child: const Text("DAFTAR",
-                      style: TextStyle(color: Color.fromARGB(255, 243, 245, 247))
+                        style: TextStyle(color: Color.fromARGB(255, 243, 245, 247))
                       ),
                     ),
                   ),
@@ -123,12 +132,12 @@ class _FreeRegis extends State<FreeRegis> {
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                    },
                     child: const Text.rich(
                       TextSpan(
                         text: 'Sudah punya akun? ',
