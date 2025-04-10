@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 
-class InvoicePage extends StatefulWidget {
-  const InvoicePage({super.key});
+class InvoicePage extends StatelessWidget {
+  final String name;
+  final String invoice;
+  final String date;
+  final String amount;
 
-  @override
-  _InvoicePageState createState() => _InvoicePageState();
-}
+  const InvoicePage({
+    super.key,
+    required this.name,
+    required this.invoice,
+    required this.date,
+    required this.amount,
+  });
 
-class _InvoicePageState extends State<InvoicePage> {
-  void _showPaymentBottomSheet() {
+  void _showPaymentBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -56,13 +62,12 @@ class _InvoicePageState extends State<InvoicePage> {
                         children: [
                           const Text("Total Dibayar"),
                           const SizedBox(height: 4),
-                          const Text("Rp9.980.000",
-                              style: TextStyle(fontSize: 16)),
+                          Text("Rp $amount",
+                              style: const TextStyle(fontSize: 16)),
                           const SizedBox(height: 16),
                           const Text("Tgl transaksi"),
                           const SizedBox(height: 4),
-                          const Text("09/04/2025",
-                              style: TextStyle(fontSize: 16)),
+                          Text(date, style: const TextStyle(fontSize: 16)),
                           const SizedBox(height: 16),
                           const Text("Dibayar ke"),
                           const SizedBox(height: 4),
@@ -120,7 +125,7 @@ class _InvoicePageState extends State<InvoicePage> {
   }
 
   void _onMenuSelected(String value) {
-    // Handle menu action
+    // handle action menu
     print("Selected: $value");
   }
 
@@ -128,10 +133,6 @@ class _InvoicePageState extends State<InvoicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text("Tagihan"),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
@@ -139,57 +140,22 @@ class _InvoicePageState extends State<InvoicePage> {
           PopupMenuButton<String>(
             onSelected: _onMenuSelected,
             icon: const Icon(Icons.more_vert),
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(
+            itemBuilder: (BuildContext context) => const [
+              PopupMenuItem(
                 value: 'audit',
                 child: ListTile(
                   leading: Icon(Icons.description),
                   title: Text('Lihat Audit'),
                 ),
               ),
-              const PopupMenuItem(
-                value: 'jurnal',
-                child: ListTile(
-                  leading: Icon(Icons.remove_red_eye),
-                  title: Text('Lihat entri jurnal'),
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'ulang',
-                child: ListTile(
-                  leading: Icon(Icons.repeat),
-                  title: Text('Transaksi Berulang'),
-                ),
-              ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'ubah',
                 child: ListTile(
                   leading: Icon(Icons.edit),
                   title: Text('Ubah'),
                 ),
               ),
-              const PopupMenuItem(
-                value: 'duplikat',
-                child: ListTile(
-                  leading: Icon(Icons.copy),
-                  title: Text('Duplikat'),
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'retur',
-                child: ListTile(
-                  leading: Icon(Icons.undo),
-                  title: Text('Retur'),
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'void',
-                child: ListTile(
-                  leading: Icon(Icons.block),
-                  title: Text('Void'),
-                ),
-              ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'hapus',
                 child: ListTile(
                   leading: Icon(Icons.delete),
@@ -210,23 +176,22 @@ class _InvoicePageState extends State<InvoicePage> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.blueAccent, Colors.blueAccent],
-                      ),
+                      color: Colors.blueAccent,
                     ),
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("INV/00047",
-                            style: TextStyle(
+                        Text(invoice,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold)),
-                        SizedBox(height: 4),
-                        Text("Novi Oktaviani Padmasari",
-                            style: TextStyle(
+                        const SizedBox(height: 4),
+                        Text(name,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold)),
+<<<<<<< HEAD
                         SizedBox(height: 4),
                         Text(
                           "UD Wijayanti Prabowo (Persero) Tbk",
@@ -241,24 +206,31 @@ class _InvoicePageState extends State<InvoicePage> {
                           style: TextStyle(color: Colors.white),
                         ),
                         SizedBox(height: 8),
+=======
+                        const SizedBox(height: 4),
+                        const Text("Perusahaan / Alamat",
+                            style: TextStyle(color: Colors.white)),
+                        const SizedBox(height: 8),
+>>>>>>> 2fff64705b75440fc29299d80cd5031b9f4c0b5f
                         Row(
                           children: [
-                            Icon(Icons.calendar_today,
+                            const Icon(Icons.calendar_today,
                                 color: Colors.white, size: 16),
-                            SizedBox(width: 4),
-                            Text("09/04/2025",
-                                style: TextStyle(color: Colors.white)),
-                            Spacer(),
-                            Icon(Icons.calendar_today,
+                            const SizedBox(width: 4),
+                            Text(date,
+                                style: const TextStyle(color: Colors.white)),
+                            const Spacer(),
+                            const Icon(Icons.calendar_today,
                                 color: Colors.white, size: 16),
-                            SizedBox(width: 4),
-                            Text("29/04/2025",
+                            const SizedBox(width: 4),
+                            const Text("Jatuh tempo",
                                 style: TextStyle(color: Colors.white)),
                           ],
                         ),
                       ],
                     ),
                   ),
+<<<<<<< HEAD
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -278,24 +250,30 @@ class _InvoicePageState extends State<InvoicePage> {
                         ),
                       );
                     },
+=======
+                  ListTile(
+                    title: const Text("Item Produk"),
+                    subtitle: const Text("Detail item..."),
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.pink[100],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text("Rp $amount"),
+                    ),
+>>>>>>> 2fff64705b75440fc29299d80cd5031b9f4c0b5f
                   ),
                   const Padding(
-                    padding: EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(16),
                     child: Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Subtotal"),
-                            Text("Rp 9.188.793"),
-                          ],
-                        ),
-                        SizedBox(height: 4),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("PPN 11%"),
-                            Text("Rp 791.207"),
+                            Text("Rp ..."),
                           ],
                         ),
                         Divider(),
@@ -303,38 +281,19 @@ class _InvoicePageState extends State<InvoicePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Total",
+<<<<<<< HEAD
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16)),
                             Text("Rp 9.980.000",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16)),
+=======
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text("Rp ...",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+>>>>>>> 2fff64705b75440fc29299d80cd5031b9f4c0b5f
                           ],
                         ),
-                        SizedBox(height: 4),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Sisa Tagihan"),
-                            Text("Rp 9.980.000",
-                                style: TextStyle(color: Colors.red)),
-                          ],
-                        ),
-                        SizedBox(height: 16),
-                        ExpansionTile(
-                          title: Text("Informasi lainnya"),
-                          children: [
-                            ListTile(
-                              leading: Icon(Icons.home),
-                              title: Text("Gudang"),
-                              subtitle: Text("Gudang Elektronik"),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.attachment),
-                              title: Text("0 Attachment"),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 80),
                       ],
                     ),
                   ),
@@ -344,7 +303,7 @@ class _InvoicePageState extends State<InvoicePage> {
           ),
           SafeArea(
             child: GestureDetector(
-              onTap: _showPaymentBottomSheet,
+              onTap: () => _showPaymentBottomSheet(context),
               child: Container(
                 color: Colors.blue,
                 width: double.infinity,
