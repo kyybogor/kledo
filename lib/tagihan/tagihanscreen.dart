@@ -251,7 +251,7 @@ class TagihanPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const BelumDibayar(),
+                              builder: (context) => const BelumDibayarPage(),
                             ),
                           );
                         }

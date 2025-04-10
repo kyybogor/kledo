@@ -100,7 +100,10 @@ class _InvoicePageState extends State<InvoicePage> {
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            child: const Text("Simpan", style: TextStyle(color: Colors.white),),
+                            child: const Text(
+                              "Simpan",
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ],
                       ),
@@ -232,7 +235,8 @@ class _InvoicePageState extends State<InvoicePage> {
                         Text(
                           "Jl. Bass No. 719, Administrasi Jakarta Selatan",
                           style: TextStyle(color: Colors.white),
-                        ),                        Text(
+                        ),
+                        Text(
                           "31540, Sultra",
                           style: TextStyle(color: Colors.white),
                         ),
@@ -262,8 +266,7 @@ class _InvoicePageState extends State<InvoicePage> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: const Text("Chelsea Boots"),
-                        subtitle:
-                            const Text("Ukuran M\n2 Pcs x Rp 499.000"),
+                        subtitle: const Text("Ukuran M\n2 Pcs x Rp 499.000"),
                         trailing: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
@@ -301,12 +304,10 @@ class _InvoicePageState extends State<InvoicePage> {
                           children: [
                             Text("Total",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16)),
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
                             Text("Rp 9.980.000",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16)),
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
                           ],
                         ),
                         SizedBox(height: 4),
