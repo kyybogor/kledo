@@ -1,13 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/tagihan/detailbelumdibayar.dart';
 import 'package:http/http.dart' as http;
-
-void main() {
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: BelumDibayar(),
-  ));
-}
 
 class BelumDibayar extends StatefulWidget {
   const BelumDibayar({super.key});
@@ -31,12 +25,11 @@ class _BelumDibayarState extends State<BelumDibayar> {
 
   Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.56/Hiyami/database.php'));
+      final response = await http.get(Uri.parse('http://192.168.1.55/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
-        // ambil hanya field yang diperlukan
         invoices = data.map<Map<String, dynamic>>((item) {
           return {
             "name": item["name"] ?? item["1"],
@@ -81,10 +74,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "Belum Dibayar",
-          style: TextStyle(color: Colors.blue),
-        ),
+        title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: const BackButton(color: Colors.blue),
@@ -117,8 +107,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text("April 2025",
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text("April 2025", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ),
           Expanded(
@@ -140,8 +129,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
                               ],
                             ),
                             trailing: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               decoration: BoxDecoration(
                                 color: Colors.pink.shade100,
                                 borderRadius: BorderRadius.circular(20),
@@ -151,6 +139,14 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                 style: const TextStyle(color: Colors.pink),
                               ),
                             ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Detailbelumdibayar(invoice: invoice),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
