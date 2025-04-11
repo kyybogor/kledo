@@ -2,10 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
-import 'package:flutter_application_kledo/tagihan/dibayarsebagianscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// Drawer
+// Drawer tetap
 class KledoDrawer extends StatelessWidget {
   const KledoDrawer({super.key});
 
@@ -201,23 +200,13 @@ class _TagihanPageState extends State<TagihanPage> {
   int belumDibayarCount = 0;
   bool isLoading = true;
 
-  final List<Map<String, dynamic>> staticTagihanList = [
-    {
-      "label": "Dibayar Sebagian",
-      "count": 1,
-      "color": Colors.amber,
-      "screen": const DibayarSebagian()
-    },
-    {"label": "Lunas", "count": 19, "color": Colors.green, "screen": null},
-    {"label": "Void", "count": 0, "color": Colors.grey, "screen": null},
-    {"label": "Jatuh Tempo", "count": 0, "color": Colors.black, "screen": null},
-    {"label": "Retur", "count": 0, "color": Colors.orange, "screen": null},
-    {
-      "label": "Transaksi Berulang",
-      "count": 0,
-      "color": Colors.blue,
-      "screen": null
-    },
+  final List<Map<String, dynamic>> staticTagihanList = const [
+    {"label": "Dibayar Sebagian", "count": 1, "color": Colors.amber},
+    {"label": "Lunas", "count": 19, "color": Colors.green},
+    {"label": "Void", "count": 0, "color": Colors.grey},
+    {"label": "Jatuh Tempo", "count": 0, "color": Colors.black},
+    {"label": "Retur", "count": 0, "color": Colors.orange},
+    {"label": "Transaksi Berulang", "count": 0, "color": Colors.blue},
   ];
 
   @override
@@ -229,7 +218,7 @@ class _TagihanPageState extends State<TagihanPage> {
   Future<void> fetchBelumDibayarCount() async {
     try {
       final response = await http
-          .get(Uri.parse('http://192.168.1.55/connect/JSON/index.php'));
+          .get(Uri.parse('http://192.168.1.102/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -294,8 +283,13 @@ class _TagihanPageState extends State<TagihanPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const BelumDibayar()),
-                          );
+                              builder: (context) => const BelumDibayar(),
+                            ),
+                          ).then((value) {
+                            if (value == true) {
+                              fetchBelumDibayarCount(); // refresh count jika ada yang dihapus atau diubah
+                            }
+                          });
                         },
                       ),
                       const Divider(height: 1),
@@ -309,14 +303,7 @@ class _TagihanPageState extends State<TagihanPage> {
                               ),
                               title: Text(item['label']),
                               trailing: Text("${item['count']}"),
-                              onTap: item['screen'] != null
-                                  ? () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                item['screen']),
-                                      )
-                                  : null,
+                              onTap: null,
                             ),
                             const Divider(height: 1),
                           ],
