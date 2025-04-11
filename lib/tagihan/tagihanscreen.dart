@@ -45,7 +45,7 @@ class _TagihanPageState extends State<TagihanPage> {
 
   Future<void> fetchTagihanCounts() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.102/connect/JSON/index.php'));
+      final response = await http.get(Uri.parse('https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -56,6 +56,13 @@ class _TagihanPageState extends State<TagihanPage> {
 
         for (var item in data) {
           String status = item['status'] ?? "Belum Dibayar"; // Ganti sesuai field API
+          if (newCounts.containsKey(status)) {
+            newCounts[status] = newCounts[status]! + 1;
+          }
+        }
+
+                for (var item in data) {
+          String status = item['status'] ?? "Dibayar Sebagian"; // Ganti sesuai field API
           if (newCounts.containsKey(status)) {
             newCounts[status] = newCounts[status]! + 1;
           }

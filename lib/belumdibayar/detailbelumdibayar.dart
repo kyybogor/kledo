@@ -56,7 +56,7 @@ class Detailbelumdibayar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final contactName = invoice['name']?.toString() ?? 'Tidak diketahui';
+    final contactName = invoice['name']?.toString() ?? '-';
     final invoiceNumber = invoice['invoice']?.toString() ?? '-';
     final date = invoice['date']?.toString() ?? '-';
     final amount = invoice['amount']?.toString() ?? '0';

@@ -26,7 +26,7 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
 
   Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.102/connect/JSON/index.php'));
+      final response = await http.get(Uri.parse('https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -110,7 +110,7 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
+          title: const Text("Dibayar Sebagian", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
