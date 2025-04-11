@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
+import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
 
 class BelumDibayar extends StatefulWidget {
@@ -223,7 +224,13 @@ class _BelumDibayarState extends State<BelumDibayar> {
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.blue,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const TambahInvoice()),
+          );
+          },
           child: const Icon(Icons.add),
         ),
       ),
