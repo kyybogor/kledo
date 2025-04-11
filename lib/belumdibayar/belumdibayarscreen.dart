@@ -15,6 +15,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
   bool isLoading = true;
+  bool dataChanged = false; // Tambahkan flag ini
 
   @override
   void initState() {
@@ -67,6 +68,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
         setState(() {
           invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
           filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
+          dataChanged = true; // Set true jika ada yang dihapus
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -100,98 +102,130 @@ class _BelumDibayarState extends State<BelumDibayar> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: const BackButton(color: Colors.blue),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_alt_outlined, color: Colors.blue),
-            onPressed: () {},
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, dataChanged); // Kembalikan status perubahan
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.blue),
+            onPressed: () {
+              Navigator.pop(context, dataChanged); // Sama seperti tombol back
+            },
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: "Cari",
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.grey[100],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.filter_alt_outlined, color: Colors.blue),
+              onPressed: () {},
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: "Cari",
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("April 2025", style: TextStyle(fontWeight: FontWeight.bold)),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text("April 2025", style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
             ),
-          ),
-          Expanded(
-            child: isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : filteredInvoices.isEmpty
-                    ? const Center(child: Text("Tidak ada data ditemukan"))
-                    : ListView.builder(
-                        itemCount: filteredInvoices.length,
-                        itemBuilder: (context, index) {
-                          final invoice = filteredInvoices[index];
-                          return ListTile(
-                            title: Text(invoice["name"]),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(invoice["invoice"]),
-                                Text(invoice["date"]),
-                              ],
-                            ),
-                            trailing: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.pink.shade100,
-                                borderRadius: BorderRadius.circular(20),
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : filteredInvoices.isEmpty
+                      ? const Center(child: Text("Tidak ada data ditemukan"))
+                      : ListView.builder(
+                          itemCount: filteredInvoices.length,
+                          itemBuilder: (context, index) {
+                            final invoice = filteredInvoices[index];
+                            return ListTile(
+                              title: Text(invoice["name"]),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(invoice["invoice"]),
+                                  Text(invoice["date"]),
+                                ],
                               ),
-                              child: Text(
-                                invoice["amount"],
-                                style: const TextStyle(color: Colors.pink),
+                              trailing: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.pink.shade100,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  invoice["amount"],
+                                  style: const TextStyle(color: Colors.pink),
+                                ),
                               ),
-                            ),
-                            onTap: () async {
-  final result = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => Detailbelumdibayar(invoice: invoice),
-    ),
-  );
+                              onTap: () async {
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Detailbelumdibayar(invoice: invoice),
+                                  ),
+                                );
 
-  // Jika data dihapus, refresh list
-  if (result == true) {
-    fetchInvoices();
-  }
-}
-
-                          );
-                        },
-                      ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: () {},
-        child: const Icon(Icons.add),
+                                if (result == true) {
+                                  fetchInvoices();
+                                  dataChanged = true;
+                                }
+                              },
+                              onLongPress: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("Hapus Data"),
+                                    content: const Text("Yakin ingin menghapus data ini?"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text("Batal"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          deleteInvoice(invoice);
+                                        },
+                                        child: const Text("Hapus"),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.blue,
+          onPressed: () {},
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
