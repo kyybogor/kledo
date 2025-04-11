@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:http/http.dart' as http;
 
-class BelumDibayar extends StatefulWidget {
-  const BelumDibayar({super.key});
+class Dibayarsebagian extends StatefulWidget {
+  const Dibayarsebagian({super.key});
 
   @override
-  State<BelumDibayar> createState() => _BelumDibayarState();
+  State<Dibayarsebagian> createState() => _BelumDibayarState();
 }
 
-class _BelumDibayarState extends State<BelumDibayar> {
+class _BelumDibayarState extends State<Dibayarsebagian> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
@@ -172,12 +172,12 @@ class _BelumDibayarState extends State<BelumDibayar> {
                               trailing: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.pink.shade100,
+                                  color: const Color.fromARGB(255, 255, 225, 29),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
                                   invoice["amount"],
-                                  style: const TextStyle(color: Colors.pink),
+                                  style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                                 ),
                               ),
                               onTap: () async {
