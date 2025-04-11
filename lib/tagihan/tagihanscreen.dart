@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-// Import semua halaman tujuan
+// Import halaman-halaman
 import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
 import 'package:flutter_application_kledo/dibayarsebagian/dibayarsebagian.dart';
+// Tambahkan nanti halaman lainnya
 
 class TagihanPage extends StatefulWidget {
   const TagihanPage({super.key});
@@ -14,34 +15,54 @@ class TagihanPage extends StatefulWidget {
 }
 
 class _TagihanPageState extends State<TagihanPage> {
-  int belumDibayarCount = 0;
+  Map<String, int> tagihanCounts = {
+    "Belum Dibayar": 0,
+    "Dibayar Sebagian": 0,
+    "Lunas": 0,
+    "Void": 0,
+    "Jatuh Tempo": 0,
+    "Retur": 0,
+    "Transaksi Berulang": 0,
+  };
+
   bool isLoading = true;
 
-  final List<Map<String, dynamic>> staticTagihanList = const [
-    {"label": "Dibayar Sebagian", "count": 1, "color": Colors.amber},
-    {"label": "Lunas", "count": 19, "color": Colors.green},
-    {"label": "Void", "count": 0, "color": Colors.grey},
-    {"label": "Jatuh Tempo", "count": 0, "color": Colors.black},
-    {"label": "Retur", "count": 0, "color": Colors.orange},
-    {"label": "Transaksi Berulang", "count": 0, "color": Colors.blue},
-  ];
+  final Map<String, Color> statusColors = {
+    "Belum Dibayar": Colors.pink,
+    "Dibayar Sebagian": Colors.amber,
+    "Lunas": Colors.green,
+    "Void": Colors.grey,
+    "Jatuh Tempo": Colors.black,
+    "Retur": Colors.orange,
+    "Transaksi Berulang": Colors.blue,
+  };
 
   @override
   void initState() {
     super.initState();
-    fetchBelumDibayarCount();
+    fetchTagihanCounts();
   }
 
-  Future<void> fetchBelumDibayarCount() async {
+  Future<void> fetchTagihanCounts() async {
     try {
-      final response =
-          await http.get(Uri.parse('http://192.168.1.102/connect/JSON/index.php'));
+      final response = await http.get(Uri.parse('http://192.168.1.102/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
+        Map<String, int> newCounts = {
+          for (var key in tagihanCounts.keys) key: 0,
+        };
+
+        for (var item in data) {
+          String status = item['status'] ?? "Belum Dibayar"; // Ganti sesuai field API
+          if (newCounts.containsKey(status)) {
+            newCounts[status] = newCounts[status]! + 1;
+          }
+        }
+
         setState(() {
-          belumDibayarCount = data.length;
+          tagihanCounts = newCounts;
           isLoading = false;
         });
       } else {
@@ -55,21 +76,14 @@ class _TagihanPageState extends State<TagihanPage> {
     }
   }
 
-  // Fungsi untuk memetakan label ke halaman tujuan
+  // Fungsi buka halaman sesuai status
   Widget? getTargetPage(String label) {
     switch (label) {
+      case "Belum Dibayar":
+        return const BelumDibayar();
       case "Dibayar Sebagian":
         return const Dibayarsebagian();
-      case "Lunas":
-        //return const LunasPage();
-      case "Void":
-        //return const VoidPage();
-      case "Jatuh Tempo":
-        //return const JatuhTempoPage();
-      case "Retur":
-        //return const ReturPage();
-      case "Transaksi Berulang":
-        //return const TransaksiBerulangPage();
+      // Tambahkan halaman lainnya sesuai kebutuhan
       default:
         return null;
     }
@@ -77,8 +91,9 @@ class _TagihanPageState extends State<TagihanPage> {
 
   @override
   Widget build(BuildContext context) {
+    final statusList = tagihanCounts.keys.toList();
+
     return Scaffold(
-      drawer: const Drawer(), // Ganti dengan drawer custom kamu jika perlu
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -107,55 +122,36 @@ class _TagihanPageState extends State<TagihanPage> {
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : ListView(
-                    children: [
-                      ListTile(
-                        leading: const CircleAvatar(
-                          backgroundColor: Colors.pink,
-                          radius: 10,
-                        ),
-                        title: const Text("Belum Dibayar"),
-                        trailing: Text("$belumDibayarCount"),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const BelumDibayar(),
+                : ListView.builder(
+                    itemCount: statusList.length,
+                    itemBuilder: (context, index) {
+                      final label = statusList[index];
+                      final count = tagihanCounts[label]!;
+                      final color = statusColors[label] ?? Colors.grey;
+                      final page = getTargetPage(label);
+
+                      return Column(
+                        children: [
+                          ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: color,
+                              radius: 10,
                             ),
-                          ).then((value) {
-                            if (value == true) {
-                              fetchBelumDibayarCount();
-                            }
-                          });
-                        },
-                      ),
-                      const Divider(height: 1),
-                      ...staticTagihanList.map((item) {
-                        final page = getTargetPage(item['label']);
-                        return Column(
-                          children: [
-                            ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: item['color'],
-                                radius: 10,
-                              ),
-                              title: Text(item['label']),
-                              trailing: Text("${item['count']}"),
-                              onTap: page != null
-                                  ? () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => page),
-                                      );
-                                    }
-                                  : null,
-                            ),
-                            const Divider(height: 1),
-                          ],
-                        );
-                      }).toList(),
-                    ],
+                            title: Text(label),
+                            trailing: Text("$count"),
+                            onTap: page != null
+                                ? () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => page),
+                                    );
+                                  }
+                                : null,
+                          ),
+                          const Divider(height: 1),
+                        ],
+                      );
+                    },
                   ),
           ),
         ],
