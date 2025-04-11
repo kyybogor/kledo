@@ -1,167 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+// Import semua halaman tujuan
 import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-// Drawer tetap
-class KledoDrawer extends StatelessWidget {
-  const KledoDrawer({super.key});
-
-  final menuItems = const [
-    {'icon': Icons.house, 'title': 'Beranda'},
-    {
-      'icon': Icons.shopping_bag,
-      'title': 'Penjualan',
-      'children': ['Overview', 'Tagihan', 'Pengiriman', 'Pemesanan', 'Penawaran']
-    },
-    {
-      'icon': Icons.shopping_cart,
-      'title': 'Pembelian',
-      'children': ['Overview', 'Tagihan Pembelian', 'Pengiriman Pembelian', 'Pesanan Pembelian', 'Penawaran Pembelian']
-    },
-    {'icon': Icons.money_off, 'title': 'Biaya'},
-    {'icon': Icons.inventory_2, 'title': 'Produk'},
-    {'icon': Icons.local_shipping, 'title': 'Inventori'},
-    {'icon': Icons.bar_chart, 'title': 'Laporan'},
-    {'icon': Icons.account_balance, 'title': 'Kas & Bank'},
-    {'icon': Icons.person, 'title': 'Akun'},
-    {'icon': Icons.domain, 'title': 'Aset Tetap'},
-    {'icon': Icons.contacts, 'title': 'Kontak'},
-    {'icon': Icons.settings, 'title': 'Pengaturan'},
-    {'icon': Icons.help_outline, 'title': 'FAQ'},
-    {'icon': Icons.exit_to_app, 'title': 'Keluar'},
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF1A75CF), Color(0xFF007BFF)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(color: Colors.transparent),
-              child: Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text('Hayami',
-                          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 8),
-                      Text('Zahlfan Wiranto',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
-                      Text('prt ayam',
-                          style: TextStyle(color: Colors.white70, fontSize: 14)),
-                    ],
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              color: Colors.yellowAccent,
-              padding: const EdgeInsets.all(10),
-              child: RichText(
-                text: const TextSpan(
-                  children: [
-                    WidgetSpan(child: Icon(Icons.info, size: 16, color: Colors.black)),
-                    TextSpan(
-                      text: '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    TextSpan(
-                      text: 'klik disini',
-                      style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline),
-                    ),
-                    TextSpan(
-                        text: ' untuk mengosongkan data.',
-                        style: TextStyle(color: Colors.black)),
-                  ],
-                ),
-              ),
-            ),
-            ...menuItems.asMap().entries.map((entry) {
-              final item = entry.value;
-
-              Widget listTile;
-              if (item.containsKey('children')) {
-                listTile = Theme(
-                  data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                  child: ExpansionTile(
-                    collapsedIconColor: Colors.white,
-                    iconColor: Colors.white,
-                    leading: Icon(item['icon'] as IconData, color: Colors.white),
-                    title: Text(item['title'] as String, style: const TextStyle(color: Colors.white)),
-                    children: (item['children'] as List<String>).map((subItem) {
-                      return ListTile(
-                        contentPadding: const EdgeInsets.only(left: 72, right: 16),
-                        title: Text(subItem, style: const TextStyle(color: Colors.white)),
-                        onTap: () => Navigator.pop(context),
-                      );
-                    }).toList(),
-                  ),
-                );
-              } else {
-                listTile = ListTile(
-                  leading: Icon(item['icon'] as IconData, color: Colors.white),
-                  title: Text(item['title'] as String, style: const TextStyle(color: Colors.white)),
-                  onTap: () => Navigator.pop(context),
-                );
-              }
-
-              bool needsDivider = ['Inventori', 'Kontak', 'FAQ', 'Keluar'].contains(item['title']);
-
-              return Column(
-                children: [
-                  listTile,
-                  if (needsDivider)
-                    const Divider(color: Colors.white54, indent: 16, endIndent: 16),
-                ],
-              );
-            }).toList(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // WA action
-                },
-                icon: const FaIcon(FontAwesomeIcons.whatsapp),
-                label: const Text('Halo, ada yang bisa saya bantu?'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 40),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// -----------------------------
-// Tagihan Page
-// -----------------------------
+import 'package:flutter_application_kledo/dibayarsebagian/dibayarsebagian.dart';
 
 class TagihanPage extends StatefulWidget {
   const TagihanPage({super.key});
@@ -191,7 +34,8 @@ class _TagihanPageState extends State<TagihanPage> {
 
   Future<void> fetchBelumDibayarCount() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.102/connect/JSON/index.php'));
+      final response =
+          await http.get(Uri.parse('http://192.168.1.102/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -211,10 +55,30 @@ class _TagihanPageState extends State<TagihanPage> {
     }
   }
 
+  // Fungsi untuk memetakan label ke halaman tujuan
+  Widget? getTargetPage(String label) {
+    switch (label) {
+      case "Dibayar Sebagian":
+        return const Dibayarsebagian();
+      case "Lunas":
+        //return const LunasPage();
+      case "Void":
+        //return const VoidPage();
+      case "Jatuh Tempo":
+        //return const JatuhTempoPage();
+      case "Retur":
+        //return const ReturPage();
+      case "Transaksi Berulang":
+        //return const TransaksiBerulangPage();
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const KledoDrawer(),
+      drawer: const Drawer(), // Ganti dengan drawer custom kamu jika perlu
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -255,12 +119,19 @@ class _TagihanPageState extends State<TagihanPage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const BelumDibayar()),
-                          );
+                            MaterialPageRoute(
+                              builder: (context) => const BelumDibayar(),
+                            ),
+                          ).then((value) {
+                            if (value == true) {
+                              fetchBelumDibayarCount();
+                            }
+                          });
                         },
                       ),
                       const Divider(height: 1),
                       ...staticTagihanList.map((item) {
+                        final page = getTargetPage(item['label']);
                         return Column(
                           children: [
                             ListTile(
@@ -270,7 +141,15 @@ class _TagihanPageState extends State<TagihanPage> {
                               ),
                               title: Text(item['label']),
                               trailing: Text("${item['count']}"),
-                              onTap: null,
+                              onTap: page != null
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => page),
+                                      );
+                                    }
+                                  : null,
                             ),
                             const Divider(height: 1),
                           ],

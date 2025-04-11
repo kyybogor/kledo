@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/tagihan/detailbelumdibayar.dart';
+import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:http/http.dart' as http;
 
 class BelumDibayar extends StatefulWidget {
@@ -25,7 +25,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
 
   Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.102/connect/JSON/index.php'));
+      final response = await http.get(Uri.parse('http://192.168.1.55/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -51,35 +51,6 @@ class _BelumDibayarState extends State<BelumDibayar> {
       setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://192.168.1.102/connect/JSON/delete.php'),
-        body: {
-          'invoice': invoice['invoice'],
-        },
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Data berhasil dihapus")),
-        );
-      } else {
-        throw Exception("Gagal menghapus data");
-      }
-    } catch (e) {
-      print("Error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gagal menghapus data")),
-      );
     }
   }
 
@@ -168,20 +139,14 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                 style: const TextStyle(color: Colors.pink),
                               ),
                             ),
-                            onTap: () async {
-  final result = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => Detailbelumdibayar(invoice: invoice),
-    ),
-  );
-
-  // Jika data dihapus, refresh list
-  if (result == true) {
-    fetchInvoices();
-  }
-}
-
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Detailbelumdibayar(invoice: invoice),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
