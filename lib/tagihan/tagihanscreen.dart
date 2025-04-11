@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
+import 'package:flutter_application_kledo/tagihan/dibayarsebagianscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// Drawer tetap
+// Drawer
 class KledoDrawer extends StatelessWidget {
   const KledoDrawer({super.key});
 
@@ -13,12 +14,24 @@ class KledoDrawer extends StatelessWidget {
     {
       'icon': Icons.shopping_bag,
       'title': 'Penjualan',
-      'children': ['Overview', 'Tagihan', 'Pengiriman', 'Pemesanan', 'Penawaran']
+      'children': [
+        'Overview',
+        'Tagihan',
+        'Pengiriman',
+        'Pemesanan',
+        'Penawaran'
+      ]
     },
     {
       'icon': Icons.shopping_cart,
       'title': 'Pembelian',
-      'children': ['Overview', 'Tagihan Pembelian', 'Pengiriman Pembelian', 'Pesanan Pembelian', 'Penawaran Pembelian']
+      'children': [
+        'Overview',
+        'Tagihan Pembelian',
+        'Pengiriman Pembelian',
+        'Pesanan Pembelian',
+        'Penawaran Pembelian'
+      ]
     },
     {'icon': Icons.money_off, 'title': 'Biaya'},
     {'icon': Icons.inventory_2, 'title': 'Produk'},
@@ -55,12 +68,16 @@ class KledoDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text('Hayami',
-                          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold)),
                       SizedBox(height: 8),
                       Text('Zahlfan Wiranto',
                           style: TextStyle(color: Colors.white, fontSize: 16)),
                       Text('prt ayam',
-                          style: TextStyle(color: Colors.white70, fontSize: 14)),
+                          style:
+                              TextStyle(color: Colors.white70, fontSize: 14)),
                     ],
                   ),
                   Positioned(
@@ -80,9 +97,11 @@ class KledoDrawer extends StatelessWidget {
               child: RichText(
                 text: const TextSpan(
                   children: [
-                    WidgetSpan(child: Icon(Icons.info, size: 16, color: Colors.black)),
+                    WidgetSpan(
+                        child: Icon(Icons.info, size: 16, color: Colors.black)),
                     TextSpan(
-                      text: '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
+                      text:
+                          '  Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
                       style: TextStyle(color: Colors.black),
                     ),
                     TextSpan(
@@ -104,16 +123,21 @@ class KledoDrawer extends StatelessWidget {
               Widget listTile;
               if (item.containsKey('children')) {
                 listTile = Theme(
-                  data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
                     collapsedIconColor: Colors.white,
                     iconColor: Colors.white,
-                    leading: Icon(item['icon'] as IconData, color: Colors.white),
-                    title: Text(item['title'] as String, style: const TextStyle(color: Colors.white)),
+                    leading:
+                        Icon(item['icon'] as IconData, color: Colors.white),
+                    title: Text(item['title'] as String,
+                        style: const TextStyle(color: Colors.white)),
                     children: (item['children'] as List<String>).map((subItem) {
                       return ListTile(
-                        contentPadding: const EdgeInsets.only(left: 72, right: 16),
-                        title: Text(subItem, style: const TextStyle(color: Colors.white)),
+                        contentPadding:
+                            const EdgeInsets.only(left: 72, right: 16),
+                        title: Text(subItem,
+                            style: const TextStyle(color: Colors.white)),
                         onTap: () => Navigator.pop(context),
                       );
                     }).toList(),
@@ -122,18 +146,21 @@ class KledoDrawer extends StatelessWidget {
               } else {
                 listTile = ListTile(
                   leading: Icon(item['icon'] as IconData, color: Colors.white),
-                  title: Text(item['title'] as String, style: const TextStyle(color: Colors.white)),
+                  title: Text(item['title'] as String,
+                      style: const TextStyle(color: Colors.white)),
                   onTap: () => Navigator.pop(context),
                 );
               }
 
-              bool needsDivider = ['Inventori', 'Kontak', 'FAQ', 'Keluar'].contains(item['title']);
+              bool needsDivider = ['Inventori', 'Kontak', 'FAQ', 'Keluar']
+                  .contains(item['title']);
 
               return Column(
                 children: [
                   listTile,
                   if (needsDivider)
-                    const Divider(color: Colors.white54, indent: 16, endIndent: 16),
+                    const Divider(
+                        color: Colors.white54, indent: 16, endIndent: 16),
                 ],
               );
             }).toList(),
@@ -174,13 +201,23 @@ class _TagihanPageState extends State<TagihanPage> {
   int belumDibayarCount = 0;
   bool isLoading = true;
 
-  final List<Map<String, dynamic>> staticTagihanList = const [
-    {"label": "Dibayar Sebagian", "count": 1, "color": Colors.amber},
-    {"label": "Lunas", "count": 19, "color": Colors.green},
-    {"label": "Void", "count": 0, "color": Colors.grey},
-    {"label": "Jatuh Tempo", "count": 0, "color": Colors.black},
-    {"label": "Retur", "count": 0, "color": Colors.orange},
-    {"label": "Transaksi Berulang", "count": 0, "color": Colors.blue},
+  final List<Map<String, dynamic>> staticTagihanList = [
+    {
+      "label": "Dibayar Sebagian",
+      "count": 1,
+      "color": Colors.amber,
+      "screen": const DibayarSebagian()
+    },
+    {"label": "Lunas", "count": 19, "color": Colors.green, "screen": null},
+    {"label": "Void", "count": 0, "color": Colors.grey, "screen": null},
+    {"label": "Jatuh Tempo", "count": 0, "color": Colors.black, "screen": null},
+    {"label": "Retur", "count": 0, "color": Colors.orange, "screen": null},
+    {
+      "label": "Transaksi Berulang",
+      "count": 0,
+      "color": Colors.blue,
+      "screen": null
+    },
   ];
 
   @override
@@ -191,7 +228,8 @@ class _TagihanPageState extends State<TagihanPage> {
 
   Future<void> fetchBelumDibayarCount() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.55/connect/JSON/index.php'));
+      final response = await http
+          .get(Uri.parse('http://192.168.1.55/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -255,7 +293,8 @@ class _TagihanPageState extends State<TagihanPage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const BelumDibayar()),
+                            MaterialPageRoute(
+                                builder: (context) => const BelumDibayar()),
                           );
                         },
                       ),
@@ -270,7 +309,14 @@ class _TagihanPageState extends State<TagihanPage> {
                               ),
                               title: Text(item['label']),
                               trailing: Text("${item['count']}"),
-                              onTap: null,
+                              onTap: item['screen'] != null
+                                  ? () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                item['screen']),
+                                      )
+                                  : null,
                             ),
                             const Divider(height: 1),
                           ],
