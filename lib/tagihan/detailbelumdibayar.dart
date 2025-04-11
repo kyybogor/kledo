@@ -1,13 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Detailbelumdibayar extends StatelessWidget {
   final Map<String, dynamic> invoice;
 
-  const Detailbelumdibayar({super.key, required this.invoice});
+  const Detailbelumdibayar({
+    super.key,
+    required this.invoice,
+  });
+
+  Future<void> _deleteInvoice(BuildContext context) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Konfirmasi"),
+        content: const Text("Apakah Anda yakin ingin menghapus pelanggan ini?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Batal"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text("Hapus", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://192.168.1.102/connect/JSON/delete.php'),
+        body: {'invoice': invoice['invoice']},
+      );
+
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 && data['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Pelanggan berhasil dihapus")),
+        );
+        Navigator.pop(context, true); // Kembali dan beri sinyal ke halaman sebelumnya
+      } else {
+        throw Exception(data['message'] ?? 'Gagal menghapus data');
+      }
+    } catch (e) {
+      print("Error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Terjadi kesalahan saat menghapus data")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Gunakan key sesuai dengan data yang dikirim
     final contactName = invoice['name']?.toString() ?? 'Tidak diketahui';
     final invoiceNumber = invoice['invoice']?.toString() ?? '-';
     final date = invoice['date']?.toString() ?? '-';
@@ -19,6 +67,12 @@ class Detailbelumdibayar extends StatelessWidget {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () => _deleteInvoice(context),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -46,7 +100,7 @@ class Detailbelumdibayar extends StatelessWidget {
                 _buildDetailTile(Icons.person, "Nama", contactName),
                 _buildDetailTile(Icons.receipt_long, "Nomor Invoice", invoiceNumber),
                 _buildDetailTile(Icons.date_range, "Tanggal", date),
-                _buildDetailTile(Icons.attach_money, "Total", "Rp$amount"),
+                _buildDetailTile(Icons.attach_money, "Total", amount),
               ],
             ),
           ),

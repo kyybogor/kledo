@@ -191,7 +191,7 @@ class _TagihanPageState extends State<TagihanPage> {
 
   Future<void> fetchBelumDibayarCount() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.55/connect/JSON/index.php'));
+      final response = await http.get(Uri.parse('http://192.168.1.102/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
