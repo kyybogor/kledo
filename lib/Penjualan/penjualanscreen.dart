@@ -1,8 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/Login/loginScreen.dart';
 import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
 
 class Penjualanscreen extends StatefulWidget {
   const Penjualanscreen({super.key});
+
+    final menuItems = const [
+    {'icon': Icons.house, 'title': 'Beranda'},
+    {
+      'icon': Icons.shopping_bag,
+      'title': 'Penjualan',
+      'children': ['Overview', 'Tagihan', 'Pengiriman', 'Pemesanan', 'Penawaran']
+    },
+    {
+      'icon': Icons.shopping_cart,
+      'title': 'Pembelian',
+      'children': ['Overview', 'Tagihan Pembelian', 'Pengiriman Pembelian', 'Pesanan Pembelian', 'Penawaran Pembelian']
+    },
+    {'icon': Icons.money_off, 'title': 'Biaya'},
+    {'icon': Icons.inventory_2, 'title': 'Produk'},
+    {'icon': Icons.local_shipping, 'title': 'Inventori'},
+    {'icon': Icons.bar_chart, 'title': 'Laporan'},
+    {'icon': Icons.account_balance, 'title': 'Kas & Bank'},
+    {'icon': Icons.person, 'title': 'Akun'},
+    {'icon': Icons.domain, 'title': 'Aset Tetap'},
+    {'icon': Icons.contacts, 'title': 'Kontak'},
+    {'icon': Icons.settings, 'title': 'Pengaturan'},
+    {'icon': Icons.help_outline, 'title': 'FAQ'},
+    {'icon': Icons.exit_to_app, 'title': 'Keluar'},
+  ];
 
   @override
   State<Penjualanscreen> createState() => _PenjualanscreenState();
@@ -15,7 +41,7 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const TagihanPage(),
+      drawer: const KledoDrawer(),
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
