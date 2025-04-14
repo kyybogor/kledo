@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
+import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
+import 'package:flutter_application_kledo/tagihan/dibayarsebagianscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
@@ -377,8 +379,16 @@ class _DashboardscreenState extends State<Dashboardscreen> {
   }
 }
 
-class KledoDrawer extends StatelessWidget {
+class KledoDrawer extends StatefulWidget {
   const KledoDrawer({super.key});
+
+  @override
+  State<KledoDrawer> createState() => _KledoDrawerState();
+}
+
+class _KledoDrawerState extends State<KledoDrawer> {
+  int? selectedIndex;
+  String? selectedSubItem;
 
   final menuItems = const [
     {'icon': Icons.house, 'title': 'Beranda'},
@@ -463,11 +473,12 @@ class KledoDrawer extends StatelessWidget {
               ),
             ),
             ...menuItems.asMap().entries.map((entry) {
+              final index = entry.key;
               final item = entry.value;
+              final isSelected = selectedIndex == index;
 
-              Widget listTile;
               if (item.containsKey('children')) {
-                listTile = Theme(
+                return Theme(
                   data: Theme.of(context)
                       .copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
@@ -478,36 +489,102 @@ class KledoDrawer extends StatelessWidget {
                     title: Text(item['title'] as String,
                         style: const TextStyle(color: Colors.white)),
                     children: (item['children'] as List<String>).map((subItem) {
-                      return ListTile(
-                        contentPadding:
-                            const EdgeInsets.only(left: 72, right: 16),
-                        title: Text(subItem,
-                            style: const TextStyle(color: Colors.white)),
-                        onTap: () => Navigator.pop(context),
+                      final isSubSelected =
+                          selectedIndex == index && selectedSubItem == subItem;
+                      return Container(
+                        color:
+                            isSubSelected ? Colors.white24 : Colors.transparent,
+                        child: ListTile(
+                            contentPadding:
+                                const EdgeInsets.only(left: 72, right: 16),
+                            title: Text(subItem,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: isSubSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal)),
+                            onTap: () {
+                              setState(() {
+                                selectedIndex = index;
+                                selectedSubItem = subItem;
+                              });
+                              Navigator.pop(context);
+
+                              Widget? destination;
+
+                              switch (subItem) {
+                                case 'Overview':
+                                  //destination = const OverviewPembelianPage(); // ganti sesuai nama halamanmu
+                                  break;
+                                case 'Tagihan Pembelian':
+                                  //destination = const TagihanPembelianPage();
+                                  break;
+                                case 'Pengiriman Pembelian':
+                                  //destination = const PengirimanPembelianPage();
+                                  break;
+                                case 'Pesanan Pembelian':
+                                  //destination = const PesananPembelianPage();
+                                  break;
+                                case 'Penawaran Pembelian':
+                                  //destination = const PenawaranPembelianPage();
+                                  break;
+                              }
+
+                              if (destination != null) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => destination!),
+                                );
+                              }
+                            }),
                       );
                     }).toList(),
                   ),
                 );
               } else {
-                listTile = ListTile(
-                  leading: Icon(item['icon'] as IconData, color: Colors.white),
-                  title: Text(item['title'] as String,
-                      style: const TextStyle(color: Colors.white)),
-                  onTap: () => Navigator.pop(context),
+                return Column(
+                  children: [
+                    Container(
+                      color: isSelected ? Colors.white24 : Colors.transparent,
+                      child: ListTile(
+                        leading:
+                            Icon(item['icon'] as IconData, color: Colors.white),
+                        title: Text(item['title'] as String,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal)),
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = index;
+                            selectedSubItem = null;
+                          });
+                          Navigator.pop(context);
+
+                          Widget? destination;
+                          if (item['title'] == 'Beranda') {
+                            destination = const Dashboardscreen();
+                          }
+                          // Tambah halaman lainnya sesuai kebutuhan
+
+                          if (destination != null) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => destination!),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    if (['Inventori', 'Kontak', 'FAQ', 'Keluar']
+                        .contains(item['title']))
+                      const Divider(
+                          color: Colors.white54, indent: 16, endIndent: 16),
+                  ],
                 );
               }
-
-              bool needsDivider = ['Inventori', 'Kontak', 'FAQ', 'Keluar']
-                  .contains(item['title']);
-
-              return Column(
-                children: [
-                  listTile,
-                  if (needsDivider)
-                    const Divider(
-                        color: Colors.white54, indent: 16, endIndent: 16),
-                ],
-              );
             }).toList(),
             Padding(
               padding: const EdgeInsets.all(16.0),
