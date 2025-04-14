@@ -88,7 +88,7 @@ class _TagihanPageState extends State<TagihanPage> {
       case "Belum Dibayar":
         return const BelumDibayar();
       case "Dibayar Sebagian":
-        return const Dibayarsebagian();
+        return const DibayarSebagian();
       case "Lunas":
         return const Lunas();
       case "Void":

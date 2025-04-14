@@ -1,22 +1,26 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
+import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class Dibayarsebagian extends StatefulWidget {
-  const Dibayarsebagian({super.key});
+class DibayarSebagian extends StatefulWidget {
+  const DibayarSebagian({super.key});
 
   @override
-  State<Dibayarsebagian> createState() => _BelumDibayarState();
+  State<DibayarSebagian> createState() => _DibayarSebagianState();
 }
 
-class _BelumDibayarState extends State<Dibayarsebagian> {
+class _DibayarSebagianState extends State<DibayarSebagian> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
   bool isLoading = true;
-  bool dataChanged = false; // Tambahkan flag ini
+  bool dataChanged = false;
+
+  String selectedMonth = DateFormat('MM').format(DateTime.now());
+  String selectedYear = DateFormat('yyyy').format(DateTime.now());
 
   @override
   void initState() {
@@ -27,7 +31,8 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
 
   Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse('https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3'));
+      final response = await http.get(Uri.parse(
+          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -42,9 +47,10 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
         }).toList();
 
         setState(() {
-          filteredInvoices = invoices;
           isLoading = false;
         });
+
+        filterByMonthYear();
       } else {
         throw Exception('Gagal mengambil data');
       }
@@ -54,6 +60,20 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
         isLoading = false;
       });
     }
+  }
+
+  void filterByMonthYear() {
+    setState(() {
+      filteredInvoices = invoices.where((invoice) {
+        try {
+          final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
+          return invoiceDate.month.toString().padLeft(2, '0') == selectedMonth &&
+              invoiceDate.year.toString() == selectedYear;
+        } catch (e) {
+          return false;
+        }
+      }).toList();
+    });
   }
 
   Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
@@ -69,7 +89,7 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
         setState(() {
           invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
           filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          dataChanged = true; // Set true jika ada yang dihapus
+          dataChanged = true;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -90,15 +110,19 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
     String keyword = _searchController.text.toLowerCase();
     setState(() {
       filteredInvoices = invoices.where((invoice) {
-        return invoice["name"].toString().toLowerCase().contains(keyword);
+        final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
+        return invoice["name"].toString().toLowerCase().contains(keyword) &&
+            invoiceDate.month.toString().padLeft(2, '0') == selectedMonth &&
+            invoiceDate.year.toString() == selectedYear;
       }).toList();
     });
   }
-  
-    String formatRupiah(String amount) {
+
+  String formatRupiah(String amount) {
     try {
       final double value = double.parse(amount);
-      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(value);
+      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
+          .format(value);
     } catch (e) {
       return amount;
     }
@@ -114,25 +138,27 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, dataChanged); // Kembalikan status perubahan
+        Navigator.pop(context, dataChanged);
         return false;
       },
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Dibayar Sebagian", style: TextStyle(color: Colors.blue)),
+          title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              Navigator.pop(context, dataChanged); // Sama seperti tombol back
+              Navigator.pop(context, dataChanged);
             },
           ),
           actions: [
             IconButton(
               icon: const Icon(Icons.filter_alt_outlined, color: Colors.blue),
-              onPressed: () {},
+              onPressed: () {
+                // Optional: open dialog or show options
+              },
             ),
           ],
         ),
@@ -154,11 +180,47 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text("April 2025", style: TextStyle(fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  DropdownButton<String>(
+                    value: selectedMonth,
+                    items: List.generate(12, (index) {
+                      final month = (index + 1).toString().padLeft(2, '0');
+                      return DropdownMenuItem(
+                        value: month,
+                        child: Text(DateFormat('MMMM').format(DateTime(0, index + 1))),
+                      );
+                    }),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedMonth = value;
+                        });
+                        filterByMonthYear();
+                      }
+                    },
+                  ),
+                  DropdownButton<String>(
+                    value: selectedYear,
+                    items: ['2023', '2024', '2025'].map((year) {
+                      return DropdownMenuItem(
+                        value: year,
+                        child: Text(year),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedYear = value;
+                        });
+                        filterByMonthYear();
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
             Expanded(
@@ -180,9 +242,10 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
                                 ],
                               ),
                               trailing: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color:  Colors.amber.shade100,
+                                  color: Colors.amber.shade100,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
@@ -194,7 +257,8 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
                                 final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Detailbelumdibayar(invoice: invoice),
+                                    builder: (context) =>
+                                        Detailbelumdibayar(invoice: invoice),
                                   ),
                                 );
 
@@ -208,10 +272,12 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
                                   context: context,
                                   builder: (context) => AlertDialog(
                                     title: const Text("Hapus Data"),
-                                    content: const Text("Yakin ingin menghapus data ini?"),
+                                    content: const Text(
+                                        "Yakin ingin menghapus data ini?"),
                                     actions: [
                                       TextButton(
-                                        onPressed: () => Navigator.pop(context),
+                                        onPressed: () =>
+                                            Navigator.pop(context),
                                         child: const Text("Batal"),
                                       ),
                                       TextButton(
@@ -233,7 +299,12 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.blue,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TambahInvoice()),
+            );
+          },
           child: const Icon(Icons.add),
         ),
       ),

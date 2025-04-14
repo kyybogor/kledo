@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
+import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class Void extends StatefulWidget {
   const Void({super.key});
@@ -18,6 +19,9 @@ class _VoidState extends State<Void> {
   bool isLoading = true;
   bool dataChanged = false;
 
+  String selectedMonth = DateFormat('MM').format(DateTime.now());
+  String selectedYear = DateFormat('yyyy').format(DateTime.now());
+
   @override
   void initState() {
     super.initState();
@@ -27,7 +31,8 @@ class _VoidState extends State<Void> {
 
   Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse('https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4'));
+      final response = await http.get(Uri.parse(
+          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -42,9 +47,10 @@ class _VoidState extends State<Void> {
         }).toList();
 
         setState(() {
-          filteredInvoices = invoices;
           isLoading = false;
         });
+
+        filterByMonthYear();
       } else {
         throw Exception('Gagal mengambil data');
       }
@@ -54,6 +60,20 @@ class _VoidState extends State<Void> {
         isLoading = false;
       });
     }
+  }
+
+  void filterByMonthYear() {
+    setState(() {
+      filteredInvoices = invoices.where((invoice) {
+        try {
+          final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
+          return invoiceDate.month.toString().padLeft(2, '0') == selectedMonth &&
+              invoiceDate.year.toString() == selectedYear;
+        } catch (e) {
+          return false;
+        }
+      }).toList();
+    });
   }
 
   Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
@@ -90,7 +110,10 @@ class _VoidState extends State<Void> {
     String keyword = _searchController.text.toLowerCase();
     setState(() {
       filteredInvoices = invoices.where((invoice) {
-        return invoice["name"].toString().toLowerCase().contains(keyword);
+        final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
+        return invoice["name"].toString().toLowerCase().contains(keyword) &&
+            invoiceDate.month.toString().padLeft(2, '0') == selectedMonth &&
+            invoiceDate.year.toString() == selectedYear;
       }).toList();
     });
   }
@@ -98,7 +121,8 @@ class _VoidState extends State<Void> {
   String formatRupiah(String amount) {
     try {
       final double value = double.parse(amount);
-      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(value);
+      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
+          .format(value);
     } catch (e) {
       return amount;
     }
@@ -120,7 +144,7 @@ class _VoidState extends State<Void> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Void", style: TextStyle(color: Colors.blue)),
+          title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -132,7 +156,9 @@ class _VoidState extends State<Void> {
           actions: [
             IconButton(
               icon: const Icon(Icons.filter_alt_outlined, color: Colors.blue),
-              onPressed: () {},
+              onPressed: () {
+                // Optional: open dialog or show options
+              },
             ),
           ],
         ),
@@ -154,11 +180,47 @@ class _VoidState extends State<Void> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text("April 2025", style: TextStyle(fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  DropdownButton<String>(
+                    value: selectedMonth,
+                    items: List.generate(12, (index) {
+                      final month = (index + 1).toString().padLeft(2, '0');
+                      return DropdownMenuItem(
+                        value: month,
+                        child: Text(DateFormat('MMMM').format(DateTime(0, index + 1))),
+                      );
+                    }),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedMonth = value;
+                        });
+                        filterByMonthYear();
+                      }
+                    },
+                  ),
+                  DropdownButton<String>(
+                    value: selectedYear,
+                    items: ['2023', '2024', '2025'].map((year) {
+                      return DropdownMenuItem(
+                        value: year,
+                        child: Text(year),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedYear = value;
+                        });
+                        filterByMonthYear();
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
             Expanded(
@@ -180,7 +242,8 @@ class _VoidState extends State<Void> {
                                 ],
                               ),
                               trailing: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade100,
                                   borderRadius: BorderRadius.circular(20),
@@ -194,7 +257,8 @@ class _VoidState extends State<Void> {
                                 final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Detailbelumdibayar(invoice: invoice),
+                                    builder: (context) =>
+                                        Detailbelumdibayar(invoice: invoice),
                                   ),
                                 );
 
@@ -208,10 +272,12 @@ class _VoidState extends State<Void> {
                                   context: context,
                                   builder: (context) => AlertDialog(
                                     title: const Text("Hapus Data"),
-                                    content: const Text("Yakin ingin menghapus data ini?"),
+                                    content: const Text(
+                                        "Yakin ingin menghapus data ini?"),
                                     actions: [
                                       TextButton(
-                                        onPressed: () => Navigator.pop(context),
+                                        onPressed: () =>
+                                            Navigator.pop(context),
                                         child: const Text("Batal"),
                                       ),
                                       TextButton(
@@ -233,7 +299,12 @@ class _VoidState extends State<Void> {
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.blue,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TambahInvoice()),
+            );
+          },
           child: const Icon(Icons.add),
         ),
       ),

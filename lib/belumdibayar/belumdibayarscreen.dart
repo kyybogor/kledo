@@ -17,7 +17,10 @@ class _BelumDibayarState extends State<BelumDibayar> {
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
   bool isLoading = true;
-  bool dataChanged = false; // Tambahkan flag ini
+  bool dataChanged = false;
+
+  String selectedMonth = DateFormat('MM').format(DateTime.now());
+  String selectedYear = DateFormat('yyyy').format(DateTime.now());
 
   @override
   void initState() {
@@ -44,9 +47,10 @@ class _BelumDibayarState extends State<BelumDibayar> {
         }).toList();
 
         setState(() {
-          filteredInvoices = invoices;
           isLoading = false;
         });
+
+        filterByMonthYear();
       } else {
         throw Exception('Gagal mengambil data');
       }
@@ -56,6 +60,20 @@ class _BelumDibayarState extends State<BelumDibayar> {
         isLoading = false;
       });
     }
+  }
+
+  void filterByMonthYear() {
+    setState(() {
+      filteredInvoices = invoices.where((invoice) {
+        try {
+          final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
+          return invoiceDate.month.toString().padLeft(2, '0') == selectedMonth &&
+              invoiceDate.year.toString() == selectedYear;
+        } catch (e) {
+          return false;
+        }
+      }).toList();
+    });
   }
 
   Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
@@ -70,9 +88,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
       if (response.statusCode == 200) {
         setState(() {
           invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          filteredInvoices
-              .removeWhere((item) => item['invoice'] == invoice['invoice']);
-          dataChanged = true; // Set true jika ada yang dihapus
+          filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
+          dataChanged = true;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -93,15 +110,19 @@ class _BelumDibayarState extends State<BelumDibayar> {
     String keyword = _searchController.text.toLowerCase();
     setState(() {
       filteredInvoices = invoices.where((invoice) {
-        return invoice["name"].toString().toLowerCase().contains(keyword);
+        final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
+        return invoice["name"].toString().toLowerCase().contains(keyword) &&
+            invoiceDate.month.toString().padLeft(2, '0') == selectedMonth &&
+            invoiceDate.year.toString() == selectedYear;
       }).toList();
     });
   }
 
-    String formatRupiah(String amount) {
+  String formatRupiah(String amount) {
     try {
       final double value = double.parse(amount);
-      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(value);
+      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
+          .format(value);
     } catch (e) {
       return amount;
     }
@@ -117,26 +138,27 @@ class _BelumDibayarState extends State<BelumDibayar> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, dataChanged); // Kembalikan status perubahan
+        Navigator.pop(context, dataChanged);
         return false;
       },
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title:
-              const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
+          title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              Navigator.pop(context, dataChanged); // Sama seperti tombol back
+              Navigator.pop(context, dataChanged);
             },
           ),
           actions: [
             IconButton(
               icon: const Icon(Icons.filter_alt_outlined, color: Colors.blue),
-              onPressed: () {},
+              onPressed: () {
+                // Optional: open dialog or show options
+              },
             ),
           ],
         ),
@@ -156,6 +178,49 @@ class _BelumDibayarState extends State<BelumDibayar> {
                     borderSide: BorderSide.none,
                   ),
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  DropdownButton<String>(
+                    value: selectedMonth,
+                    items: List.generate(12, (index) {
+                      final month = (index + 1).toString().padLeft(2, '0');
+                      return DropdownMenuItem(
+                        value: month,
+                        child: Text(DateFormat('MMMM').format(DateTime(0, index + 1))),
+                      );
+                    }),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedMonth = value;
+                        });
+                        filterByMonthYear();
+                      }
+                    },
+                  ),
+                  DropdownButton<String>(
+                    value: selectedYear,
+                    items: ['2023', '2024', '2025'].map((year) {
+                      return DropdownMenuItem(
+                        value: year,
+                        child: Text(year),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedYear = value;
+                        });
+                        filterByMonthYear();
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
             Expanded(
@@ -211,7 +276,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                         "Yakin ingin menghapus data ini?"),
                                     actions: [
                                       TextButton(
-                                        onPressed: () => Navigator.pop(context),
+                                        onPressed: () =>
+                                            Navigator.pop(context),
                                         child: const Text("Batal"),
                                       ),
                                       TextButton(
