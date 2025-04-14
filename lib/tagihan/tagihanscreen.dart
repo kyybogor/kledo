@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
-import 'package:flutter_application_kledo/lunas/lunas.dart';
-import 'package:flutter_application_kledo/void/void.dart';
 import 'package:http/http.dart' as http;
 
 // Import halaman-halaman
 import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
 import 'package:flutter_application_kledo/dibayarsebagian/dibayarsebagian.dart';
+import 'package:flutter_application_kledo/lunas/lunas.dart';
+import 'package:flutter_application_kledo/void/void.dart';
+import 'package:flutter_application_kledo/penjualan/penjualanscreen.dart'; // tambahkan ini
 
 class TagihanPage extends StatefulWidget {
   const TagihanPage({super.key});
@@ -47,7 +47,8 @@ class _TagihanPageState extends State<TagihanPage> {
 
   Future<void> fetchTagihanCounts() async {
     try {
-      final response = await http.get(Uri.parse('https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
+      final response = await http.get(Uri.parse(
+          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -57,7 +58,28 @@ class _TagihanPageState extends State<TagihanPage> {
         };
 
         for (var item in data) {
-          String status = item['status'] ?? "Belum Dibayar"; // Ganti sesuai field API
+          String status = item['status'] ?? "Belum Dibayar";
+          if (newCounts.containsKey(status)) {
+            newCounts[status] = newCounts[status]! + 1;
+          }
+        }
+
+        for (var item in data) {
+          String status = item['status'] ?? "Dibayar Sebagian";
+          if (newCounts.containsKey(status)) {
+            newCounts[status] = newCounts[status]! + 1;
+          }
+        }
+
+        for (var item in data) {
+          String status = item['status'] ?? "Lunas";
+          if (newCounts.containsKey(status)) {
+            newCounts[status] = newCounts[status]! + 1;
+          }
+        }
+
+        for (var item in data) {
+          String status = item['status'] ?? "Void";
           if (newCounts.containsKey(status)) {
             newCounts[status] = newCounts[status]! + 1;
           }
@@ -99,82 +121,86 @@ class _TagihanPageState extends State<TagihanPage> {
   Widget build(BuildContext context) {
     final statusList = tagihanCounts.keys.toList();
 
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Penjualanscreen()),
-        );
-        return false; // cegah pop default
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          iconTheme: const IconThemeData(color: Colors.black),
-          title: const Text("Tagihan", style: TextStyle(color: Colors.blue)),
-          centerTitle: true,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Text("Tagihan", style: TextStyle(color: Colors.blue)),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Pindah ke halaman penjualan, bukan splashscreen
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const Penjualanscreen()),
+            );
+          },
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Cari",
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  fillColor: Colors.grey[100],
-                  contentPadding: const EdgeInsets.all(10),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    borderSide: BorderSide.none,
-                  ),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "Cari",
+                prefixIcon: const Icon(Icons.search),
+                filled: true,
+                fillColor: Colors.grey[100],
+                contentPadding: const EdgeInsets.all(10),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide.none,
                 ),
               ),
             ),
-            Expanded(
-              child: isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      itemCount: statusList.length,
-                      itemBuilder: (context, index) {
-                        final label = statusList[index];
-                        final count = tagihanCounts[label]!;
-                        final color = statusColors[label] ?? Colors.grey;
-                        final page = getTargetPage(label);
+          ),
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: statusList.length,
+                    itemBuilder: (context, index) {
+                      final label = statusList[index];
+                      final count = tagihanCounts[label]!;
+                      final color = statusColors[label] ?? Colors.grey;
+                      final page = getTargetPage(label);
 
-                        return Column(
-                          children: [
-                            ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: color,
-                                radius: 10,
-                              ),
-                              title: Text(label),
-                              trailing: Text("$count"),
-                              onTap: page != null
-                                  ? () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => page),
-                                      );
-                                    }
-                                  : null,
+                      return Column(
+                        children: [
+                          ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: color,
+                              radius: 10,
                             ),
-                            const Divider(height: 1),
-                          ],
-                        );
-                      },
-                    ),
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.blue,
-          onPressed: () {},
-          child: const Icon(Icons.add),
-        ),
+                            title: Text(label),
+                            trailing: Text("$count"),
+                            onTap: page != null
+                                ? () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => page),
+                                    );
+                                  }
+                                : null,
+                          ),
+                          const Divider(height: 1),
+                        ],
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        onPressed: () {
+          // Tambahkan aksi jika diperlukan
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -397,7 +397,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
       'icon': Icons.shopping_bag,
       'title': 'Penjualan',
       'children': [
-        'Overview',
+        'Overview Penjualan',
         'Tagihan',
         'Pengiriman',
         'Pemesanan',
@@ -408,7 +408,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
       'icon': Icons.shopping_cart,
       'title': 'Pembelian',
       'children': [
-        'Overview',
+        'Overview Pembelian',
         'Tagihan Pembelian',
         'Pengiriman Pembelian',
         'Pesanan Pembelian',
@@ -514,8 +514,8 @@ class _KledoDrawerState extends State<KledoDrawer> {
                               Widget? destination;
 
                               switch (subItem) {
-                                case 'Overview':
-                                  //destination = const OverviewPembelianPage(); // ganti sesuai nama halamanmu
+                                case 'Overview Penjualan':
+                                  destination = const Penjualanscreen(); // ganti sesuai nama halamanmu
                                   break;
                                 case 'Tagihan':
                                   destination = const TagihanPage();
