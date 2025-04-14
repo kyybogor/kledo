@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart'; // Jangan lupa untuk mengimpor intl
 
 class Detailbelumdibayar extends StatelessWidget {
   final Map<String, dynamic> invoice;
@@ -9,6 +10,16 @@ class Detailbelumdibayar extends StatelessWidget {
     super.key,
     required this.invoice,
   });
+
+  // Fungsi untuk format Rupiah
+  String formatRupiah(String amount) {
+    try {
+      final double value = double.parse(amount);
+      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(value);
+    } catch (e) {
+      return 'Invalid amount'; // Jika format gagal, tampilkan pesan error
+    }
+  }
 
   Future<void> _deleteInvoice(BuildContext context) async {
     final confirm = await showDialog<bool>(
@@ -56,10 +67,10 @@ class Detailbelumdibayar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final contactName = invoice['name']?.toString() ?? '-';
+    final contactName = invoice['name']?.toString() ?? 'Tidak diketahui';
     final invoiceNumber = invoice['invoice']?.toString() ?? '-';
     final date = invoice['date']?.toString() ?? '-';
-    final amount = invoice['amount']?.toString() ?? '0';
+    final amount = formatRupiah(invoice['amount']?.toString() ?? '0'); // Menggunakan formatRupiah
 
     return Scaffold(
       appBar: AppBar(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,7 +16,7 @@ class _VoidState extends State<Void> {
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
   bool isLoading = true;
-  bool dataChanged = false; // Tambahkan flag ini
+  bool dataChanged = false;
 
   @override
   void initState() {
@@ -68,7 +69,7 @@ class _VoidState extends State<Void> {
         setState(() {
           invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
           filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          dataChanged = true; // Set true jika ada yang dihapus
+          dataChanged = true;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -94,6 +95,15 @@ class _VoidState extends State<Void> {
     });
   }
 
+  String formatRupiah(String amount) {
+    try {
+      final double value = double.parse(amount);
+      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(value);
+    } catch (e) {
+      return amount;
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -104,7 +114,7 @@ class _VoidState extends State<Void> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, dataChanged); // Kembalikan status perubahan
+        Navigator.pop(context, dataChanged);
         return false;
       },
       child: Scaffold(
@@ -116,7 +126,7 @@ class _VoidState extends State<Void> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              Navigator.pop(context, dataChanged); // Sama seperti tombol back
+              Navigator.pop(context, dataChanged);
             },
           ),
           actions: [
@@ -172,11 +182,11 @@ class _VoidState extends State<Void> {
                               trailing: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color:  Colors.grey.shade100,
+                                  color: Colors.grey.shade100,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  invoice["amount"],
+                                  formatRupiah(invoice["amount"]),
                                   style: const TextStyle(color: Colors.grey),
                                 ),
                               ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class Lunas extends StatefulWidget {
   const Lunas({super.key});
@@ -94,6 +95,15 @@ class _LunasState extends State<Lunas> {
     });
   }
 
+    String formatRupiah(String amount) {
+    try {
+      final double value = double.parse(amount);
+      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(value);
+    } catch (e) {
+      return amount;
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -176,7 +186,7 @@ class _LunasState extends State<Lunas> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  invoice["amount"],
+                                  formatRupiah(invoice["amount"]),
                                   style: const TextStyle(color: Colors.green),
                                 ),
                               ),

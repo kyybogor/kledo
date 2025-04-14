@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class BelumDibayar extends StatefulWidget {
   const BelumDibayar({super.key});
@@ -97,6 +98,15 @@ class _BelumDibayarState extends State<BelumDibayar> {
     });
   }
 
+    String formatRupiah(String amount) {
+    try {
+      final double value = double.parse(amount);
+      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(value);
+    } catch (e) {
+      return amount;
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -182,7 +192,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  invoice["amount"],
+                                  formatRupiah(invoice["amount"]),
                                   style: const TextStyle(color: Colors.pink),
                                 ),
                               ),
