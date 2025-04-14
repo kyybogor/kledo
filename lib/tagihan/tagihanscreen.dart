@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
 import 'package:flutter_application_kledo/lunas/lunas.dart';
 import 'package:flutter_application_kledo/void/void.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,6 @@ import 'package:http/http.dart' as http;
 // Import halaman-halaman
 import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
 import 'package:flutter_application_kledo/dibayarsebagian/dibayarsebagian.dart';
-// Tambahkan nanti halaman lainnya
 
 class TagihanPage extends StatefulWidget {
   const TagihanPage({super.key});
@@ -63,27 +63,6 @@ class _TagihanPageState extends State<TagihanPage> {
           }
         }
 
-                for (var item in data) {
-          String status = item['status'] ?? "Dibayar Sebagian"; // Ganti sesuai field API
-          if (newCounts.containsKey(status)) {
-            newCounts[status] = newCounts[status]! + 1;
-          }
-        }
-
-                for (var item in data) {
-          String status = item['status'] ?? "Lunas"; // Ganti sesuai field API
-          if (newCounts.containsKey(status)) {
-            newCounts[status] = newCounts[status]! + 1;
-          }
-        }
-
-        for (var item in data) {
-          String status = item['status'] ?? "Void"; // Ganti sesuai field API
-          if (newCounts.containsKey(status)) {
-            newCounts[status] = newCounts[status]! + 1;
-          }
-        }
-
         setState(() {
           tagihanCounts = newCounts;
           isLoading = false;
@@ -120,73 +99,82 @@ class _TagihanPageState extends State<TagihanPage> {
   Widget build(BuildContext context) {
     final statusList = tagihanCounts.keys.toList();
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text("Tagihan", style: TextStyle(color: Colors.blue)),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: "Cari",
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.grey[100],
-                contentPadding: const EdgeInsets.all(10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  borderSide: BorderSide.none,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Penjualanscreen()),
+        );
+        return false; // cegah pop default
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: const Text("Tagihan", style: TextStyle(color: Colors.blue)),
+          centerTitle: true,
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Cari",
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  contentPadding: const EdgeInsets.all(10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    itemCount: statusList.length,
-                    itemBuilder: (context, index) {
-                      final label = statusList[index];
-                      final count = tagihanCounts[label]!;
-                      final color = statusColors[label] ?? Colors.grey;
-                      final page = getTargetPage(label);
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      itemCount: statusList.length,
+                      itemBuilder: (context, index) {
+                        final label = statusList[index];
+                        final count = tagihanCounts[label]!;
+                        final color = statusColors[label] ?? Colors.grey;
+                        final page = getTargetPage(label);
 
-                      return Column(
-                        children: [
-                          ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: color,
-                              radius: 10,
+                        return Column(
+                          children: [
+                            ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: color,
+                                radius: 10,
+                              ),
+                              title: Text(label),
+                              trailing: Text("$count"),
+                              onTap: page != null
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => page),
+                                      );
+                                    }
+                                  : null,
                             ),
-                            title: Text(label),
-                            trailing: Text("$count"),
-                            onTap: page != null
-                                ? () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => page),
-                                    );
-                                  }
-                                : null,
-                          ),
-                          const Divider(height: 1),
-                        ],
-                      );
-                    },
-                  ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: () {},
-        child: const Icon(Icons.add),
+                            const Divider(height: 1),
+                          ],
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.blue,
+          onPressed: () {},
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
