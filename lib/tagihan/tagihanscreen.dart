@@ -7,7 +7,7 @@ import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
 import 'package:flutter_application_kledo/dibayarsebagian/dibayarsebagian.dart';
 import 'package:flutter_application_kledo/lunas/lunas.dart';
 import 'package:flutter_application_kledo/void/void.dart';
-import 'package:flutter_application_kledo/penjualan/penjualanscreen.dart'; // tambahkan ini
+import 'package:flutter_application_kledo/penjualan/penjualanscreen.dart';
 
 class TagihanPage extends StatefulWidget {
   const TagihanPage({super.key});
@@ -39,6 +39,14 @@ class _TagihanPageState extends State<TagihanPage> {
     "Transaksi Berulang": Colors.blue,
   };
 
+  final Map<String, String> statusEndpoints = {
+    "Belum Dibayar": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1',
+    "Dibayar Sebagian": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3',
+    "Lunas": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=2',
+    "Void": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4',
+    // Tambahkan endpoint lain jika ada untuk status lainnya
+  };
+
   @override
   void initState() {
     super.initState();
@@ -46,52 +54,27 @@ class _TagihanPageState extends State<TagihanPage> {
   }
 
   Future<void> fetchTagihanCounts() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    Map<String, int> newCounts = {
+      for (var key in tagihanCounts.keys) key: 0,
+    };
+
     try {
-      final response = await http.get(Uri.parse(
-          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-
-        Map<String, int> newCounts = {
-          for (var key in tagihanCounts.keys) key: 0,
-        };
-
-        for (var item in data) {
-          String status = item['status'] ?? "Belum Dibayar";
-          if (newCounts.containsKey(status)) {
-            newCounts[status] = newCounts[status]! + 1;
-          }
+      for (var entry in statusEndpoints.entries) {
+        final response = await http.get(Uri.parse(entry.value));
+        if (response.statusCode == 200) {
+          final List<dynamic> data = json.decode(response.body);
+          newCounts[entry.key] = data.length;
         }
-
-        for (var item in data) {
-          String status = item['status'] ?? "Dibayar Sebagian";
-          if (newCounts.containsKey(status)) {
-            newCounts[status] = newCounts[status]! + 1;
-          }
-        }
-
-        for (var item in data) {
-          String status = item['status'] ?? "Lunas";
-          if (newCounts.containsKey(status)) {
-            newCounts[status] = newCounts[status]! + 1;
-          }
-        }
-
-        for (var item in data) {
-          String status = item['status'] ?? "Void";
-          if (newCounts.containsKey(status)) {
-            newCounts[status] = newCounts[status]! + 1;
-          }
-        }
-
-        setState(() {
-          tagihanCounts = newCounts;
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Gagal mengambil data');
       }
+
+      setState(() {
+        tagihanCounts = newCounts;
+        isLoading = false;
+      });
     } catch (e) {
       print("Error: $e");
       setState(() {
@@ -100,7 +83,6 @@ class _TagihanPageState extends State<TagihanPage> {
     }
   }
 
-  // Fungsi buka halaman sesuai status
   Widget? getTargetPage(String label) {
     switch (label) {
       case "Belum Dibayar":
@@ -111,7 +93,6 @@ class _TagihanPageState extends State<TagihanPage> {
         return const Lunas();
       case "Void":
         return const Void();
-      // Tambahkan halaman lainnya sesuai kebutuhan
       default:
         return null;
     }
@@ -131,7 +112,6 @@ class _TagihanPageState extends State<TagihanPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // Pindah ke halaman penjualan, bukan splashscreen
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const Penjualanscreen()),
@@ -181,8 +161,7 @@ class _TagihanPageState extends State<TagihanPage> {
                                 ? () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(
-                                          builder: (context) => page),
+                                      MaterialPageRoute(builder: (context) => page),
                                     );
                                   }
                                 : null,
