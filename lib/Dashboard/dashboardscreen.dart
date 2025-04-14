@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
 import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
 import 'package:flutter_application_kledo/tagihan/dibayarsebagianscreen.dart';
+import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
@@ -516,8 +517,8 @@ class _KledoDrawerState extends State<KledoDrawer> {
                                 case 'Overview':
                                   //destination = const OverviewPembelianPage(); // ganti sesuai nama halamanmu
                                   break;
-                                case 'Tagihan Pembelian':
-                                  //destination = const TagihanPembelianPage();
+                                case 'Tagihan':
+                                  destination = const TagihanPage();
                                   break;
                                 case 'Pengiriman Pembelian':
                                   //destination = const PengirimanPembelianPage();
