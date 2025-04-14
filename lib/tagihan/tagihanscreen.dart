@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/lunas/lunas.dart';
+import 'package:flutter_application_kledo/void/void.dart';
 import 'package:http/http.dart' as http;
 
 // Import halaman-halaman
@@ -68,6 +70,20 @@ class _TagihanPageState extends State<TagihanPage> {
           }
         }
 
+                for (var item in data) {
+          String status = item['status'] ?? "Lunas"; // Ganti sesuai field API
+          if (newCounts.containsKey(status)) {
+            newCounts[status] = newCounts[status]! + 1;
+          }
+        }
+
+        for (var item in data) {
+          String status = item['status'] ?? "Void"; // Ganti sesuai field API
+          if (newCounts.containsKey(status)) {
+            newCounts[status] = newCounts[status]! + 1;
+          }
+        }
+
         setState(() {
           tagihanCounts = newCounts;
           isLoading = false;
@@ -90,6 +106,10 @@ class _TagihanPageState extends State<TagihanPage> {
         return const BelumDibayar();
       case "Dibayar Sebagian":
         return const Dibayarsebagian();
+      case "Lunas":
+        return const Lunas();
+      case "Void":
+        return const Void();
       // Tambahkan halaman lainnya sesuai kebutuhan
       default:
         return null;

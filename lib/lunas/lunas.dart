@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:http/http.dart' as http;
 
-class Dibayarsebagian extends StatefulWidget {
-  const Dibayarsebagian({super.key});
+class Lunas extends StatefulWidget {
+  const Lunas({super.key});
 
   @override
-  State<Dibayarsebagian> createState() => _BelumDibayarState();
+  State<Lunas> createState() => _LunasState();
 }
 
-class _BelumDibayarState extends State<Dibayarsebagian> {
+class _LunasState extends State<Lunas> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
@@ -26,7 +26,7 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
 
   Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse('https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3'));
+      final response = await http.get(Uri.parse('https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=2'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -110,7 +110,7 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Dibayar Sebagian", style: TextStyle(color: Colors.blue)),
+          title: const Text("Lunas", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -172,12 +172,12 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
                               trailing: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color:  Colors.amber.shade100,
+                                  color:  Colors.green.shade100,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
                                   invoice["amount"],
-                                  style: const TextStyle(color: Colors.amber),
+                                  style: const TextStyle(color: Colors.green),
                                 ),
                               ),
                               onTap: () async {
