@@ -158,14 +158,6 @@ class _BelumDibayarState extends State<BelumDibayar> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text("April 2025",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-            ),
             Expanded(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
