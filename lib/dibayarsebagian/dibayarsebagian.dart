@@ -172,12 +172,12 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
                               trailing: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 255, 225, 29),
+                                  color:  Colors.yellowAccent.shade100,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
                                   invoice["amount"],
-                                  style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                                  style: const TextStyle(color: Colors.black),
                                 ),
                               ),
                               onTap: () async {
