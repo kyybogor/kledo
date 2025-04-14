@@ -33,7 +33,7 @@ class _BelumDibayarState extends State<Dibayarsebagian> {
 
         invoices = data.map<Map<String, dynamic>>((item) {
           return {
-            "name": item["name"] ?? item["1"],
+            "name": item["nama"] ?? item["1"],
             "invoice": item["invoice"] ?? item["2"],
             "date": item["date"] ?? item["3"],
             "amount": item["amount"] ?? item["4"],
