@@ -27,14 +27,15 @@ class _BelumDibayarState extends State<BelumDibayar> {
 
   Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse('https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
+      final response = await http.get(Uri.parse(
+          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
         invoices = data.map<Map<String, dynamic>>((item) {
           return {
-            "name": item["name"] ?? item["1"],
+            "name": item["nama"] ?? item["1"],
             "invoice": item["invoice"] ?? item["2"],
             "date": item["date"] ?? item["3"],
             "amount": item["amount"] ?? item["4"],
@@ -68,7 +69,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
       if (response.statusCode == 200) {
         setState(() {
           invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
+          filteredInvoices
+              .removeWhere((item) => item['invoice'] == invoice['invoice']);
           dataChanged = true; // Set true jika ada yang dihapus
         });
 
@@ -111,7 +113,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
+          title:
+              const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -149,7 +152,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text("April 2025", style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text("April 2025",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
             Expanded(
@@ -171,7 +175,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                 ],
                               ),
                               trailing: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
                                   color: Colors.pink.shade100,
                                   borderRadius: BorderRadius.circular(20),
@@ -185,7 +190,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                 final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Detailbelumdibayar(invoice: invoice),
+                                    builder: (context) =>
+                                        Detailbelumdibayar(invoice: invoice),
                                   ),
                                 );
 
@@ -199,7 +205,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                   context: context,
                                   builder: (context) => AlertDialog(
                                     title: const Text("Hapus Data"),
-                                    content: const Text("Yakin ingin menghapus data ini?"),
+                                    content: const Text(
+                                        "Yakin ingin menghapus data ini?"),
                                     actions: [
                                       TextButton(
                                         onPressed: () => Navigator.pop(context),
@@ -226,10 +233,9 @@ class _BelumDibayarState extends State<BelumDibayar> {
           backgroundColor: Colors.blue,
           onPressed: () {
             Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const TambahInvoice()),
-          );
+              context,
+              MaterialPageRoute(builder: (context) => const TambahInvoice()),
+            );
           },
           child: const Icon(Icons.add),
         ),
