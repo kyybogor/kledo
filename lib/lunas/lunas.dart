@@ -151,7 +151,7 @@ class _LunasState extends State<Lunas> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
+          title: const Text("Lunas", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(

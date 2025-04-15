@@ -79,35 +79,6 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
     });
   }
 
-  Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://192.168.1.102/connect/JSON/delete.php'),
-        body: {
-          'invoice': invoice['invoice'],
-        },
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          dataChanged = true;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Data berhasil dihapus")),
-        );
-      } else {
-        throw Exception("Gagal menghapus data");
-      }
-    } catch (e) {
-      print("Error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gagal menghapus data")),
-      );
-    }
-  }
 
   void _onSearchChanged() {
     String keyword = _searchController.text.toLowerCase();
@@ -151,7 +122,7 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
+          title: const Text("Dibayar Sebagian", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -339,7 +310,6 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                                       TextButton(
                                         onPressed: () {
                                           Navigator.pop(context);
-                                          deleteInvoice(invoice);
                                         },
                                         child: const Text("Hapus"),
                                       ),
