@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:intl/intl.dart'; // Jangan lupa untuk mengimpor intl
 
 class Detailbelumdibayar extends StatelessWidget {
   final Map<String, dynamic> invoice;
@@ -11,13 +8,24 @@ class Detailbelumdibayar extends StatelessWidget {
     required this.invoice,
   });
 
-  // Fungsi untuk format Rupiah
-  String formatRupiah(String amount) {
-    try {
-      final double value = double.parse(amount);
-      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(value);
-    } catch (e) {
-      return 'Invalid amount';
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'belum dibayar':
+        return Colors.red;
+      case 'dibayar sebagian':
+        return Colors.orange;
+      case 'lunas':
+        return Colors.green;
+      case 'void':
+        return Colors.grey;
+      case 'jatuh tempo':
+        return Colors.black;
+      case 'retur':
+        return Colors.deepOrange;
+      case 'transaksi berulang':
+        return Colors.blue;
+      default:
+        return Colors.white;
     }
   }
 
@@ -26,58 +34,142 @@ class Detailbelumdibayar extends StatelessWidget {
     final contactName = invoice['name']?.toString() ?? 'Tidak diketahui';
     final invoiceNumber = invoice['invoice']?.toString() ?? '-';
     final date = invoice['date']?.toString() ?? '-';
-    final amount = formatRupiah(invoice['amount']?.toString() ?? '0'); // Menggunakan formatRupiah
+    final dueDate = invoice['due']?.toString() ?? '-';
+    final address = invoice['alamat']?.toString() ?? '-';
+    final amount = invoice['amount']?.toString() ?? '0';
+    final status = invoice['status']?.toString() ?? 'Belum Dibayar';
+    final statusColor = _getStatusColor(status);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail Tagihan'),
+        title: const Text(
+          'Tagihan',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true, // <-- Tagihan di tengah
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
-        actions: [
-        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF0052D4), Color(0xFF4364F7)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(24),
+                bottomRight: Radius.circular(24),
+              ),
+            ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Center(
-                  child: Text(
-                    "INVOICE DETAIL",
-                    style: TextStyle(
+                const SizedBox(height: 8),
+                Text(
+                  invoiceNumber,
+                  style: const TextStyle(fontSize: 16, color: Colors.white70),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  contactName,
+                  style: const TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[700],
-                    ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  address,
+                  style: const TextStyle(fontSize: 13, color: Colors.white),
+                ),
+                const SizedBox(height: 16),
+
+                /// Custom status seperti di gambar
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 6, horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 25,
+                        height: 25,
+                        decoration: BoxDecoration(
+                          color: statusColor.withOpacity(0.6),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        status,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                _buildDetailTile(Icons.person, "Nama", contactName),
-                _buildDetailTile(Icons.receipt_long, "Nomor Invoice", invoiceNumber),
-                _buildDetailTile(Icons.date_range, "Tanggal", date),
-                _buildDetailTile(Icons.attach_money, "Total", amount),
+
+                const SizedBox(height: 16),
+
+                // Tanggal & Due Date
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.calendar_today,
+                            size: 16, color: Colors.white),
+                        const SizedBox(width: 6),
+                        Text(date,
+                            style: const TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Icon(Icons.access_time,
+                            size: 16, color: Colors.white),
+                        const SizedBox(width: 6),
+                        Text(dueDate,
+                            style: const TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildDetailTile(IconData icon, String label, String value) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
-      leading: Icon(icon, color: Colors.blue),
-      title: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(value, style: const TextStyle(fontSize: 16)),
+  Widget _buildItemDetail(String title, String value,
+      {bool isBold = false, bool isRed = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: const TextStyle(fontSize: 16)),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+            color: isRed ? Colors.red : Colors.black,
+          ),
+        ),
+      ],
     );
   }
 }

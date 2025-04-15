@@ -42,7 +42,10 @@ class _VoidState extends State<Void> {
             "name": item["nama"] ?? item["1"],
             "invoice": item["invoice"] ?? item["2"],
             "date": item["date"] ?? item["3"],
+            "due": item["due"] ?? item["3"],
+            "alamat": item["alamat"] ?? item["3"],
             "amount": item["amount"] ?? item["4"],
+            "status": item["status"] ?? item["5"],
           };
         }).toList();
 
