@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:flutter_application_kledo/tagihan/pemesananscreen.dart';
 import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
 
 class Penjualanscreen extends StatefulWidget {
@@ -139,10 +140,19 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
               icon: Icons.local_shipping,
               color: Colors.lightBlue,
               label: 'Pengiriman'),
-          const _MenuIcon(
+          _MenuIcon(
               icon: Icons.access_time,
               color: Colors.lightGreen,
-              label: 'Pemesanan'),
+              label: 'Pemesanan',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PemesananPage(),
+                ),
+              );
+            },
+          ),
           const _MenuIcon(
               icon: Icons.note_add,
               color: Colors.orangeAccent,
