@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:flutter_application_kledo/pemesanan/pemesananscreen.dart';
+import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
 import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
 import 'package:flutter_application_kledo/pengiriman/pengirimanscreen.dart';
 
@@ -161,14 +163,32 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
               );
             },
           ),
-          const _MenuIcon(
-              icon: Icons.access_time,
-              color: Colors.lightGreen,
-              label: 'Pemesanan'),
-          const _MenuIcon(
-              icon: Icons.note_add,
-              color: Colors.orangeAccent,
-              label: 'Penawaran'),
+          _MenuIcon(
+            icon: Icons.access_time,
+            color: Colors.lightGreen,
+            label: 'Pemesanan',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PemesananPage(),
+                ),
+              );
+            },
+          ),
+          _MenuIcon(
+            icon: Icons.note_add,
+            color: Colors.orangeAccent,
+            label: 'Penawaran',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PenawaranPage(),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

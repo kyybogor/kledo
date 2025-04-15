@@ -135,6 +135,22 @@ class _OpenState extends State<Open> {
         body: Column(
           children: [
             Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: "Cari",
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
               child: Row(
                 children: [

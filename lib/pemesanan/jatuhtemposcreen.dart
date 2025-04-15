@@ -31,8 +31,7 @@ class _JatuhTempoPemesananState extends State<JatuhTempoPemesanan> {
 
   Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse(
-          ''));
+      final response = await http.get(Uri.parse(''));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -79,7 +78,6 @@ class _JatuhTempoPemesananState extends State<JatuhTempoPemesanan> {
     });
   }
 
-
   void _onSearchChanged() {
     String keyword = _searchController.text.toLowerCase();
     setState(() {
@@ -99,7 +97,8 @@ class _JatuhTempoPemesananState extends State<JatuhTempoPemesanan> {
   String formatRupiah(String amount) {
     try {
       final double value = double.parse(amount);
-      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
+      return NumberFormat.currency(
+              locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
           .format(value);
     } catch (e) {
       return amount;
@@ -122,7 +121,8 @@ class _JatuhTempoPemesananState extends State<JatuhTempoPemesanan> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Jatuh Tempo", style: TextStyle(color: Colors.blue)),
+          title:
+              const Text("Jatuh Tempo", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -135,7 +135,24 @@ class _JatuhTempoPemesananState extends State<JatuhTempoPemesanan> {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
+              padding: const EdgeInsets.all(12.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: "Cari",
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
               child: Row(
                 children: [
                   Flexible(
@@ -153,16 +170,20 @@ class _JatuhTempoPemesananState extends State<JatuhTempoPemesanan> {
                         filled: true,
                         fillColor: Colors.blue.shade50,
                       ),
-                      items: ['Semua', ...List.generate(12, (index) {
-                        final month = (index + 1).toString().padLeft(2, '0');
-                        return month;
-                      })].map((month) {
+                      items: [
+                        'Semua',
+                        ...List.generate(12, (index) {
+                          final month = (index + 1).toString().padLeft(2, '0');
+                          return month;
+                        })
+                      ].map((month) {
                         return DropdownMenuItem(
                           value: month,
                           child: Text(
                             month == 'Semua'
                                 ? 'Semua Bulan'
-                                : DateFormat('MMMM').format(DateTime(0, int.parse(month))),
+                                : DateFormat('MMMM')
+                                    .format(DateTime(0, int.parse(month))),
                           ),
                         );
                       }).toList(),
@@ -210,7 +231,8 @@ class _JatuhTempoPemesananState extends State<JatuhTempoPemesanan> {
                   ),
                 ],
               ),
-            ),            const SizedBox(height: 8),
+            ),
+            const SizedBox(height: 8),
             Expanded(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -264,8 +286,7 @@ class _JatuhTempoPemesananState extends State<JatuhTempoPemesanan> {
                                         "Yakin ingin menghapus data ini?"),
                                     actions: [
                                       TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context),
+                                        onPressed: () => Navigator.pop(context),
                                         child: const Text("Batal"),
                                       ),
                                       TextButton(
