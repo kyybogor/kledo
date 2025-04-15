@@ -32,7 +32,7 @@ class _LunasState extends State<Lunas> {
   Future<void> fetchInvoices() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
+          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=2'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);

@@ -32,7 +32,7 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
   Future<void> fetchInvoices() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
+          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
