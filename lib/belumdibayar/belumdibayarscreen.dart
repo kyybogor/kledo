@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 class BelumDibayar extends StatefulWidget {
   const BelumDibayar({super.key});
@@ -17,10 +16,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
   bool isLoading = true;
-  bool dataChanged = false;
-
-  String selectedMonth = DateFormat('MM').format(DateTime.now());
-  String selectedYear = DateFormat('yyyy').format(DateTime.now());
+  bool dataChanged = false; // Tambahkan flag ini
 
   @override
   void initState() {
@@ -31,26 +27,27 @@ class _BelumDibayarState extends State<BelumDibayar> {
 
   Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse(
-          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
+      final response = await http.get(Uri.parse('http://192.168.1.11/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
         invoices = data.map<Map<String, dynamic>>((item) {
           return {
-            "name": item["nama"] ?? item["1"],
+            "name": item["name"] ?? item["1"],
             "invoice": item["invoice"] ?? item["2"],
             "date": item["date"] ?? item["3"],
+            "due": item["due"] ?? item["3"],
+            "alamat": item["alamat"] ?? item["3"],
             "amount": item["amount"] ?? item["4"],
+            "status": item["status"] ?? item["5"],
           };
         }).toList();
 
         setState(() {
+          filteredInvoices = invoices;
           isLoading = false;
         });
-
-        filterByMonthYear();
       } else {
         throw Exception('Gagal mengambil data');
       }
@@ -60,23 +57,6 @@ class _BelumDibayarState extends State<BelumDibayar> {
         isLoading = false;
       });
     }
-  }
-
-  void filterByMonthYear() {
-    setState(() {
-      filteredInvoices = invoices.where((invoice) {
-        try {
-          final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
-          final matchMonth = selectedMonth == 'Semua' ||
-              invoiceDate.month.toString().padLeft(2, '0') == selectedMonth;
-          final matchYear = selectedYear == 'Semua' ||
-              invoiceDate.year.toString() == selectedYear;
-          return matchMonth && matchYear;
-        } catch (e) {
-          return false;
-        }
-      }).toList();
-    });
   }
 
   Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
@@ -92,7 +72,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
         setState(() {
           invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
           filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          dataChanged = true;
+          dataChanged = true; // Set true jika ada yang dihapus
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -113,26 +93,9 @@ class _BelumDibayarState extends State<BelumDibayar> {
     String keyword = _searchController.text.toLowerCase();
     setState(() {
       filteredInvoices = invoices.where((invoice) {
-        final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
-        final matchMonth = selectedMonth == 'Semua' ||
-            invoiceDate.month.toString().padLeft(2, '0') == selectedMonth;
-        final matchYear = selectedYear == 'Semua' ||
-            invoiceDate.year.toString() == selectedYear;
-        return invoice["name"].toString().toLowerCase().contains(keyword) &&
-            matchMonth &&
-            matchYear;
+        return invoice["name"].toString().toLowerCase().contains(keyword);
       }).toList();
     });
-  }
-
-  String formatRupiah(String amount) {
-    try {
-      final double value = double.parse(amount);
-      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
-          .format(value);
-    } catch (e) {
-      return amount;
-    }
   }
 
   @override
@@ -145,7 +108,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, dataChanged);
+        Navigator.pop(context, dataChanged); // Kembalikan status perubahan
         return false;
       },
       child: Scaffold(
@@ -157,9 +120,15 @@ class _BelumDibayarState extends State<BelumDibayar> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              Navigator.pop(context, dataChanged);
+              Navigator.pop(context, dataChanged); // Sama seperti tombol back
             },
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.filter_alt_outlined, color: Colors.blue),
+              onPressed: () {},
+            ),
+          ],
         ),
         body: Column(
           children: [
@@ -179,106 +148,13 @@ class _BelumDibayarState extends State<BelumDibayar> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: DropdownButtonFormField<String>(
-                        value: selectedMonth,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.calendar_today),
-                          labelText: "Bulan",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          filled: true,
-                          fillColor: Colors.transparent,
-                        ),
-                        items: ['Semua', ...List.generate(12, (index) {
-                          final month = (index + 1).toString().padLeft(2, '0');
-                          return month;
-                        })].map((month) {
-                          return DropdownMenuItem(
-                            value: month,
-                            child: Text(
-                              month == 'Semua'
-                                  ? 'Semua Bulan'
-                                  : DateFormat('MMMM').format(DateTime(0, int.parse(month))),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              selectedMonth = value;
-                            });
-                            filterByMonthYear();
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: DropdownButtonFormField<String>(
-                        value: selectedYear,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.date_range),
-                          labelText: "Tahun",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          filled: true,
-                          fillColor: Colors.transparent,
-                        ),
-                        items: ['Semua', '2023', '2024', '2025'].map((year) {
-                          return DropdownMenuItem(
-                            value: year,
-                            child: Text(year == 'Semua' ? 'Semua Tahun' : year),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              selectedYear = value;
-                            });
-                            filterByMonthYear();
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text("April 2025", style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
-            const SizedBox(height: 8),
             Expanded(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -298,14 +174,13 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                 ],
                               ),
                               trailing: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
                                   color: Colors.pink.shade100,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  formatRupiah(invoice["amount"]),
+                                  invoice["amount"],
                                   style: const TextStyle(color: Colors.pink),
                                 ),
                               ),
@@ -313,8 +188,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                 final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        Detailbelumdibayar(invoice: invoice),
+                                    builder: (context) => Detailbelumdibayar(invoice: invoice),
                                   ),
                                 );
 
@@ -328,12 +202,10 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                   context: context,
                                   builder: (context) => AlertDialog(
                                     title: const Text("Hapus Data"),
-                                    content: const Text(
-                                        "Yakin ingin menghapus data ini?"),
+                                    content: const Text("Yakin ingin menghapus data ini?"),
                                     actions: [
                                       TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context),
+                                        onPressed: () => Navigator.pop(context),
                                         child: const Text("Batal"),
                                       ),
                                       TextButton(
@@ -357,9 +229,10 @@ class _BelumDibayarState extends State<BelumDibayar> {
           backgroundColor: Colors.blue,
           onPressed: () {
             Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const TambahInvoice()),
-            );
+            context,
+            MaterialPageRoute(
+              builder: (context) => const TambahInvoice()),
+          );
           },
           child: const Icon(Icons.add),
         ),

@@ -5,14 +5,14 @@ import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class Void extends StatefulWidget {
-  const Void({super.key});
+class DikirimSebagian extends StatefulWidget {
+  const DikirimSebagian({super.key});
 
   @override
-  State<Void> createState() => _VoidState();
+  State<DikirimSebagian> createState() => _DikirimSebagianState();
 }
 
-class _VoidState extends State<Void> {
+class _DikirimSebagianState extends State<DikirimSebagian> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
@@ -32,7 +32,7 @@ class _VoidState extends State<Void> {
   Future<void> fetchInvoices() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4'));
+          ''));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -42,10 +42,7 @@ class _VoidState extends State<Void> {
             "name": item["nama"] ?? item["1"],
             "invoice": item["invoice"] ?? item["2"],
             "date": item["date"] ?? item["3"],
-            "due": item["due"] ?? item["3"],
-            "alamat": item["alamat"] ?? item["3"],
             "amount": item["amount"] ?? item["4"],
-            "status": item["status"] ?? item["5"],
           };
         }).toList();
 
@@ -82,35 +79,6 @@ class _VoidState extends State<Void> {
     });
   }
 
-  Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://192.168.1.102/connect/JSON/delete.php'),
-        body: {
-          'invoice': invoice['invoice'],
-        },
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          dataChanged = true;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Data berhasil dihapus")),
-        );
-      } else {
-        throw Exception("Gagal menghapus data");
-      }
-    } catch (e) {
-      print("Error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gagal menghapus data")),
-      );
-    }
-  }
 
   void _onSearchChanged() {
     String keyword = _searchController.text.toLowerCase();
@@ -154,7 +122,7 @@ class _VoidState extends State<Void> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Void", style: TextStyle(color: Colors.blue)),
+          title: const Text("Kirim Sebagian", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -282,12 +250,12 @@ class _VoidState extends State<Void> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade50,
+                                  color: Colors.amber.shade50,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
                                   formatRupiah(invoice["amount"]),
-                                  style: const TextStyle(color: Colors.grey),
+                                  style: const TextStyle(color: Colors.amber),
                                 ),
                               ),
                               onTap: () async {
@@ -320,7 +288,6 @@ class _VoidState extends State<Void> {
                                       TextButton(
                                         onPressed: () {
                                           Navigator.pop(context);
-                                          deleteInvoice(invoice);
                                         },
                                         child: const Text("Hapus"),
                                       ),

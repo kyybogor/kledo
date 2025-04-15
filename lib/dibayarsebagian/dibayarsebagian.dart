@@ -19,7 +19,7 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
   bool isLoading = true;
   bool dataChanged = false;
 
-  String selectedMonth = DateFormat('MM').format(DateTime.now());
+  String selectedMonth = DateFormat('MMMM').format(DateTime.now());
   String selectedYear = DateFormat('yyyy').format(DateTime.now());
 
   @override
@@ -42,7 +42,10 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
             "name": item["nama"] ?? item["1"],
             "invoice": item["invoice"] ?? item["2"],
             "date": item["date"] ?? item["3"],
+            "due": item["due"] ?? item["3"],
+            "alamat": item["alamat"] ?? item["3"],
             "amount": item["amount"] ?? item["4"],
+            "status": item["status"] ?? item["5"],
           };
         }).toList();
 
@@ -68,7 +71,7 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
         try {
           final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
           final matchMonth = selectedMonth == 'Semua' ||
-              invoiceDate.month.toString().padLeft(2, '0') == selectedMonth;
+              DateFormat('MMMM').format(invoiceDate) == selectedMonth;
           final matchYear = selectedYear == 'Semua' ||
               invoiceDate.year.toString() == selectedYear;
           return matchMonth && matchYear;
@@ -79,19 +82,25 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
     });
   }
 
-
   void _onSearchChanged() {
     String keyword = _searchController.text.toLowerCase();
     setState(() {
       filteredInvoices = invoices.where((invoice) {
-        final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
-        final matchMonth = selectedMonth == 'Semua' ||
-            invoiceDate.month.toString().padLeft(2, '0') == selectedMonth;
-        final matchYear = selectedYear == 'Semua' ||
-            invoiceDate.year.toString() == selectedYear;
-        return invoice["name"].toString().toLowerCase().contains(keyword) &&
-            matchMonth &&
-            matchYear;
+        try {
+          final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
+          final matchMonth = selectedMonth == 'Semua' ||
+              DateFormat('MMMM').format(invoiceDate) == selectedMonth;
+          final matchYear = selectedYear == 'Semua' ||
+              invoiceDate.year.toString() == selectedYear;
+          return invoice["name"]
+                  .toString()
+                  .toLowerCase()
+                  .contains(keyword) &&
+              matchMonth &&
+              matchYear;
+        } catch (e) {
+          return false;
+        }
       }).toList();
     });
   }
@@ -154,8 +163,10 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
               child: Row(
                 children: [
-                  Expanded(
+                  Flexible(
+                    flex: 1,
                     child: Container(
+                      padding: const EdgeInsets.only(right: 6),
                       decoration: BoxDecoration(
                         color: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(10),
@@ -168,28 +179,20 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                         ],
                       ),
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         value: selectedMonth,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.calendar_today),
                           labelText: "Bulan",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          filled: true,
-                          fillColor: Colors.transparent,
+                          border: InputBorder.none,
                         ),
                         items: ['Semua', ...List.generate(12, (index) {
-                          final month = (index + 1).toString().padLeft(2, '0');
+                          final month = DateFormat('MMMM').format(DateTime(0, index + 1));
                           return month;
                         })].map((month) {
                           return DropdownMenuItem(
                             value: month,
-                            child: Text(
-                              month == 'Semua'
-                                  ? 'Semua Bulan'
-                                  : DateFormat('MMMM').format(DateTime(0, int.parse(month))),
-                            ),
+                            child: Text(month == 'Semua' ? 'Semua Bulan' : month),
                           );
                         }).toList(),
                         onChanged: (value) {
@@ -203,11 +206,12 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
+                  const SizedBox(width: 8),
+                  Flexible(
+                    flex: 1,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
+                        color: Colors.green.shade50,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
@@ -218,16 +222,12 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                         ],
                       ),
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         value: selectedYear,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.date_range),
                           labelText: "Tahun",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          filled: true,
-                          fillColor: Colors.transparent,
+                          border: InputBorder.none,
                         ),
                         items: ['Semua', '2023', '2024', '2025'].map((year) {
                           return DropdownMenuItem(
