@@ -236,7 +236,7 @@ class _VoidState extends State<Void> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.green.shade50,
+                        color: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
@@ -301,7 +301,7 @@ class _VoidState extends State<Void> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
+                                  color: Colors.grey.shade50,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(

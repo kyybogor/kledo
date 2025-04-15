@@ -236,7 +236,7 @@ class _LunasState extends State<Lunas> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.green.shade50,
+                        color: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
@@ -301,7 +301,7 @@ class _LunasState extends State<Lunas> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.green.shade100,
+                                  color: Colors.green.shade50,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(

@@ -236,7 +236,7 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.green.shade50,
+                        color: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
@@ -301,7 +301,7 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.amber.shade100,
+                                  color: Colors.amber.shade50,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(

@@ -236,7 +236,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.green.shade50,
+                        color: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
