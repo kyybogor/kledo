@@ -301,7 +301,7 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.pink.shade100,
+                                  color: Colors.amber.shade100,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
