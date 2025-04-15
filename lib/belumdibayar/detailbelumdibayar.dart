@@ -17,7 +17,7 @@ class Detailbelumdibayar extends StatelessWidget {
       final double value = double.parse(amount);
       return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(value);
     } catch (e) {
-      return 'Invalid amount'; // Jika format gagal, tampilkan pesan error
+      return 'Invalid amount';
     }
   }
 
