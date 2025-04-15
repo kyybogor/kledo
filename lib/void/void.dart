@@ -32,7 +32,7 @@ class _VoidState extends State<Void> {
   Future<void> fetchInvoices() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4'));
+          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -67,8 +67,11 @@ class _VoidState extends State<Void> {
       filteredInvoices = invoices.where((invoice) {
         try {
           final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
-          return invoiceDate.month.toString().padLeft(2, '0') == selectedMonth &&
+          final matchMonth = selectedMonth == 'Semua' ||
+              invoiceDate.month.toString().padLeft(2, '0') == selectedMonth;
+          final matchYear = selectedYear == 'Semua' ||
               invoiceDate.year.toString() == selectedYear;
+          return matchMonth && matchYear;
         } catch (e) {
           return false;
         }
@@ -111,9 +114,13 @@ class _VoidState extends State<Void> {
     setState(() {
       filteredInvoices = invoices.where((invoice) {
         final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
-        return invoice["name"].toString().toLowerCase().contains(keyword) &&
-            invoiceDate.month.toString().padLeft(2, '0') == selectedMonth &&
+        final matchMonth = selectedMonth == 'Semua' ||
+            invoiceDate.month.toString().padLeft(2, '0') == selectedMonth;
+        final matchYear = selectedYear == 'Semua' ||
             invoiceDate.year.toString() == selectedYear;
+        return invoice["name"].toString().toLowerCase().contains(keyword) &&
+            matchMonth &&
+            matchYear;
       }).toList();
     });
   }
@@ -153,14 +160,6 @@ class _VoidState extends State<Void> {
               Navigator.pop(context, dataChanged);
             },
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.filter_alt_outlined, color: Colors.blue),
-              onPressed: () {
-                // Optional: open dialog or show options
-              },
-            ),
-          ],
         ),
         body: Column(
           children: [
@@ -181,48 +180,105 @@ class _VoidState extends State<Void> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  DropdownButton<String>(
-                    value: selectedMonth,
-                    items: List.generate(12, (index) {
-                      final month = (index + 1).toString().padLeft(2, '0');
-                      return DropdownMenuItem(
-                        value: month,
-                        child: Text(DateFormat('MMMM').format(DateTime(0, index + 1))),
-                      );
-                    }),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          selectedMonth = value;
-                        });
-                        filterByMonthYear();
-                      }
-                    },
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        value: selectedMonth,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.calendar_today),
+                          labelText: "Bulan",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          fillColor: Colors.transparent,
+                        ),
+                        items: ['Semua', ...List.generate(12, (index) {
+                          final month = (index + 1).toString().padLeft(2, '0');
+                          return month;
+                        })].map((month) {
+                          return DropdownMenuItem(
+                            value: month,
+                            child: Text(
+                              month == 'Semua'
+                                  ? 'Semua Bulan'
+                                  : DateFormat('MMMM').format(DateTime(0, int.parse(month))),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              selectedMonth = value;
+                            });
+                            filterByMonthYear();
+                          }
+                        },
+                      ),
+                    ),
                   ),
-                  DropdownButton<String>(
-                    value: selectedYear,
-                    items: ['2023', '2024', '2025'].map((year) {
-                      return DropdownMenuItem(
-                        value: year,
-                        child: Text(year),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          selectedYear = value;
-                        });
-                        filterByMonthYear();
-                      }
-                    },
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        value: selectedYear,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.date_range),
+                          labelText: "Tahun",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          fillColor: Colors.transparent,
+                        ),
+                        items: ['Semua', '2023', '2024', '2025'].map((year) {
+                          return DropdownMenuItem(
+                            value: year,
+                            child: Text(year == 'Semua' ? 'Semua Tahun' : year),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              selectedYear = value;
+                            });
+                            filterByMonthYear();
+                          }
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 8),
             Expanded(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
