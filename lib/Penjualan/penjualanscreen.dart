@@ -1,21 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
+import 'package:flutter_application_kledo/pengiriman/pengirimanscreen.dart';
 
 class Penjualanscreen extends StatefulWidget {
   const Penjualanscreen({super.key});
 
-    final menuItems = const [
+  final menuItems = const [
     {'icon': Icons.house, 'title': 'Beranda'},
     {
       'icon': Icons.shopping_bag,
       'title': 'Penjualan',
-      'children': ['Overview', 'Tagihan', 'Pengiriman', 'Pemesanan', 'Penawaran']
+      'children': [
+        'Overview',
+        'Tagihan',
+        'Pengiriman',
+        'Pemesanan',
+        'Penawaran'
+      ]
     },
     {
       'icon': Icons.shopping_cart,
       'title': 'Pembelian',
-      'children': ['Overview', 'Tagihan Pembelian', 'Pengiriman Pembelian', 'Pesanan Pembelian', 'Penawaran Pembelian']
+      'children': [
+        'Overview',
+        'Tagihan Pembelian',
+        'Pengiriman Pembelian',
+        'Pesanan Pembelian',
+        'Penawaran Pembelian'
+      ]
     },
     {'icon': Icons.money_off, 'title': 'Biaya'},
     {'icon': Icons.inventory_2, 'title': 'Produk'},
@@ -135,10 +148,19 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
               );
             },
           ),
-          const _MenuIcon(
-              icon: Icons.local_shipping,
-              color: Colors.lightBlue,
-              label: 'Pengiriman'),
+          _MenuIcon(
+            icon: Icons.local_shipping,
+            color: Colors.lightBlue,
+            label: 'Pengiriman',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PengirimanPage(),
+                ),
+              );
+            },
+          ),
           const _MenuIcon(
               icon: Icons.access_time,
               color: Colors.lightGreen,
