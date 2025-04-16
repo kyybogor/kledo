@@ -99,38 +99,42 @@ Widget _buildAppBar() {
         padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Builder(
-                  builder: (context) => Padding(
-                    padding: const EdgeInsets.only(top: 10), 
-                    child: Container(
-                      height: 48,
-                      width: 48,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.menu, color: Colors.white),
-                        iconSize: 26,
-                        onPressed: () => Scaffold.of(context).openDrawer(),
-                      ),
-                    ),
-                  ),
-                ),
-                const Text(
-                  'Penjualan',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(width: 48), // untuk simetri kanan
-              ],
-            ),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Builder(
+      builder: (context) => Padding(
+        padding: const EdgeInsets.only(top: 28), 
+        child: Container(
+          height: 48,
+          width: 48,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.15),
+            shape: BoxShape.circle,
+          ),
+          child: IconButton(
+            icon: const Icon(Icons.menu, color: Colors.white),
+            iconSize: 26,
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+      ),
+    ),
+    Padding(
+      padding: const EdgeInsets.only(top: 28),
+      child: const Text(
+        'Penjualan',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+    const SizedBox(width: 48), // Ini biar kanan dan kiri seimbang
+  ],
+),
+
           ],
         ),
       ),
