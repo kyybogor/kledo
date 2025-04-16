@@ -84,7 +84,7 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
 
 Widget _buildAppBar() {
   return ClipPath(
-    clipper: BottomWaveClipper(), // custom clipper untuk lengkungan
+    clipper: BottomWaveClipper(),
     child: Container(
       height: 130,
       width: double.infinity,
@@ -95,30 +95,49 @@ Widget _buildAppBar() {
           end: Alignment.bottomRight,
         ),
       ),
-      padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.menu, color: Colors.white),
-              onPressed: () => Scaffold.of(context).openDrawer(),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Builder(
+                  builder: (context) => Padding(
+                    padding: const EdgeInsets.only(top: 4), 
+                    child: Container(
+                      height: 48,
+                      width: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.menu, color: Colors.white),
+                        iconSize: 26,
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                      ),
+                    ),
+                  ),
+                ),
+                const Text(
+                  'Penjualan',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 48), // untuk simetri kanan
+              ],
             ),
-          ),
-          const Text(
-            'Penjualan',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(width: 48),
-        ],
+          ],
+        ),
       ),
     ),
   );
 }
+
 
   Widget _buildIconMenu() {
     return Container(
