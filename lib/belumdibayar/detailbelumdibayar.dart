@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart'; // Tambahan import
 
 class Detailbelumdibayar extends StatefulWidget {
   final Map<String, dynamic> invoice;
@@ -22,13 +23,16 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
 
   Future<void> fetchBarang() async {
     final invoiceId = widget.invoice['id'].toString();
-    final url = Uri.parse("http://192.168.1.11/connect/JSON/barang_invoice.php?id=$invoiceId");
+    final url =
+        Uri.parse("http://192.168.1.11/connect/JSON/barang_invoice.php");
 
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final filtered = data.where((item) => item['invoice_id'].toString() == invoiceId).toList();
+        final filtered = data
+            .where((item) => item['invoice_id'].toString() == invoiceId)
+            .toList();
         setState(() {
           barang = filtered;
         });
@@ -38,6 +42,21 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
     } catch (e) {
       print("Error saat mengambil data barang: $e");
     }
+  }
+
+  double getTotalSemuaBarang() {
+    double total = 0;
+    for (var item in barang) {
+      final harga = double.tryParse(item['total'].toString()) ?? 0;
+      total += harga;
+    }
+    return total;
+  }
+
+  // Format angka dengan titik
+  String formatRupiah(double number) {
+    final formatter = NumberFormat("#,###", "id_ID");
+    return formatter.format(number);
   }
 
   Color _getStatusColor(String status) {
@@ -73,54 +92,98 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
     final statusColor = _getStatusColor(status);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tagihan', style: TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: AppBar(
+            title: const Text('Tagihan',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.white,
+            elevation: 0,
+          ),
+        ),
       ),
       body: Column(
         children: [
-          _buildHeader(invoiceNumber, contactName, address, date, dueDate, status, statusColor),
+          _buildHeader(invoiceNumber, contactName, address, date, dueDate,
+              status, statusColor),
           const SizedBox(height: 12),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text("Barang Dibeli", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              child: Text("Barang Dibeli",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
           ),
           Expanded(
-            child: barang.isEmpty
-                ? const Center(child: Text("Tidak ada barang untuk invoice ini."))
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: barang.length,
-                    itemBuilder: (context, index) {
-                      final item = barang[index];
-                      return Card(
-                        child: ListTile(
-                          title: Text(item['nama_barang']),
-                          subtitle: Text("${item['jumlah']} x Rp ${item['harga']}"),
-                          trailing: Text("Rp ${item['total']}", style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: Column(
+              children: [
+                Expanded(
+                  child: barang.isEmpty
+                      ? const Center(
+                          child: Text("Tidak ada barang untuk invoice ini."))
+                      : ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: barang.length,
+                          itemBuilder: (context, index) {
+                            final item = barang[index];
+                            return Card(
+                              child: ListTile(
+                                title: Text(item['nama_barang']),
+                                subtitle: Text(
+                                    "${item['jumlah']} x Rp ${formatRupiah(double.tryParse(item['harga']) ?? 0)}"),
+                                trailing: Text(
+                                    "Rp ${formatRupiah(double.tryParse(item['total']) ?? 0)}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
+                ),
+                if (barang.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    width: double.infinity,
+                    color: Colors.grey.shade200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Total Semua",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        Text("Rp ${formatRupiah(getTotalSemuaBarang())}",
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
                   ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(String invoiceNumber, String contactName, String address, String date, String dueDate, String status, Color statusColor) {
+  Widget _buildHeader(String invoiceNumber, String contactName, String address,
+      String date, String dueDate, String status, Color statusColor) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF0052D4), Color(0xFF4364F7)],
+          colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -132,25 +195,36 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(invoiceNumber, style: const TextStyle(fontSize: 16, color: Colors.white70)),
+          Text(invoiceNumber,
+              style: const TextStyle(fontSize: 16, color: Colors.white70)),
           const SizedBox(height: 16),
-          Text(contactName, style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+          Text(contactName,
+              style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold)),
           const SizedBox(height: 2),
-          Text(address, style: const TextStyle(fontSize: 13, color: Colors.white)),
+          Text(address,
+              style: const TextStyle(fontSize: 13, color: Colors.white)),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30)),
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(30)),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   width: 25,
                   height: 25,
-                  decoration: BoxDecoration(color: statusColor.withOpacity(0.6), shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                      color: statusColor.withOpacity(0.6),
+                      shape: BoxShape.circle),
                 ),
                 const SizedBox(width: 8),
-                Text(status, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
+                Text(status,
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.w500)),
               ],
             ),
           ),
@@ -160,7 +234,8 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.calendar_today, size: 16, color: Colors.white),
+                  const Icon(Icons.calendar_today,
+                      size: 16, color: Colors.white),
                   const SizedBox(width: 6),
                   Text(date, style: const TextStyle(color: Colors.white)),
                 ],
