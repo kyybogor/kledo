@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class Detailbelumdibayar extends StatefulWidget {
   final Map<String, dynamic> invoice;
@@ -13,6 +14,8 @@ class Detailbelumdibayar extends StatefulWidget {
 
 class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
   List<dynamic> barang = [];
+
+  final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
 
   @override
   void initState() {
@@ -36,6 +39,14 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
       }
     } catch (e) {
       print("Error: $e");
+
+      // Dummy fallback data (for local testing)
+      setState(() {
+        barang = [
+          {'nama_barang': 'Kopi Arabika', 'jumlah': '2', 'harga': '25000', 'total': '50000'},
+          {'nama_barang': 'Teh Hijau', 'jumlah': '1', 'harga': '20000', 'total': '20000'}
+        ];
+      });
     }
   }
 
@@ -57,6 +68,16 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
         return Colors.blue;
       default:
         return Colors.white;
+    }
+  }
+
+  String formatTanggal(String tanggal) {
+    try {
+      final formatter = DateFormat('dd MMM yyyy', 'id_ID');
+      final date = DateTime.parse(tanggal);
+      return formatter.format(date);
+    } catch (e) {
+      return tanggal;
     }
   }
 
@@ -98,16 +119,19 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
                     itemCount: barang.length,
                     itemBuilder: (context, index) {
                       final item = barang[index];
+                      final harga = int.tryParse(item['harga'] ?? '0') ?? 0;
+                      final total = int.tryParse(item['total'] ?? '0') ?? 0;
                       return Card(
                         child: ListTile(
                           title: Text(item['nama_barang']),
-                          subtitle: Text("${item['jumlah']} x Rp ${item['harga']}"),
-                          trailing: Text("Rp ${item['total']}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text("${item['jumlah']} x ${currencyFormatter.format(harga)}"),
+                          trailing: Text(currencyFormatter.format(total), style: const TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       );
                     },
                   ),
           ),
+          _buildTotalSection(),
         ],
       ),
     );
@@ -161,18 +185,39 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
                 children: [
                   const Icon(Icons.calendar_today, size: 16, color: Colors.white),
                   const SizedBox(width: 6),
-                  Text(date, style: const TextStyle(color: Colors.white)),
+                  Text(formatTanggal(date), style: const TextStyle(color: Colors.white)),
                 ],
               ),
               Row(
                 children: [
                   const Icon(Icons.access_time, size: 16, color: Colors.white),
                   const SizedBox(width: 6),
-                  Text(dueDate, style: const TextStyle(color: Colors.white)),
+                  Text(formatTanggal(dueDate), style: const TextStyle(color: Colors.white)),
                 ],
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTotalSection() {
+    final total = barang.fold<int>(0, (sum, item) {
+      final itemTotal = int.tryParse(item['total'] ?? '0') ?? 0;
+      return sum + itemTotal;
+    });
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.grey)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text("Total", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(currencyFormatter.format(total), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green)),
         ],
       ),
     );
