@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class BelumDibayar extends StatefulWidget {
   const BelumDibayar({super.key});
@@ -18,6 +19,9 @@ class _BelumDibayarState extends State<BelumDibayar> {
   bool isLoading = true;
   bool dataChanged = false;
 
+  String selectedMonth = DateFormat('MM').format(DateTime.now());
+  String selectedYear = DateFormat('yyyy').format(DateTime.now());
+
   @override
   void initState() {
     super.initState();
@@ -25,7 +29,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
     fetchInvoices();
   }
 
-  Future<void> fetchInvoices() async {
+Future<void> fetchInvoices() async {
     try {
       final response = await http.get(Uri.parse('http://192.168.1.11/connect/JSON/index.php'));
 
@@ -61,44 +65,48 @@ class _BelumDibayarState extends State<BelumDibayar> {
       });
     }
   }
-
-  Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://192.168.1.11/connect/JSON/index.php'),
-        body: {
-          'invoice': invoice['invoice'],
-        },
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          dataChanged = true;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Data berhasil dihapus")),
-        );
-      } else {
-        throw Exception("Gagal menghapus data");
-      }
-    } catch (e) {
-      print("Error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gagal menghapus data")),
-      );
-    }
+  void filterByMonthYear() {
+    setState(() {
+      filteredInvoices = invoices.where((invoice) {
+        try {
+          final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
+          final matchMonth = selectedMonth == 'Semua' ||
+              invoiceDate.month.toString().padLeft(2, '0') == selectedMonth;
+          final matchYear = selectedYear == 'Semua' ||
+              invoiceDate.year.toString() == selectedYear;
+          return matchMonth && matchYear;
+        } catch (e) {
+          return false;
+        }
+      }).toList();
+    });
   }
 
   void _onSearchChanged() {
     String keyword = _searchController.text.toLowerCase();
     setState(() {
       filteredInvoices = invoices.where((invoice) {
-        return invoice["name"].toString().toLowerCase().contains(keyword);
+        final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
+        final matchMonth = selectedMonth == 'Semua' ||
+            invoiceDate.month.toString().padLeft(2, '0') == selectedMonth;
+        final matchYear = selectedYear == 'Semua' ||
+            invoiceDate.year.toString() == selectedYear;
+        return invoice["name"].toString().toLowerCase().contains(keyword) &&
+            matchMonth &&
+            matchYear;
       }).toList();
     });
+  }
+
+  String formatRupiah(String amount) {
+    try {
+      final double value = double.parse(amount);
+      return NumberFormat.currency(
+              locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
+          .format(value);
+    } catch (e) {
+      return amount;
+    }
   }
 
   @override
@@ -117,7 +125,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
+          title: const Text("Belum Dibayar",
+              style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -126,12 +135,6 @@ class _BelumDibayarState extends State<BelumDibayar> {
               Navigator.pop(context, dataChanged);
             },
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.filter_alt_outlined, color: Colors.blue),
-              onPressed: () {},
-            ),
-          ],
         ),
         body: Column(
           children: [
@@ -151,13 +154,89 @@ class _BelumDibayarState extends State<BelumDibayar> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text("April 2025", style: TextStyle(fontWeight: FontWeight.bold)),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
+              child: Row(
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: DropdownButtonFormField<String>(
+                      value: selectedMonth,
+                      isExpanded: true,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.calendar_today),
+                        labelText: "Bulan",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.blue.shade50,
+                      ),
+                      items: [
+                        'Semua',
+                        ...List.generate(12, (index) {
+                          final month = (index + 1).toString().padLeft(2, '0');
+                          return month;
+                        })
+                      ].map((month) {
+                        return DropdownMenuItem(
+                          value: month,
+                          child: Text(
+                            month == 'Semua'
+                                ? 'Semua Bulan'
+                                : DateFormat('MMMM')
+                                    .format(DateTime(0, int.parse(month))),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            selectedMonth = value;
+                          });
+                          filterByMonthYear();
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    flex: 1,
+                    child: DropdownButtonFormField<String>(
+                      value: selectedYear,
+                      isExpanded: true,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.date_range),
+                        labelText: "Tahun",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.blue.shade50,
+                      ),
+                      items: ['Semua', '2023', '2024', '2025'].map((year) {
+                        return DropdownMenuItem(
+                          value: year,
+                          child: Text(year == 'Semua' ? 'Semua Tahun' : year),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            selectedYear = value;
+                          });
+                          filterByMonthYear();
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
+            const SizedBox(height: 8),
             Expanded(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -177,13 +256,14 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                 ],
                               ),
                               trailing: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.pink.shade100,
+                                  color: Colors.pink.shade50,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  invoice["amount"],
+                                  formatRupiah(invoice["amount"]),
                                   style: const TextStyle(color: Colors.pink),
                                 ),
                               ),
@@ -191,7 +271,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                 final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Detailbelumdibayar(invoice: invoice),
+                                    builder: (context) =>
+                                        Detailbelumdibayar(invoice: invoice),
                                   ),
                                 );
 
@@ -205,7 +286,8 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                   context: context,
                                   builder: (context) => AlertDialog(
                                     title: const Text("Hapus Data"),
-                                    content: const Text("Yakin ingin menghapus data ini?"),
+                                    content: const Text(
+                                        "Yakin ingin menghapus data ini?"),
                                     actions: [
                                       TextButton(
                                         onPressed: () => Navigator.pop(context),
@@ -214,7 +296,6 @@ class _BelumDibayarState extends State<BelumDibayar> {
                                       TextButton(
                                         onPressed: () {
                                           Navigator.pop(context);
-                                          deleteInvoice(invoice);
                                         },
                                         child: const Text("Hapus"),
                                       ),
@@ -233,9 +314,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const TambahInvoice(),
-              ),
+              MaterialPageRoute(builder: (context) => const TambahInvoice()),
             );
           },
           child: const Icon(Icons.add),
