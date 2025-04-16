@@ -50,20 +50,33 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
         elevation: 0,
         centerTitle: true,
         title: const Text(
           'Hayami',
           style: TextStyle(
-              color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        iconTheme: const IconThemeData(
+            color: Colors.white), // <- ini bikin icon menu jadi putih
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.notifications_none),
+            child: Icon(Icons.notifications_none, color: Colors.white),
           )
         ],
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
       ),
       drawer: const KledoDrawer(),
       body: SingleChildScrollView(
@@ -72,7 +85,16 @@ class _DashboardscreenState extends State<Dashboardscreen> {
           children: [
             Container(
               width: double.infinity,
-              color: Colors.blueAccent,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF1E3C72),
+                    Color(0xFF2A5298)
+                  ], // Warna gradasi
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
               padding: const EdgeInsets.all(16),
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -436,7 +458,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF1A75CF), Color(0xFF007BFF)],
+            colors: [Color.fromARGB(255, 78, 104, 129), Color.fromARGB(255, 55, 73, 94)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
