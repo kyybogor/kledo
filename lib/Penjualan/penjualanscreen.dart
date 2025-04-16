@@ -104,7 +104,7 @@ Widget _buildAppBar() {
               children: [
                 Builder(
                   builder: (context) => Padding(
-                    padding: const EdgeInsets.only(top: 4), 
+                    padding: const EdgeInsets.only(top: 10), 
                     child: Container(
                       height: 48,
                       width: 48,
@@ -497,21 +497,13 @@ class BottomWaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.lineTo(0, size.height - 40);
-
-    path.quadraticBezierTo(
-      size.width / 2,
-      size.height + 20,
-      size.width,
-      size.height - 40,
-    );
-
+    path.lineTo(0, size.height - 30);
+    path.quadraticBezierTo(size.width / 2, size.height, size.width, size.height - 30);
     path.lineTo(size.width, 0);
     path.close();
     return path;
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
-
