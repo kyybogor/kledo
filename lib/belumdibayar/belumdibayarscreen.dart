@@ -16,7 +16,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
   bool isLoading = true;
-  bool dataChanged = false; // Tambahkan flag ini
+  bool dataChanged = false;
 
   @override
   void initState() {
@@ -32,15 +32,18 @@ class _BelumDibayarState extends State<BelumDibayar> {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
-        invoices = data.map<Map<String, dynamic>>((item) {
+        invoices = data
+            .where((item) => item["status"] == "Belum Dibayar")
+            .map<Map<String, dynamic>>((item) {
           return {
+            "id": item["id"] ?? item["0"],
             "name": item["name"] ?? item["1"],
             "invoice": item["invoice"] ?? item["2"],
             "date": item["date"] ?? item["3"],
-            "due": item["due"] ?? item["3"],
-            "alamat": item["alamat"] ?? item["3"],
-            "amount": item["amount"] ?? item["4"],
-            "status": item["status"] ?? item["5"],
+            "due": item["due"] ?? item["4"],
+            "alamat": item["alamat"] ?? item["6"],
+            "amount": item["amount"] ?? item["5"],
+            "status": item["status"] ?? item["7"],
           };
         }).toList();
 
@@ -62,7 +65,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
   Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.102/connect/JSON/delete.php'),
+        Uri.parse('http://192.168.1.11/connect/JSON/index.php'),
         body: {
           'invoice': invoice['invoice'],
         },
@@ -72,7 +75,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
         setState(() {
           invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
           filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          dataChanged = true; // Set true jika ada yang dihapus
+          dataChanged = true;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -108,7 +111,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, dataChanged); // Kembalikan status perubahan
+        Navigator.pop(context, dataChanged);
         return false;
       },
       child: Scaffold(
@@ -120,7 +123,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              Navigator.pop(context, dataChanged); // Sama seperti tombol back
+              Navigator.pop(context, dataChanged);
             },
           ),
           actions: [
@@ -229,10 +232,11 @@ class _BelumDibayarState extends State<BelumDibayar> {
           backgroundColor: Colors.blue,
           onPressed: () {
             Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const TambahInvoice()),
-          );
+              context,
+              MaterialPageRoute(
+                builder: (context) => const TambahInvoice(),
+              ),
+            );
           },
           child: const Icon(Icons.add),
         ),
