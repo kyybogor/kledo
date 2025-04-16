@@ -88,7 +88,7 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF1A75CF), Color(0xFF007BFF)],
+          colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
