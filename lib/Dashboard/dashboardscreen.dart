@@ -458,7 +458,11 @@ class _KledoDrawerState extends State<KledoDrawer> {
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color.fromARGB(255, 78, 104, 129), Color.fromARGB(255, 55, 73, 94)],
+            colors: [
+  Color(0xFF1A2980), // Dark Blue Royal
+  Color(0xFF26D0CE), // Soft Aqua
+],
+
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
