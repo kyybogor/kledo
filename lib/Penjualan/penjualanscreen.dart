@@ -82,9 +82,11 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
     );
   }
 
-  Widget _buildAppBar() {
-    return Container(
-      height: 100,
+Widget _buildAppBar() {
+  return ClipPath(
+    clipper: BottomWaveClipper(), // custom clipper untuk lengkungan
+    child: Container(
+      height: 130,
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -92,12 +94,8 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
-        ),
       ),
-      padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
+      padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -118,8 +116,9 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
           const SizedBox(width: 48),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildIconMenu() {
     return Container(
@@ -474,3 +473,26 @@ class _StatCard extends StatelessWidget {
     );
   }
 }
+
+class BottomWaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 40);
+
+    path.quadraticBezierTo(
+      size.width / 2,
+      size.height + 20,
+      size.width,
+      size.height - 40,
+    );
+
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
