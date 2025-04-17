@@ -29,23 +29,43 @@ class OtpPage extends StatelessWidget {
               ),
               child: SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      SizedBox(height: 16),
-                      Text(
-                        'Lanjutkan Dengan OTP',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 50), // 🔽 Ini untuk menurunkan posisi konten
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back, color: Colors.white),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          const Expanded(
+                            child: Center(
+                              child: Text(
+                                'Lanjutkan Dengan OTP',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 48), // Biar teks tetap center
+                        ],
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Masukan email Anda, agar kami dapat mengirimkan kode OTP untuk proses login',
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                      const SizedBox(height: 10),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          'Masukan email Anda, agar kami dapat mengirimkan kode OTP untuk proses login',
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ],
                   ),

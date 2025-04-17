@@ -29,23 +29,43 @@ class LupaPasswordPage extends StatelessWidget {
               ),
               child: SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      SizedBox(height: 16),
-                      Text(
-                        'Lupa Password',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 50),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back, color: Colors.white),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          const Expanded(
+                            child: Center(
+                              child: Text(
+                                'Lupa Password',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 48), // agar judul tetap center
+                        ],
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Masukkan alamat email, dan kode untuk mereset password akan dikirim ke emailmu.',
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                      const SizedBox(height: 10),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          'Masukkan alamat email, dan kode untuk mereset password akan dikirim ke emailmu.',
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ],
                   ),
