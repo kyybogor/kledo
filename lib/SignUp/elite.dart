@@ -1,4 +1,49 @@
-import 'package:flutter/material.dart' show Align, Alignment, BorderRadius, BoxDecoration, BuildContext, Color, Colors, Column, Container, CrossAxisAlignment, EdgeInsets, ElevatedButton, FontWeight, GestureDetector, Icon, IconButton, IconData, Icons, InputDecoration, LinearGradient, MaterialApp, MaterialPageRoute, Navigator, Padding, Radius, RoundedRectangleBorder, Scaffold, ScaffoldMessenger, SingleChildScrollView, SizedBox, SnackBar, State, StatefulWidget, Text, TextButton, TextEditingController, TextField, TextSpan, TextStyle, UnderlineInputBorder, Widget, runApp;
+import 'package:flutter/material.dart'
+    show
+        Align,
+        Alignment,
+        BorderRadius,
+        BoxDecoration,
+        BuildContext,
+        Color,
+        Colors,
+        Column,
+        Container,
+        CrossAxisAlignment,
+        EdgeInsets,
+        ElevatedButton,
+        FontWeight,
+        GestureDetector,
+        Icon,
+        IconButton,
+        IconData,
+        Icons,
+        Ink,
+        InputDecoration,
+        LinearGradient,
+        MaterialApp,
+        MaterialPageRoute,
+        Navigator,
+        Padding,
+        Radius,
+        RoundedRectangleBorder,
+        Scaffold,
+        ScaffoldMessenger,
+        SingleChildScrollView,
+        SizedBox,
+        SnackBar,
+        State,
+        StatefulWidget,
+        Text,
+        TextButton,
+        TextEditingController,
+        TextField,
+        TextSpan,
+        TextStyle,
+        UnderlineInputBorder,
+        Widget,
+        runApp;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_kledo/Login/loginScreen.dart';
 
 void main() {
@@ -22,9 +67,7 @@ class _EliteRegisState extends State<EliteRegis> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController couponController = TextEditingController();
 
-
   bool _showCouponField = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +78,11 @@ class _EliteRegisState extends State<EliteRegis> {
             // Header
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 40),
+              padding: const EdgeInsets.only(
+                  top: 60, left: 20, right: 20, bottom: 40),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [ Colors.blueGrey, Colors.grey],
+                  colors: [Colors.blueGrey, Colors.grey],
                 ),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(50),
@@ -83,9 +127,11 @@ class _EliteRegisState extends State<EliteRegis> {
                 children: [
                   _buildTextField(Icons.person, "Nama lengkap", nameController),
                   const SizedBox(height: 16),
-                  _buildTextField(Icons.apartment, "Nama perusahaan", companyController),
+                  _buildTextField(
+                      Icons.apartment, "Nama perusahaan", companyController),
                   const SizedBox(height: 16),
-                  _buildTextField(Icons.phone, "Nomor telepon", phoneController),
+                  _buildTextField(
+                      Icons.phone, "Nomor telepon", phoneController),
                   const SizedBox(height: 16),
                   _buildTextField(Icons.email, "Email", emailController),
                   const SizedBox(height: 12),
@@ -98,46 +144,67 @@ class _EliteRegisState extends State<EliteRegis> {
                         });
                       },
                       child: Text(
-                        _showCouponField ? 'Sembunyikan Kode Kupon' : 'Masukkan Kode Kupon',
+                        _showCouponField
+                            ? 'Sembunyikan Kode Kupon'
+                            : 'Masukkan Kode Kupon',
                         style: const TextStyle(color: Colors.blue),
                       ),
                     ),
                   ),
-
                   if (_showCouponField)
-                    _buildTextField(Icons.card_giftcard, "Kode Kupon", couponController),
-                    
+                    _buildTextField(
+                        Icons.card_giftcard, "Kode Kupon", couponController),
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade700,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Colors.blueGrey, Colors.grey],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          constraints: const BoxConstraints(
+                              minWidth: double.infinity, minHeight: 50),
+                          child: const Text(
+                            "DAFTAR",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 243, 245, 247),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Anda berhasil mendaftarkan akun, silakan masuk.')),
+                          const SnackBar(
+                              content: Text(
+                                  'Anda berhasil mendaftarkan akun, silakan masuk.')),
                         );
                       },
-                      child: const Text("DAFTAR",
-                      style: TextStyle(color: Color.fromARGB(255, 243, 245, 247))
-                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                    },
                     child: const Text.rich(
                       TextSpan(
                         text: 'Sudah punya akun? ',
@@ -160,7 +227,8 @@ class _EliteRegisState extends State<EliteRegis> {
     );
   }
 
-  Widget _buildTextField(IconData icon, String hint, TextEditingController controller) {
+  Widget _buildTextField(
+      IconData icon, String hint, TextEditingController controller) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(

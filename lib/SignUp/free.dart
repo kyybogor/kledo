@@ -33,7 +33,8 @@ class _FreeRegis extends State<FreeRegis> {
             // Header
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 40),
+              padding: const EdgeInsets.only(
+                  top: 60, left: 20, right: 20, bottom: 40),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Colors.blue, Colors.blueAccent],
@@ -45,7 +46,7 @@ class _FreeRegis extends State<FreeRegis> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Tombol Back
+                  // Back Button
                   Align(
                     alignment: Alignment.topLeft,
                     child: IconButton(
@@ -83,9 +84,11 @@ class _FreeRegis extends State<FreeRegis> {
                 children: [
                   _buildTextField(Icons.person, "Nama lengkap", nameController),
                   const SizedBox(height: 16),
-                  _buildTextField(Icons.apartment, "Nama perusahaan", companyController),
+                  _buildTextField(
+                      Icons.apartment, "Nama perusahaan", companyController),
                   const SizedBox(height: 16),
-                  _buildTextField(Icons.phone, "Nomor telepon", phoneController),
+                  _buildTextField(
+                      Icons.phone, "Nomor telepon", phoneController),
                   const SizedBox(height: 16),
                   _buildTextField(Icons.email, "Email", emailController),
                   const SizedBox(height: 12),
@@ -98,34 +101,55 @@ class _FreeRegis extends State<FreeRegis> {
                         });
                       },
                       child: Text(
-                        _showCouponField ? 'Sembunyikan Kode Kupon' : 'Masukkan Kode Kupon',
+                        _showCouponField
+                            ? 'Sembunyikan Kode Kupon'
+                            : 'Masukkan Kode Kupon',
                         style: const TextStyle(color: Colors.blue),
                       ),
                     ),
                   ),
-
                   if (_showCouponField)
-                    _buildTextField(Icons.card_giftcard, "Kode Kupon", couponController),
-
+                    _buildTextField(
+                        Icons.card_giftcard, "Kode Kupon", couponController),
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade700,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Colors.blue, Colors.blueAccent],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          constraints: const BoxConstraints(
+                              minWidth: double.infinity, minHeight: 50),
+                          child: const Text(
+                            "DAFTAR",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 243, 245, 247),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Anda berhasil mendaftarkan akun, silakan masuk.')),
+                          const SnackBar(
+                              content: Text(
+                                  'Anda berhasil mendaftarkan akun, silakan masuk.')),
                         );
                       },
-                      child: const Text("DAFTAR",
-                        style: TextStyle(color: Color.fromARGB(255, 243, 245, 247))
-                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -160,7 +184,8 @@ class _FreeRegis extends State<FreeRegis> {
     );
   }
 
-  Widget _buildTextField(IconData icon, String hint, TextEditingController controller) {
+  Widget _buildTextField(
+      IconData icon, String hint, TextEditingController controller) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
