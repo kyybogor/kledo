@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String _baseUrl = 'http://192.168.1.18/hiyami/login2.php'; // ganti sesuai IP
+  static const String _baseUrl = 'http://192.168.1.64/connect/JSON/login.php'; // ganti sesuai IP
 
   static Future<Map<String, dynamic>> loginUser(String email, String password) async {
     try {
