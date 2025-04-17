@@ -20,14 +20,17 @@ class _ProRegisState extends State<ProRegis> {
   final TextEditingController companyController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController couponController = TextEditingController();
 
   bool _showCouponField = false;
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        padding: EdgeInsets.zero, // hapus padding default
         child: Column(
           children: [
             // Header
@@ -82,13 +85,34 @@ class _ProRegisState extends State<ProRegis> {
                 children: [
                   _buildTextField(Icons.person, "Nama lengkap", nameController),
                   const SizedBox(height: 16),
-                  _buildTextField(
-                      Icons.apartment, "Nama perusahaan", companyController),
+                  _buildTextField(Icons.apartment, "Nama perusahaan", companyController),
                   const SizedBox(height: 16),
-                  _buildTextField(
-                      Icons.phone, "Nomor telepon", phoneController),
+                  _buildTextField(Icons.phone, "Nomor telepon", phoneController),
                   const SizedBox(height: 16),
                   _buildTextField(Icons.email, "Email", emailController),
+                  const SizedBox(height: 16),
+
+                  // Tambahkan kolom password
+                  TextField(
+                    controller: passwordController,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.lock),
+                      hintText: "Password",
+                      border: const UnderlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+
                   const SizedBox(height: 12),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -106,61 +130,54 @@ class _ProRegisState extends State<ProRegis> {
                       ),
                     ),
                   ),
+
                   if (_showCouponField)
-                    _buildTextField(
-                        Icons.card_giftcard, "Kode Kupon", couponController),
-                  const SizedBox(height: 16),
+                    _buildTextField(Icons.card_giftcard, "Kode Kupon", couponController),
+
+                  const SizedBox(height: 24),
+
+                  // Tombol DAFTAR
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(30),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Anda berhasil mendaftarkan akun, silakan masuk.'),
+                          ),
+                        );
+                      },
                       child: Ink(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [
-                              Colors.brown,
-                              Color.fromARGB(255, 99, 65, 52)
-                            ],
+                            colors: [Colors.brown, Color.fromARGB(255, 99, 65, 52)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        child: Container(
-                          alignment: Alignment.center,
-                          constraints: const BoxConstraints(
-                              minWidth: double.infinity, minHeight: 50),
-                          child: const Text(
+                        child: const Center(
+                          child: Text(
                             "DAFTAR",
                             style: TextStyle(
-                              color: Color.fromARGB(255, 243, 245, 247),
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'Anda berhasil mendaftarkan akun, silakan masuk.')),
-                        );
-                      },
                     ),
                   ),
+
                   const SizedBox(height: 16),
+
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const LoginPage()),
                       );
                     },
                     child: const Text.rich(
@@ -185,8 +202,7 @@ class _ProRegisState extends State<ProRegis> {
     );
   }
 
-  Widget _buildTextField(
-      IconData icon, String hint, TextEditingController controller) {
+  Widget _buildTextField(IconData icon, String hint, TextEditingController controller) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(

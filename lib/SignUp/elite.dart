@@ -1,49 +1,4 @@
-import 'package:flutter/material.dart'
-    show
-        Align,
-        Alignment,
-        BorderRadius,
-        BoxDecoration,
-        BuildContext,
-        Color,
-        Colors,
-        Column,
-        Container,
-        CrossAxisAlignment,
-        EdgeInsets,
-        ElevatedButton,
-        FontWeight,
-        GestureDetector,
-        Icon,
-        IconButton,
-        IconData,
-        Icons,
-        Ink,
-        InputDecoration,
-        LinearGradient,
-        MaterialApp,
-        MaterialPageRoute,
-        Navigator,
-        Padding,
-        Radius,
-        RoundedRectangleBorder,
-        Scaffold,
-        ScaffoldMessenger,
-        SingleChildScrollView,
-        SizedBox,
-        SnackBar,
-        State,
-        StatefulWidget,
-        Text,
-        TextButton,
-        TextEditingController,
-        TextField,
-        TextSpan,
-        TextStyle,
-        UnderlineInputBorder,
-        Widget,
-        runApp;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Login/loginScreen.dart';
 
 void main() {
@@ -65,9 +20,11 @@ class _EliteRegisState extends State<EliteRegis> {
   final TextEditingController companyController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController couponController = TextEditingController();
 
   bool _showCouponField = false;
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +91,28 @@ class _EliteRegisState extends State<EliteRegis> {
                       Icons.phone, "Nomor telepon", phoneController),
                   const SizedBox(height: 16),
                   _buildTextField(Icons.email, "Email", emailController),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: passwordController,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.lock),
+                      hintText: "Password",
+                      border: const UnderlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -157,42 +136,43 @@ class _EliteRegisState extends State<EliteRegis> {
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Colors.blueGrey, Colors.grey],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(30),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(30),
+                        splashColor: Colors.black.withOpacity(0.2),
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Anda berhasil mendaftarkan akun, silakan masuk.',
+                              ),
+                            ),
+                          );
+                        },
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Colors.blue, Colors.blueAccent],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Container(
-                          alignment: Alignment.center,
-                          constraints: const BoxConstraints(
-                              minWidth: double.infinity, minHeight: 50),
-                          child: const Text(
-                            "DAFTAR",
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 243, 245, 247),
-                              fontWeight: FontWeight.bold,
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: const Text(
+                              "DAFTAR",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'Anda berhasil mendaftarkan akun, silakan masuk.')),
-                        );
-                      },
                     ),
                   ),
                   const SizedBox(height: 16),

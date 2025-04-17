@@ -25,7 +25,7 @@ class _FreeRegis extends State<FreeRegis> {
   final TextEditingController passwordController = TextEditingController();
 
   bool _showCouponField = false;
-  bool _isPasswordVisible = false;  // Untuk mengontrol visibility password
+  bool _isPasswordVisible = false; // Untuk mengontrol visibility password
 
   @override
   Widget build(BuildContext context) {
@@ -121,10 +121,11 @@ class _FreeRegis extends State<FreeRegis> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: EdgeInsets.zero, // Menghilangkan padding ekstra
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
+                        backgroundColor: Colors.transparent, // Transparan agar tidak ada area putih
                       ),
                       child: Ink(
                         decoration: BoxDecoration(
@@ -149,15 +150,13 @@ class _FreeRegis extends State<FreeRegis> {
                         ),
                       ),
                       onPressed: () async {
-                        var url = Uri.parse(
-                            "http://192.168.1.64/connect/JSON/free.php");
+                        var url = Uri.parse("http://192.168.1.64/connect/JSON/free.php");
 
                         // Tampilkan loading dialog
                         showDialog(
                           context: context,
                           barrierDismissible: false,
-                          builder: (context) =>
-                              const Center(child: CircularProgressIndicator()),
+                          builder: (context) => const Center(child: CircularProgressIndicator()),
                         );
 
                         try {
@@ -180,17 +179,14 @@ class _FreeRegis extends State<FreeRegis> {
                               context: context,
                               builder: (context) => AlertDialog(
                                 title: const Text("Pendaftaran Berhasil"),
-                                content: const Text(
-                                    "Akun Anda berhasil dibuat. Silakan masuk."),
+                                content: const Text("Akun Anda berhasil dibuat. Silakan masuk."),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
                                       Navigator.pop(context);
                                       Navigator.pushReplacement(
                                         context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const LoginPage()),
+                                        MaterialPageRoute(builder: (context) => const LoginPage()),
                                       );
                                     },
                                     child: const Text("OK"),
@@ -203,8 +199,7 @@ class _FreeRegis extends State<FreeRegis> {
                               context: context,
                               builder: (context) => AlertDialog(
                                 title: const Text("Gagal Daftar"),
-                                content:
-                                    Text("Pesan dari server: ${response.body}"),
+                                content: Text("Pesan dari server: ${response.body}"),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
@@ -266,7 +261,8 @@ class _FreeRegis extends State<FreeRegis> {
   }
 
   Widget _buildTextField(
-      IconData icon, String hint, TextEditingController controller, {bool isPassword = false}) {
+      IconData icon, String hint, TextEditingController controller,
+      {bool isPassword = false}) {
     return TextField(
       controller: controller,
       obscureText: isPassword, // Jika password, sembunyikan teks

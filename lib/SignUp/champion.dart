@@ -20,9 +20,11 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
   final TextEditingController companyController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController couponController = TextEditingController();
 
-  bool _showCouponField = false; // Tambahkan state
+  bool _showCouponField = false;
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -82,14 +84,15 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
                 children: [
                   _buildTextField(Icons.person, "Nama lengkap", nameController),
                   const SizedBox(height: 16),
-                  _buildTextField(
-                      Icons.apartment, "Nama perusahaan", companyController),
+                  _buildTextField(Icons.apartment, "Nama perusahaan", companyController),
                   const SizedBox(height: 16),
-                  _buildTextField(
-                      Icons.phone, "Nomor telepon", phoneController),
+                  _buildTextField(Icons.phone, "Nomor telepon", phoneController),
                   const SizedBox(height: 16),
                   _buildTextField(Icons.email, "Email", emailController),
+                  const SizedBox(height: 16),
+                  _buildPasswordField(),
                   const SizedBox(height: 12),
+
                   Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton(
@@ -99,58 +102,60 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
                         });
                       },
                       child: Text(
-                        _showCouponField
-                            ? 'Sembunyikan Kode Kupon'
-                            : 'Masukkan Kode Kupon',
+                        _showCouponField ? 'Sembunyikan Kode Kupon' : 'Masukkan Kode Kupon',
                         style: const TextStyle(color: Colors.blue),
                       ),
                     ),
                   ),
+
                   if (_showCouponField)
-                    _buildTextField(
-                        Icons.card_giftcard, "Kode Kupon", couponController),
-                  const SizedBox(height: 16),
+                    _buildTextField(Icons.card_giftcard, "Kode Kupon", couponController),
+
+                  const SizedBox(height: 24),
+
+                  // Tombol Daftar
                   SizedBox(
                     width: double.infinity,
+                    height: 50,
                     child: ElevatedButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Anda berhasil mendaftarkan akun, silakan masuk.'),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
                       ),
                       child: Ink(
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
                             colors: [Colors.orange, Colors.orangeAccent],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Container(
                           alignment: Alignment.center,
-                          constraints: const BoxConstraints(
-                              minWidth: double.infinity, minHeight: 50),
                           child: const Text(
                             "DAFTAR",
                             style: TextStyle(
-                              color: Color.fromARGB(255, 243, 245, 247),
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'Anda berhasil mendaftarkan akun, silakan masuk.')),
-                        );
-                      },
                     ),
                   ),
+
                   const SizedBox(height: 16),
+
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -172,6 +177,7 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 40),
                 ],
               ),
@@ -182,14 +188,35 @@ class _ChampRegisterPageState extends State<ChampRegisterPage> {
     );
   }
 
-  Widget _buildTextField(
-      IconData icon, String hint, TextEditingController controller) {
+  Widget _buildTextField(IconData icon, String hint, TextEditingController controller) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
         hintText: hint,
         border: const UnderlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return TextField(
+      controller: passwordController,
+      obscureText: _obscurePassword,
+      decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.lock),
+        hintText: "Password",
+        border: const UnderlineInputBorder(),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+          ),
+          onPressed: () {
+            setState(() {
+              _obscurePassword = !_obscurePassword;
+            });
+          },
+        ),
       ),
     );
   }
