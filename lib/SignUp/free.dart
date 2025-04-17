@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Login/loginScreen.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MaterialApp(
@@ -21,8 +22,10 @@ class _FreeRegis extends State<FreeRegis> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController couponController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   bool _showCouponField = false;
+  bool _isPasswordVisible = false;  // Untuk mengontrol visibility password
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +94,8 @@ class _FreeRegis extends State<FreeRegis> {
                       Icons.phone, "Nomor telepon", phoneController),
                   const SizedBox(height: 16),
                   _buildTextField(Icons.email, "Email", emailController),
+                  const SizedBox(height: 16),
+                  _buildPasswordField(), // Password Field with show/hide functionality
                   const SizedBox(height: 12),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -143,12 +148,88 @@ class _FreeRegis extends State<FreeRegis> {
                           ),
                         ),
                       ),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'Anda berhasil mendaftarkan akun, silakan masuk.')),
+                      onPressed: () async {
+                        var url = Uri.parse(
+                            "http://192.168.1.64/connect/JSON/free.php");
+
+                        // Tampilkan loading dialog
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) =>
+                              const Center(child: CircularProgressIndicator()),
                         );
+
+                        try {
+                          var response = await http.post(url, body: {
+                            "name": nameController.text,
+                            "company": companyController.text,
+                            "phone": phoneController.text,
+                            "email": emailController.text,
+                            "password": passwordController.text, // Password
+                          });
+
+                          Navigator.pop(context); // Tutup loading
+
+                          String body = response.body.trim().toLowerCase();
+                          print("Response status: ${response.statusCode}");
+                          print("Response body: '$body'");
+
+                          if (response.statusCode == 200 && body == "success") {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Pendaftaran Berhasil"),
+                                content: const Text(
+                                    "Akun Anda berhasil dibuat. Silakan masuk."),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const LoginPage()),
+                                      );
+                                    },
+                                    child: const Text("OK"),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Gagal Daftar"),
+                                content:
+                                    Text("Pesan dari server: ${response.body}"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("OK"),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          Navigator.pop(context); // Tutup loading
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Error"),
+                              content: Text("Terjadi kesalahan: $e"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       },
                     ),
                   ),
@@ -185,13 +266,38 @@ class _FreeRegis extends State<FreeRegis> {
   }
 
   Widget _buildTextField(
-      IconData icon, String hint, TextEditingController controller) {
+      IconData icon, String hint, TextEditingController controller, {bool isPassword = false}) {
     return TextField(
       controller: controller,
+      obscureText: isPassword, // Jika password, sembunyikan teks
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
         hintText: hint,
         border: const UnderlineInputBorder(),
+      ),
+    );
+  }
+
+  // Password field with Show/Hide toggle
+  Widget _buildPasswordField() {
+    return TextField(
+      controller: passwordController,
+      obscureText: !_isPasswordVisible, // Menggunakan _isPasswordVisible
+      decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.lock),
+        hintText: "Password",
+        border: const UnderlineInputBorder(),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+            color: Colors.blue,
+          ),
+          onPressed: () {
+            setState(() {
+              _isPasswordVisible = !_isPasswordVisible;
+            });
+          },
+        ),
       ),
     );
   }
