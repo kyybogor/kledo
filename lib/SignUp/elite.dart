@@ -154,7 +154,7 @@ class _EliteRegisState extends State<EliteRegis> {
                         child: Ink(
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Colors.blue, Colors.blueAccent],
+                              colors: [Colors.blueGrey, Colors.grey],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
