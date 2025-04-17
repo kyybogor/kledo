@@ -24,7 +24,7 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
   Future<void> fetchBarang() async {
     final invoiceId = widget.invoice['id'].toString();
     final url =
-        Uri.parse("http://192.168.1.11/connect/JSON/barang_invoice.php");
+        Uri.parse("http://192.168.1.64/connect/JSON/barang_invoice.php");
 
     try {
       final response = await http.get(url);
@@ -142,10 +142,21 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
                                 title: Text(item['nama_barang']),
                                 subtitle: Text(
                                     "${item['jumlah']} x Rp ${formatRupiah(double.tryParse(item['harga']) ?? 0)}"),
-                                trailing: Text(
+                                trailing: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                    color: statusColor.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
                                     "Rp ${formatRupiah(double.tryParse(item['total']) ?? 0)}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: statusColor,
+                                    ),
+                                  ),
+                                ),
                               ),
                             );
                           },
