@@ -25,10 +25,10 @@ class _SplashscreenState extends State<Splashscreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFD6D6D6), // abu-abu terang
       body: Center(
-        child: Image.asset(
-          'assets/images/kledo_logo.png', // pastikan path sesuai
-          width: 180,
-        ),
+        //child: Image.asset(
+          //'assets/images/kledo_logo.png', // pastikan path sesuai
+          //width: 180,
+        //),
       ),
     );
   }
