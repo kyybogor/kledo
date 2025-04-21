@@ -47,7 +47,6 @@ class _BiayaPageState extends State<BiayaPage> {
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
-        backgroundColor: Colors.blue,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
