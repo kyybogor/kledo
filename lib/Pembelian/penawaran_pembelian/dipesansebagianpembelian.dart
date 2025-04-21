@@ -5,14 +5,14 @@ import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class BelumDibayar extends StatefulWidget {
-  const BelumDibayar({super.key});
+class DipesanSebagianPembelianPage extends StatefulWidget {
+  const DipesanSebagianPembelianPage({super.key});
 
   @override
-  State<BelumDibayar> createState() => _BelumDibayarState();
+  State<DipesanSebagianPembelianPage> createState() => _DipesanSebagianPembelianPageState();
 }
 
-class _BelumDibayarState extends State<BelumDibayar> {
+class _DipesanSebagianPembelianPageState extends State<DipesanSebagianPembelianPage> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
@@ -29,32 +29,27 @@ class _BelumDibayarState extends State<BelumDibayar> {
     fetchInvoices();
   }
 
-Future<void> fetchInvoices() async {
+  Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.18/connect/JSON/index.php'));
+      final response = await http.get(Uri.parse(''));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
-        invoices = data
-            .where((item) => item["status"] == "Belum Dibayar")
-            .map<Map<String, dynamic>>((item) {
+        invoices = data.map<Map<String, dynamic>>((item) {
           return {
-            "id": item["id"] ?? item["0"],
-            "name": item["name"] ?? item["1"],
+            "name": item["nama"] ?? item["1"],
             "invoice": item["invoice"] ?? item["2"],
             "date": item["date"] ?? item["3"],
-            "due": item["due"] ?? item["4"],
-            "alamat": item["alamat"] ?? item["6"],
-            "amount": item["amount"] ?? item["5"],
-            "status": item["status"] ?? item["7"],
+            "amount": item["amount"] ?? item["4"],
           };
         }).toList();
 
         setState(() {
-          filteredInvoices = invoices;
           isLoading = false;
         });
+
+        filterByMonthYear();
       } else {
         throw Exception('Gagal mengambil data');
       }
@@ -65,6 +60,7 @@ Future<void> fetchInvoices() async {
       });
     }
   }
+
   void filterByMonthYear() {
     setState(() {
       filteredInvoices = invoices.where((invoice) {
@@ -125,7 +121,7 @@ Future<void> fetchInvoices() async {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Belum Dibayar",
+          title: const Text("Dipesan Sebagian",
               style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
@@ -259,12 +255,12 @@ Future<void> fetchInvoices() async {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.pink.shade50,
+                                  color: Colors.amber.shade50,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
                                   formatRupiah(invoice["amount"]),
-                                  style: const TextStyle(color: Colors.pink),
+                                  style: const TextStyle(color: Colors.amber),
                                 ),
                               ),
                               onTap: () async {

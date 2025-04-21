@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/Pembelian/pembelianscreen.dart';
 import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
-import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
 import 'package:flutter_application_kledo/pemesanan/pemesananscreen.dart';
 import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
 import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
@@ -127,18 +127,35 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                   var item = menuItems[index];
                   return InkWell(
                     onTap: () {
-                      if (item['label'] == 'Penjualan') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const Penjualanscreen()),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text(
-                                  'Navigasi ke ${item['label']} belum tersedia')),
-                        );
+                      switch (item['label']) {
+                        case 'Penjualan':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const Penjualanscreen()),
+                          );
+                          break;
+                        case 'Pembelian':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const Pembelianscreen()),
+                          );
+                          break;
+                        case 'Biaya':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const Penjualanscreen()),
+                          );
+                          break;
+                        // Tambahkan case lainnya sesuai label
+                        default:
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'Navigasi ke ${item['label']} belum tersedia')),
+                          );
                       }
                     },
                     child: Column(
@@ -188,41 +205,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.yellow[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Icon(Icons.info_outline),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text.rich(
-                        TextSpan(
-                          text:
-                              'Data yang tampil saat ini adalah data dummy. Setelah Anda siap, ',
-                          children: [
-                            TextSpan(
-                              text: 'klik disini',
-                              style: TextStyle(
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline),
-                            ),
-                            TextSpan(text: ' untuk mengosongkan data.'),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+
             const SizedBox(height: 16),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -465,7 +448,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
             ],
             stops: [0.2, 0.6, 0.5], // Stop gradasi di tengah
             begin: Alignment.topLeft,
-            
+
             end: Alignment.bottomRight,
           ),
         ),

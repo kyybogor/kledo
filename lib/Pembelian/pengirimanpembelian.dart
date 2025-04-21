@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
-import 'package:flutter_application_kledo/open/openscreen.dart';
-import 'package:flutter_application_kledo/selesai/selesaiscreen.dart';
+import 'package:flutter_application_kledo/Pembelian/pembelianscreen.dart';
+import 'package:flutter_application_kledo/Pembelian/openpembelian.dart';
+import 'package:flutter_application_kledo/Pembelian/selesaipembelian.dart';
 import 'package:http/http.dart' as http;
 
-class PengirimanPage extends StatefulWidget {
-  const PengirimanPage({super.key});
+class PengirimanPembelianPage extends StatefulWidget {
+  const PengirimanPembelianPage({super.key});
 
   @override
-  State<PengirimanPage> createState() => _PengirimanPageState();
+  State<PengirimanPembelianPage> createState() => _PengirimanPembelianPageState();
 }
 
-class _PengirimanPageState extends State<PengirimanPage> {
+class _PengirimanPembelianPageState extends State<PengirimanPembelianPage> {
   Map<String, int> pengirimanCounts = {
     "Open": 0,
     "Selesai": 0,
@@ -75,14 +75,14 @@ class _PengirimanPageState extends State<PengirimanPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text("Pengiriman", style: TextStyle(color: Colors.blue)),
+        title: const Text("Pengiriman Pembelian", style: TextStyle(color: Colors.blue)),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const Penjualanscreen()),
+              MaterialPageRoute(builder: (context) => const Pembelianscreen()),
               (Route<dynamic> route) => false,
             );
           },
@@ -130,14 +130,14 @@ class _PengirimanPageState extends State<PengirimanPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const OpenPage(),
+                                    builder: (context) => const OpenPembelian(),
                                   ),
                                 );
                               } else if (label == "Selesai") {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const SelesaiPage(),
+                                    builder: (context) => const SelesaiPembelian(),
                                   ),
                                 );
                               }

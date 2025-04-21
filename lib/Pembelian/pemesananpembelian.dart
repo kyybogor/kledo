@@ -1,52 +1,62 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
-import 'package:flutter_application_kledo/open/openscreen.dart';
-import 'package:flutter_application_kledo/selesai/selesaiscreen.dart';
+import 'package:flutter_application_kledo/Pembelian/dikirimsebagianpembelian.dart';
+import 'package:flutter_application_kledo/Pembelian/jatuhtempopembelian.dart';
+import 'package:flutter_application_kledo/Pembelian/openpemesananpembelian.dart';
+import 'package:flutter_application_kledo/Pembelian/pembelianscreen.dart';
+import 'package:flutter_application_kledo/Pembelian/selesaipembelian.dart';
+import 'package:flutter_application_kledo/Pembelian/transaksiberulangpembelian.dart';
 import 'package:http/http.dart' as http;
 
-class PengirimanPage extends StatefulWidget {
-  const PengirimanPage({super.key});
+// Import halaman-halaman
+
+class PemesananPembelianPage extends StatefulWidget {
+  const PemesananPembelianPage({super.key});
 
   @override
-  State<PengirimanPage> createState() => _PengirimanPageState();
+  State<PemesananPembelianPage> createState() => _PemesananPembelianPageState();
 }
 
-class _PengirimanPageState extends State<PengirimanPage> {
-  Map<String, int> pengirimanCounts = {
+class _PemesananPembelianPageState extends State<PemesananPembelianPage> {
+  Map<String, int> pemesananCounts = {
     "Open": 0,
+    "Dikirim Sebagian": 0,
     "Selesai": 0,
+    "Jatuh Tempo": 0,
+    "Transaksi Berulang": 0,
   };
 
   bool isLoading = true;
 
   final Map<String, Color> statusColors = {
     "Open": Colors.pink,
+    "Dikirim Sebagian": Colors.amber,
     "Selesai": Colors.green,
+    "Jatuh Tempo": Colors.black,
+    "Transaksi Berulang": Colors.blue,
   };
 
-  final Map<String, String> statusEndpoints = {
-    "Open": 'https://gmp-system.com/api-hayami/pengiriman.php?sts=1',
-    "Selesai": 'https://gmp-system.com/api-hayami/pengiriman.php?sts=3',
+  final Map<String, String> nilaiData = {
+    // "Selesai": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1',
   };
 
   @override
   void initState() {
     super.initState();
-    fetchPengirimanCounts();
+    fetchpemesananCounts();
   }
 
-  Future<void> fetchPengirimanCounts() async {
+  Future<void> fetchpemesananCounts() async {
     setState(() {
       isLoading = true;
     });
 
     Map<String, int> newCounts = {
-      for (var key in pengirimanCounts.keys) key: 0,
+      for (var key in pemesananCounts.keys) key: 0,
     };
 
     try {
-      for (var entry in statusEndpoints.entries) {
+      for (var entry in nilaiData.entries) {
         final response = await http.get(Uri.parse(entry.value));
         if (response.statusCode == 200) {
           final List<dynamic> data = json.decode(response.body);
@@ -55,7 +65,7 @@ class _PengirimanPageState extends State<PengirimanPage> {
       }
 
       setState(() {
-        pengirimanCounts = newCounts;
+        pemesananCounts = newCounts;
         isLoading = false;
       });
     } catch (e) {
@@ -66,24 +76,40 @@ class _PengirimanPageState extends State<PengirimanPage> {
     }
   }
 
+  Widget? getTargetPage(String label) {
+    switch (label) {
+      case "Open":
+        return const OpenPemesananPembelian();
+      case "Dikirim Sebagian":
+        return const DikirimSebagianPembelian();
+      case "Selesai":
+        return const SelesaiPembelian();
+      case "Jatuh Tempo":
+        return const JatuhTempoPembelian();
+      case "Transaksi Berulang":
+        return TransaksiBerulangPembelian();
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final statusList = pengirimanCounts.keys.toList();
+    final statusList = pemesananCounts.keys.toList();
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text("Pengiriman", style: TextStyle(color: Colors.blue)),
+        title: const Text("Pemesanan Pembelian", style: TextStyle(color: Colors.blue)),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushAndRemoveUntil(
+            Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const Penjualanscreen()),
-              (Route<dynamic> route) => false,
+              MaterialPageRoute(builder: (context) => const Pembelianscreen()),
             );
           },
         ),
@@ -113,8 +139,9 @@ class _PengirimanPageState extends State<PengirimanPage> {
                     itemCount: statusList.length,
                     itemBuilder: (context, index) {
                       final label = statusList[index];
-                      final count = pengirimanCounts[label]!;
+                      final count = pemesananCounts[label]!;
                       final color = statusColors[label] ?? Colors.grey;
+                      final page = getTargetPage(label);
 
                       return Column(
                         children: [
@@ -125,23 +152,14 @@ class _PengirimanPageState extends State<PengirimanPage> {
                             ),
                             title: Text(label),
                             trailing: Text("$count"),
-                            onTap: () {
-                              if (label == "Open") {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const OpenPage(),
-                                  ),
-                                );
-                              } else if (label == "Selesai") {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const SelesaiPage(),
-                                  ),
-                                );
-                              }
-                            },
+                            onTap: page != null
+                                ? () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => page),
+                                    );
+                                  }
+                                : null,
                           ),
                           const Divider(height: 1),
                         ],
@@ -150,6 +168,13 @@ class _PengirimanPageState extends State<PengirimanPage> {
                   ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        onPressed: () {
+          // Tambahkan aksi jika diperlukan
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
