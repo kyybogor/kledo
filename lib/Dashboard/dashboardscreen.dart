@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Pembelian/pembelianscreen.dart';
+import 'package:flutter_application_kledo/Pembelian/pemesananpembelian.dart';
+import 'package:flutter_application_kledo/Pembelian/penawaran_pembelian/penawaranpembelian.dart';
+import 'package:flutter_application_kledo/Pembelian/pengirimanpembelian.dart';
+import 'package:flutter_application_kledo/Pembelian/tagihanpembelian.dart';
 import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
 import 'package:flutter_application_kledo/pemesanan/pemesananscreen.dart';
 import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
@@ -418,7 +422,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
         'Overview Pembelian',
         'Tagihan Pembelian',
         'Pengiriman Pembelian',
-        'Pesanan Pembelian',
+        'Pemesanan Pembelian',
         'Penawaran Pembelian'
       ]
     },
@@ -548,6 +552,24 @@ class _KledoDrawerState extends State<KledoDrawer> {
                                   break;
                                 case 'Penawaran Pembelian':
                                   //destination = const PenawaranPembelianPage();
+                                  break;
+                              }
+                              switch (subItem) {
+                                case 'Overview Pembelian':
+                                  destination =
+                                      const Penjualanscreen();
+                                  break;
+                                case 'Tagihan Pembelian':
+                                  destination = const TagihanPembelianPage();
+                                  break;
+                                case 'Pengiriman Pembelian':
+                                  destination = const PengirimanPembelianPage();
+                                  break;
+                                case 'Pemesanan Pembelian':
+                                  destination = const PemesananPembelianPage();
+                                  break;
+                                case 'Penawaran Pembelian':
+                                  destination = const PenawaranPembelianPage();
                                   break;
                               }
 
