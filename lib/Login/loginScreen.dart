@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Silakan masukkan email dan password\nuntuk masuk ke Kledo.',
+                      'Silakan masukkan email dan password\nuntuk masuk ke Hayami.',
                       style: TextStyle(color: Colors.white),
                     ),
                   ],

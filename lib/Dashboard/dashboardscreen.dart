@@ -5,6 +5,7 @@ import 'package:flutter_application_kledo/Pembelian/penawaran_pembelian/penawara
 import 'package:flutter_application_kledo/Pembelian/pengirimanpembelian.dart';
 import 'package:flutter_application_kledo/Pembelian/tagihanpembelian.dart';
 import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
+import 'package:flutter_application_kledo/biaya/biayascreen.dart';
 import 'package:flutter_application_kledo/pemesanan/pemesananscreen.dart';
 import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
 import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
@@ -106,7 +107,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                   Text('Hi pengguna!',
                       style: TextStyle(fontSize: 22, color: Colors.white)),
                   SizedBox(height: 4),
-                  Text('Yuk mudahkan keuangan bisnis dengan Kledo',
+                  Text('Yuk mudahkan keuangan bisnis dengan Hayami',
                       style: TextStyle(color: Colors.white70)),
                 ],
               ),
@@ -150,7 +151,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const Penjualanscreen()),
+                                builder: (_) => const BiayaPage()),
                           );
                           break;
                         // Tambahkan case lainnya sesuai label
@@ -557,7 +558,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
                               switch (subItem) {
                                 case 'Overview Pembelian':
                                   destination =
-                                      const Penjualanscreen();
+                                      const Pembelianscreen();
                                   break;
                                 case 'Tagihan Pembelian':
                                   destination = const TagihanPembelianPage();
@@ -609,6 +610,10 @@ class _KledoDrawerState extends State<KledoDrawer> {
                           Widget? destination;
                           if (item['title'] == 'Beranda') {
                             destination = const Dashboardscreen();
+                          }
+
+                          if (item['title'] == 'Biaya') {
+                            destination = const BiayaPage();
                           }
                           // Tambah halaman lainnya sesuai kebutuhan
 
