@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Login/loginScreen.dart'; // Sesuaikan path
+import 'package:flutter_application_kledo/Login/loginScreen.dart';
+
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
