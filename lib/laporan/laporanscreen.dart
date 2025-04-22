@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart'
     as dashboard;
+import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
 import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
 
 class LaporanPage extends StatelessWidget {
@@ -137,11 +138,19 @@ class LaporanPage extends StatelessWidget {
                               onTap: () {
                                 if (laporan == "Neraca") {
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => NeracaPage(),
-                                      ));
-                                } else {}
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => NeracaPage(),
+                                    ),
+                                  );
+                                } else if (laporan == "Arus Kas") {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ArusKasPage(),
+                                    ),
+                                  );
+                                }
                                 // Aksi ketika laporan diklik
                               },
                             ),
