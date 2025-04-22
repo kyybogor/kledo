@@ -137,11 +137,19 @@ class LaporanPage extends StatelessWidget {
                               onTap: () {
                                 if (laporan == "Neraca") {
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => NeracaPage(),
-                                      ));
-                                } else {}
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => NeracaPage(),
+                                    ),
+                                  );
+                                } else if (laporan == "Arus Kas") {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ArusKasPage(),
+                                    ),
+                                  );
+                                }
                                 // Aksi ketika laporan diklik
                               },
                             ),
