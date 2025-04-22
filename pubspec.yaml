@@ -26,7 +26,7 @@ flutter:
 
   assets:
     #- images/kledo.png
-    - assets/image/akuntan.jpg
+    - assets/image/baru.png
 
 flutter_icons:
   android: true

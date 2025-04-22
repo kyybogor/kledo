@@ -6,8 +6,11 @@ import 'package:flutter_application_kledo/Pembelian/pengirimanpembelian.dart';
 import 'package:flutter_application_kledo/Pembelian/tagihanpembelian.dart';
 import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
 import 'package:flutter_application_kledo/biaya/biayascreen.dart';
+import 'package:flutter_application_kledo/kas%20&%20bank/kasdanbank.dart';
+import 'package:flutter_application_kledo/kas%20&%20bank/kasscreen.dart';
 import 'package:flutter_application_kledo/pemesanan/pemesananscreen.dart';
 import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
+import 'package:flutter_application_kledo/produk/produk.dart';
 import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
 import 'package:flutter_application_kledo/pengiriman/pengirimanscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -154,6 +157,26 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                                 builder: (_) => const BiayaPage()),
                           );
                           break;
+                        case 'Produk':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const ProdukPage()),
+                          );
+                          break;
+                        case 'Laporan':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const ProdukPage()),
+                        );
+                          break;
+                        case 'Kas & Bank':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const KasDanBank()),
+                        );
                         // Tambahkan case lainnya sesuai label
                         default:
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -166,9 +189,15 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        CircleAvatar(
-                          backgroundColor: item['color']?.withOpacity(0.2) ??
-                              Colors.blue[50],
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: item['color']?.withOpacity(0.2) ??
+                                Colors.blue[50],
+                            borderRadius: BorderRadius.circular(
+                                12), // Bisa juga 0 untuk full kotak
+                          ),
                           child: Icon(item['icon'],
                               color: item['color'] ?? Colors.blue),
                         ),
@@ -557,8 +586,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
                               }
                               switch (subItem) {
                                 case 'Overview Pembelian':
-                                  destination =
-                                      const Pembelianscreen();
+                                  destination = const Pembelianscreen();
                                   break;
                                 case 'Tagihan Pembelian':
                                   destination = const TagihanPembelianPage();
@@ -614,6 +642,15 @@ class _KledoDrawerState extends State<KledoDrawer> {
 
                           if (item['title'] == 'Biaya') {
                             destination = const BiayaPage();
+                          }
+
+                          if (item['title'] == 'Produk') {
+                            destination = const ProdukPage();
+                          }
+
+                          if (item['title'] == 'Kas & Bank') {
+                            destination = const Kasscreen();
+                            
                           }
                           // Tambah halaman lainnya sesuai kebutuhan
 

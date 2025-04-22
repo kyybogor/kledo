@@ -24,7 +24,7 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
   Future<void> fetchBarang() async {
     final invoiceId = widget.invoice['id'].toString();
     final url =
-        Uri.parse("http://192.168.1.13/connect/JSON/barang_invoice.php");
+        Uri.parse("http://192.168.193.23/connect/JSON/barang_invoice.php");
 
     try {
       final response = await http.get(url);
