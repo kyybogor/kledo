@@ -166,9 +166,15 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        CircleAvatar(
-                          backgroundColor: item['color']?.withOpacity(0.2) ??
-                              Colors.blue[50],
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: item['color']?.withOpacity(0.2) ??
+                                Colors.blue[50],
+                            borderRadius: BorderRadius.circular(
+                                12), // Bisa juga 0 untuk full kotak
+                          ),
                           child: Icon(item['icon'],
                               color: item['color'] ?? Colors.blue),
                         ),
@@ -557,8 +563,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
                               }
                               switch (subItem) {
                                 case 'Overview Pembelian':
-                                  destination =
-                                      const Pembelianscreen();
+                                  destination = const Pembelianscreen();
                                   break;
                                 case 'Tagihan Pembelian':
                                   destination = const TagihanPembelianPage();
