@@ -156,7 +156,8 @@ class _ProdukPageState extends State<ProdukPage> {
             child: Row(
               children: [
                 _buildStatusCard('Produk Stok Tersedia', '2', Colors.green),
-                _buildStatusCard('Produk Stok Hampir Habis', '0', Colors.orange),
+                _buildStatusCard(
+                    'Produk Stok Hampir Habis', '0', Colors.orange),
                 _buildStatusCard('Produk Stok Habis', '0', Colors.red),
                 _buildStatusCard('Produk Nonaktif', '0', Colors.grey),
               ],
@@ -212,7 +213,8 @@ class _ProdukPageState extends State<ProdukPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('${produk['hpp']} → ${produk['hargaJual']}'),
-          Text('${produk['hppValue']} (HPP)', style: const TextStyle(fontSize: 12)),
+          Text('${produk['hppValue']} (HPP)',
+              style: const TextStyle(fontSize: 12)),
           Text('${produk['code']}', style: const TextStyle(fontSize: 12)),
         ],
       ),
