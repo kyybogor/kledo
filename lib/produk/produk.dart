@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:flutter_application_kledo/produk/produkdetail.dart';
 
 class ProdukPage extends StatefulWidget {
   const ProdukPage({super.key});
@@ -11,14 +12,33 @@ class ProdukPage extends StatefulWidget {
 class _ProdukPageState extends State<ProdukPage> {
   bool _showChart = true;
 
-  // Contoh data produk
-  final List<Map<String, String>> _produkList = [
+  final List<Map<String, dynamic>> _produkList = [
     {
       'name': 'Chelsea Boots',
       'hpp': '299.000',
       'hargaJual': '499.000',
       'hppValue': '1.335',
       'code': 'CB1',
+      'stok': 7230,
+      'penjualan': 12,
+      'nominalStok': '9.649.253',
+      'nominalPenjualan': '5.740.748',
+      'image': 'assets/chelsea_boots.jpg',
+      'warehouse': {
+        'Unassigned': 2086,
+        'Gudang Utama': 2027,
+        'Gudang Elektronik': 3117,
+      },
+      'transactions': [
+        {'type': 'Penjualan', 'amount': '899.099', 'date': '15/04/2025'},
+        {'type': 'Penjualan', 'amount': '998.000', 'date': '15/04/2025'},
+        {'type': 'Pembelian', 'amount': '598.000', 'date': '14/04/2025'},
+      ],
+      'movements': [
+        {'type': 'Penjualan', 'qty': -2},
+        {'type': 'Pembelian', 'qty': 2},
+        {'type': 'Penjualan', 'qty': -3},
+      ],
     },
     {
       'name': 'iMac Computer',
@@ -26,6 +46,16 @@ class _ProdukPageState extends State<ProdukPage> {
       'hargaJual': '12.000.000',
       'hppValue': '0',
       'code': 'COM1',
+      'stok': 0,
+      'penjualan': 1,
+      'nominalStok': '0',
+      'nominalPenjualan': '12.000.000',
+      'image': 'assets/imac.jpg',
+      'warehouse': {
+        'Gudang Utama': 0,
+      },
+      'transactions': [],
+      'movements': [],
     },
     {
       'name': 'Kneel High Boots',
@@ -33,6 +63,26 @@ class _ProdukPageState extends State<ProdukPage> {
       'hargaJual': '499.000',
       'hppValue': '1.327',
       'code': 'KH1',
+      'stok': 7213,
+      'penjualan': 14,
+      'nominalStok': '9.573.701',
+      'nominalPenjualan': '14.871.099',
+      'image': 'assets/kneel_boots.jpg',
+      'warehouse': {
+        'Unassigned': 2074,
+        'Gudang Utama': 2030,
+        'Gudang Elektronik': 3109,
+      },
+      'transactions': [
+        {'type': 'Penjualan', 'amount': '899.099', 'date': '15/04/2025'},
+        {'type': 'Penjualan', 'amount': '998.000', 'date': '15/04/2025'},
+        {'type': 'Pembelian', 'amount': '598.000', 'date': '14/04/2025'},
+      ],
+      'movements': [
+        {'type': 'Penjualan', 'qty': -2},
+        {'type': 'Pembelian', 'qty': 2},
+        {'type': 'Penjualan', 'qty': -3},
+      ],
     },
     {
       'name': 'Moslem Brown Blue Dress',
@@ -40,153 +90,20 @@ class _ProdukPageState extends State<ProdukPage> {
       'hargaJual': '199.000',
       'hppValue': '0',
       'code': 'DR2',
-    },
-    {
-      'name': 'PC Computer',
-      'hpp': '0',
-      'hargaJual': '21.000.000',
-      'hppValue': '0',
-      'code': 'COM2',
-    },
-    {
-      'name': 'Chelsea Boots',
-      'hpp': '299.000',
-      'hargaJual': '499.000',
-      'hppValue': '1.335',
-      'code': 'CB1',
-    },
-    {
-      'name': 'iMac Computer',
-      'hpp': '0',
-      'hargaJual': '12.000.000',
-      'hppValue': '0',
-      'code': 'COM1',
-    },
-    {
-      'name': 'Kneel High Boots',
-      'hpp': '299.000',
-      'hargaJual': '499.000',
-      'hppValue': '1.327',
-      'code': 'KH1',
-    },
-    {
-      'name': 'Moslem Brown Blue Dress',
-      'hpp': '49.000',
-      'hargaJual': '199.000',
-      'hppValue': '0',
-      'code': 'DR2',
-    },
-    {
-      'name': 'PC Computer',
-      'hpp': '0',
-      'hargaJual': '21.000.000',
-      'hppValue': '0',
-      'code': 'COM2',
-    },
-    {
-      'name': 'Chelsea Boots',
-      'hpp': '299.000',
-      'hargaJual': '499.000',
-      'hppValue': '1.335',
-      'code': 'CB1',
-    },
-    {
-      'name': 'iMac Computer',
-      'hpp': '0',
-      'hargaJual': '12.000.000',
-      'hppValue': '0',
-      'code': 'COM1',
-    },
-    {
-      'name': 'Kneel High Boots',
-      'hpp': '299.000',
-      'hargaJual': '499.000',
-      'hppValue': '1.327',
-      'code': 'KH1',
-    },
-    {
-      'name': 'Moslem Brown Blue Dress',
-      'hpp': '49.000',
-      'hargaJual': '199.000',
-      'hppValue': '0',
-      'code': 'DR2',
-    },
-    {
-      'name': 'PC Computer',
-      'hpp': '0',
-      'hargaJual': '21.000.000',
-      'hppValue': '0',
-      'code': 'COM2',
-    },
-    {
-      'name': 'Chelsea Boots',
-      'hpp': '299.000',
-      'hargaJual': '499.000',
-      'hppValue': '1.335',
-      'code': 'CB1',
-    },
-    {
-      'name': 'iMac Computer',
-      'hpp': '0',
-      'hargaJual': '12.000.000',
-      'hppValue': '0',
-      'code': 'COM1',
-    },
-    {
-      'name': 'Kneel High Boots',
-      'hpp': '299.000',
-      'hargaJual': '499.000',
-      'hppValue': '1.327',
-      'code': 'KH1',
-    },
-    {
-      'name': 'Moslem Brown Blue Dress',
-      'hpp': '49.000',
-      'hargaJual': '199.000',
-      'hppValue': '0',
-      'code': 'DR2',
-    },
-    {
-      'name': 'PC Computer',
-      'hpp': '0',
-      'hargaJual': '21.000.000',
-      'hppValue': '0',
-      'code': 'COM2',
-    },
-    {
-      'name': 'Chelsea Boots',
-      'hpp': '299.000',
-      'hargaJual': '499.000',
-      'hppValue': '1.335',
-      'code': 'CB1',
-    },
-    {
-      'name': 'iMac Computer',
-      'hpp': '0',
-      'hargaJual': '12.000.000',
-      'hppValue': '0',
-      'code': 'COM1',
-    },
-    {
-      'name': 'Kneel High Boots',
-      'hpp': '299.000',
-      'hargaJual': '499.000',
-      'hppValue': '1.327',
-      'code': 'KH1',
-    },
-    {
-      'name': 'Moslem Brown Blue Dress',
-      'hpp': '49.000',
-      'hargaJual': '199.000',
-      'hppValue': '0',
-      'code': 'DR2',
-    },
-    {
-      'name': 'PC Computer',
-      'hpp': '0',
-      'hargaJual': '21.000.000',
-      'hppValue': '0',
-      'code': 'COM2',
+      'stok': 122,
+      'penjualan': 7,
+      'nominalStok': '2.000.000',
+      'nominalPenjualan': '1.393.000',
+      'image': 'assets/brown_blue_dress.jpg',
+      'warehouse': {
+        'Gudang Elektronik': 122,
+      },
+      'transactions': [
+        {'type': 'Penjualan', 'amount': '199.000', 'date': '12/04/2025'},
+      ],
+      'movements': [
+        {'type': 'Penjualan', 'qty': -1},
+      ],
     },
   ];
 
@@ -233,7 +150,6 @@ class _ProdukPageState extends State<ProdukPage> {
           ),
           const SizedBox(height: 12),
 
-          // Status Cards
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -248,7 +164,6 @@ class _ProdukPageState extends State<ProdukPage> {
           ),
           const SizedBox(height: 16),
 
-          // Toggle chart
           InkWell(
             onTap: () {
               setState(() {
@@ -260,7 +175,8 @@ class _ProdukPageState extends State<ProdukPage> {
               children: [
                 Text(
                   _showChart ? 'Sembunyikan' : 'Lihat Selengkapnya',
-                  style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
                 Icon(_showChart ? Icons.expand_less : Icons.expand_more),
               ],
@@ -281,21 +197,41 @@ class _ProdukPageState extends State<ProdukPage> {
           const SizedBox(height: 16),
 
           // List Produk
-          ..._produkList.map((produk) => _buildProductItem(
-                produk['name']!,
-                produk['hpp']!,
-                produk['hargaJual']!,
-                produk['hppValue']!,
-                produk['code']!,
-              )),
+          ..._produkList.map((produk) {
+            return _buildProductItem(produk);
+          }).toList(),
         ],
       ),
     );
   }
 
+  Widget _buildProductItem(Map<String, dynamic> produk) {
+    return ListTile(
+      title: Text(produk['name'] ?? ''),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${produk['hpp']} → ${produk['hargaJual']}'),
+          Text('${produk['hppValue']} (HPP)', style: const TextStyle(fontSize: 12)),
+          Text('${produk['code']}', style: const TextStyle(fontSize: 12)),
+        ],
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailPage(product: produk),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildStatusCard(String title, String count, Color color) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
-      width: 300,
+      width: screenWidth * 0.65,
       height: 80,
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(12),
@@ -324,8 +260,11 @@ class _ProdukPageState extends State<ProdukPage> {
               children: [
                 Text(title, style: const TextStyle(fontSize: 12)),
                 const SizedBox(height: 4),
-                Text(count,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(
+                  count,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ],
             ),
           ),
@@ -344,38 +283,11 @@ class _ProdukPageState extends State<ProdukPage> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Center(
-        child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-      ),
-    );
-  }
-
-  Widget _buildProductItem(
-    String name,
-    String hpp,
-    String hargaJual,
-    String hppValue,
-    String code,
-  ) {
-    return ListTile(
-      title: Text(name),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('$hpp → $hargaJual'),
-          Text('$hppValue (HPP)', style: const TextStyle(fontSize: 12)),
-        ],
-      ),
-      trailing: Container(
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8),
+        child: Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
-        child: const Text('0'),
       ),
-      onTap: () {
-        // Navigasi ke detail produk jika diperlukan
-      },
     );
   }
 }
