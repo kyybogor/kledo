@@ -1,415 +1,431 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
-import 'package:flutter_application_kledo/produk/unit.dart';
+  import 'package:flutter/material.dart';
+  import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:flutter_application_kledo/produk/pergerakanstok.dart';
+import 'package:flutter_application_kledo/produk/transaksiterkini.dart';
+import 'package:flutter_application_kledo/produk/transfergudang.dart';
+  import 'package:flutter_application_kledo/produk/unit.dart';
+  import 'package:intl/intl.dart';
 
-void main() {
-  runApp(const MaterialApp(
-    home: ProductDetailPage(
-      product: {
-        'name': 'Kneel Boots',
-        'code': 'KB12345',
-        'hpp': '500.000',
-        'hargaJual': '899.000',
-      },
-    ),
-  ));
-}
 
-class ProductDetailPage extends StatelessWidget {
-  final Map<String, dynamic> product;
+  void main() {
+    runApp(const MaterialApp(
+    ));
+  }
 
-  const ProductDetailPage({super.key, required this.product});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          children: [
-            Text(product['name']!, style: const TextStyle(fontSize: 20)),
-            Text(product['code'], style: const TextStyle(fontSize: 12)),
-          ],
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          PopupMenuButton<String>(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            onSelected: (value) {
-              switch (value) {
-                case 'audit':
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: const Text('Lihat Audit'),
-                      content:
-                          const Text('Menampilkan log audit untuk produk ini.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          child: const Text('Tutup'),
-                        ),
-                      ],
-                    ),
-                  );
-                  break;
-                case 'ubah':
-                case 'duplikat':
-                case 'konversi':
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Fitur belum tersedia.')),
-                  );
-                  break;
-                case 'arsipkan':
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Produk telah diarsipkan.')),
-                  );
-                  break;
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'audit',
-                child: Row(
-                  children: [
-                    Icon(Icons.history, size: 20),
-                    SizedBox(width: 8),
-                    Text('Lihat Audit'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'ubah',
-                child: Row(
-                  children: [
-                    Icon(Icons.edit, size: 20),
-                    SizedBox(width: 8),
-                    Text('Ubah'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'duplikat',
-                child: Row(
-                  children: [
-                    Icon(Icons.copy, size: 20),
-                    SizedBox(width: 8),
-                    Text('Duplikat'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'konversi',
-                child: Row(
-                  children: [
-                    Icon(Icons.swap_horiz, size: 20),
-                    SizedBox(width: 8),
-                    Text('Konversi Satuan'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'arsipkan',
-                child: Row(
-                  children: [
-                    Icon(Icons.archive, size: 20),
-                    SizedBox(width: 8),
-                    Text('Arsipkan'),
-                  ],
-                ),
-              ),
+    // Fungsi untuk format Rupiah
+    String formatRupiah(dynamic amount) {
+      try {
+        final value = double.tryParse(amount.toString()) ?? 0;
+        return NumberFormat.currency(
+          locale: 'id_ID',
+          symbol: 'Rp ',
+          decimalDigits: 0,
+        ).format(value);
+      } catch (e) {
+        return 'Rp 0';
+      }
+    }
+
+
+  class ProductDetailPage extends StatelessWidget {
+    final Map<String, dynamic> product;
+
+    const ProductDetailPage({super.key, required this.product});
+
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Column(
+            children: [
+              Text(product['name']!, style: const TextStyle(fontSize: 20)),
+              Text(product['code'], style: const TextStyle(fontSize: 12)),
             ],
           ),
-          const SizedBox(width: 12),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  _buildInfoCard('Stok di tangan', '7.230', Colors.pink),
-                  _buildInfoCard('Penjualan', '12', Colors.orange),
-                  _buildInfoCard('Habis', '0', Colors.blue),
-                ],
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          ),
+          actions: [
+            PopupMenuButton<String>(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                const CircleAvatar(
-                  radius: 40,
-                  backgroundImage: AssetImage('assets/kneel_boots.jpg'),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              onSelected: (value) {
+                switch (value) {
+                  case 'audit':
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text('Lihat Audit'),
+                        content:
+                            const Text('Menampilkan log audit untuk produk ini.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            child: const Text('Tutup'),
+                          ),
+                        ],
+                      ),
+                    );
+                    break;
+                  case 'ubah':
+                  case 'duplikat':
+                  case 'konversi':
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Fitur belum tersedia.')),
+                    );
+                    break;
+                  case 'arsipkan':
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Produk telah diarsipkan.')),
+                    );
+                    break;
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'audit',
+                  child: Row(
                     children: [
-                      Row(children: [
-                        const Icon(Icons.inventory_2),
-                        const SizedBox(width: 8),
-                        Text(product['name']!)
-                      ]),
-                      const SizedBox(height: 4),
-                      const Row(children: [
-                        Icon(Icons.category),
-                        SizedBox(width: 8),
-                        Text('Kategori: Shoes')
-                      ]),
-                      const SizedBox(height: 4),
-                      const Row(children: [
-                        Icon(Icons.straighten),
-                        SizedBox(width: 8),
-                        Text('Satuan: Pcs')
-                      ]),
-                      const SizedBox(height: 4),
-                      Row(children: [
-                        const Icon(Icons.shopping_bag),
-                        const SizedBox(width: 8),
-                        Text('Harga Beli: ${product['hpp']}')
-                      ]),
-                      const SizedBox(height: 4),
-                      Row(children: [
-                        const Icon(Icons.sell),
-                        const SizedBox(width: 8),
-                        Text('Harga Jual: ${product['hargaJual']}')
-                      ]),
+                      Icon(Icons.history, size: 20),
+                      SizedBox(width: 8),
+                      Text('Lihat Audit'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'ubah',
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit, size: 20),
+                      SizedBox(width: 8),
+                      Text('Ubah'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'duplikat',
+                  child: Row(
+                    children: [
+                      Icon(Icons.copy, size: 20),
+                      SizedBox(width: 8),
+                      Text('Duplikat'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'konversi',
+                  child: Row(
+                    children: [
+                      Icon(Icons.swap_horiz, size: 20),
+                      SizedBox(width: 8),
+                      Text('Konversi Satuan'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'arsipkan',
+                  child: Row(
+                    children: [
+                      Icon(Icons.archive, size: 20),
+                      SizedBox(width: 8),
+                      Text('Arsipkan'),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  _buildChartPlaceholder('Penjualan vs Pembelian'),
-                  const SizedBox(width: 12),
-                  _buildChartPlaceholder('Pergerakan'),
-                  const SizedBox(width: 12),
-                  _buildChartPlaceholder('Grafik Lainnya'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            _sectionHeaderWithAction(context, 'Unit', 'Tambah konversi satuan',
-                actionColor: Colors.blue),
-            const SizedBox(height: 8),
-            const Text('Satuan Dasar: Pcs'),
-            const SizedBox(height: 16),
-            _sectionHeader('Gudang'),
-            const SizedBox(height: 8),
-            _buildWarehouseRow('Unassigned', '2.086'),
-            _buildWarehouseRow('Gudang Utama', '2.027'),
-            _buildWarehouseRow('Gudang Elektronik', '3.117'),
-            const Divider(),
-            _buildWarehouseRow('Total', '7.230', isBold: true),
-            const SizedBox(height: 24),
-            _sectionHeaderWithAction(
-                context, 'Transaksi Terkini', 'Lihat Semua',
-                actionColor: Colors.blue),
-            const SizedBox(height: 8),
-            _buildTransactionRow('Tagihan Penjualan', '899.099', '15/04/2025'),
-            _buildTransactionRow('Tagihan Penjualan', '998.000', '15/04/2025'),
-            _buildTransactionRow('Tagihan Pembelian', '598.000', '14/04/2025'),
-            const SizedBox(height: 24),
-            _sectionHeaderWithAction(context, 'Pergerakan Stok', 'Lihat Semua',
-                actionColor: Colors.blue),
-            const SizedBox(height: 8),
-            _buildStockMovement('Tagihan Penjualan', '-2', Colors.red),
-            _buildStockMovement('Tagihan Pembelian', '+2', Colors.green),
-            _buildStockMovement('Tagihan Penjualan', '-3', Colors.red),
-            const SizedBox(height: 24),
-            _sectionHeaderWithAction(context, 'Transfer Gudang', 'Lihat Semua',
-                actionColor: Colors.blue),
-            const SizedBox(height: 8),
-            ListTile(
-              title: const Text('WT/00004'),
-              subtitle: const Text('09/03/2025'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('WT/00003'),
-              subtitle: const Text('08/03/2025'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('WT/00002'),
-              subtitle: const Text('07/03/2025'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('WT/00001'),
-              subtitle: const Text('06/03/2025'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
-            ),
-            const SizedBox(height: 80),
+            const SizedBox(width: 12),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildInfoCard(String title, String value, Color color) {
-    return Container(
-      width: 200,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildInfoCard('Stok di tangan', product['stok'].toString(),
+                        Colors.pink),
+                    _buildInfoCard('Penjualan', product['penjualan'].toString(),
+                        Colors.orange),
+                    _buildInfoCard(
+                        'Hpp', product['hpp_value'].toString(), Colors.blue),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  const CircleAvatar(
+                    radius: 40,
+                    backgroundImage: AssetImage('assets/kneel_boots.jpg'),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          const Icon(Icons.inventory_2),
+                          const SizedBox(width: 8),
+                          Text(product['name']!)
+                        ]),
+                        const SizedBox(height: 4),
+                        const Row(children: [
+                          Icon(Icons.category),
+                          SizedBox(width: 8),
+                          Text('Kategori: Shoes')
+                        ]),
+                        const SizedBox(height: 4),
+                        const Row(children: [
+                          Icon(Icons.straighten),
+                          SizedBox(width: 8),
+                          Text('Satuan: Pcs')
+                        ]),
+                        const SizedBox(height: 4),
+                        Row(children: [
+                          const Icon(Icons.shopping_bag),
+                          const SizedBox(width: 8),
+                          Text('Harga Beli: ${formatRupiah(product['hpp'])}')
+                        ]),
+                        const SizedBox(height: 4),
+                        Row(children: [
+                          const Icon(Icons.sell),
+                          const SizedBox(width: 8),
+                          Text('Harga Jual: ${formatRupiah(product['harga_jual'])}')
+                        ]),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildChartPlaceholder('Penjualan vs Pembelian'),
+                    const SizedBox(width: 12),
+                    _buildChartPlaceholder('Pergerakan'),
+                    const SizedBox(width: 12),
+                    _buildChartPlaceholder('Grafik Lainnya'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              _sectionHeaderWithAction(context, 'Unit', 'Tambah konversi satuan',
+                  actionColor: Colors.blue),
+              const SizedBox(height: 8),
+              const Text('Satuan Dasar: Pcs'),
+              const SizedBox(height: 16),
+              _sectionHeader('Gudang'),
+              const SizedBox(height: 8),
+              _buildWarehouseRow('Unassigned', '2.086'),
+              _buildWarehouseRow('Gudang Utama', '2.027'),
+              _buildWarehouseRow('Gudang Elektronik', '3.117'),
+              const Divider(),
+              _buildWarehouseRow('Total', '7.230', isBold: true),
+              const SizedBox(height: 24),
+              _sectionHeaderWithAction(
+                  context, 'Transaksi Terkini', 'Lihat Semua',
+                  actionColor: Colors.blue),
+              const SizedBox(height: 8),
+              _buildTransactionRow('Tagihan Penjualan', '899.099', '15/04/2025'),
+              _buildTransactionRow('Tagihan Penjualan', '998.000', '15/04/2025'),
+              _buildTransactionRow('Tagihan Pembelian', '598.000', '14/04/2025'),
+              const SizedBox(height: 24),
+              _sectionHeaderWithAction(context, 'Pergerakan Stok', 'Lihat Semua',
+                  actionColor: Colors.blue),
+              const SizedBox(height: 8),
+              _buildStockMovement('Tagihan Penjualan', '-2', Colors.red),
+              _buildStockMovement('Tagihan Pembelian', '+2', Colors.green),
+              _buildStockMovement('Tagihan Penjualan', '-3', Colors.red),
+              const SizedBox(height: 24),
+              _sectionHeaderWithAction(context, 'Transfer Gudang', 'Lihat Semua',
+                  actionColor: Colors.blue),
+              const SizedBox(height: 8),
+              ListTile(
+                title: const Text('WT/00004'),
+                subtitle: const Text('09/03/2025'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {},
+              ),
+              ListTile(
+                title: const Text('WT/00003'),
+                subtitle: const Text('08/03/2025'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {},
+              ),
+              ListTile(
+                title: const Text('WT/00002'),
+                subtitle: const Text('07/03/2025'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {},
+              ),
+              ListTile(
+                title: const Text('WT/00001'),
+                subtitle: const Text('06/03/2025'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {},
+              ),
+              const SizedBox(height: 80),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: color),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChartPlaceholder(String title) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 2,
-      child: Container(
-        width: 250,
-        height: 150,
-        padding: const EdgeInsets.all(12),
-        child: Center(child: Text(title)),
-      ),
-    );
-  }
-
-  Widget _buildWarehouseRow(String name, String qty, {bool isBold = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(name,
-              style:
-                  isBold ? const TextStyle(fontWeight: FontWeight.bold) : null),
-          Text(qty,
-              style:
-                  isBold ? const TextStyle(fontWeight: FontWeight.bold) : null),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTransactionRow(String title, String amount, String date) {
-    return ListTile(
-      title: Text(title),
-      subtitle: Text(date),
-      trailing:
-          Text(amount, style: const TextStyle(fontWeight: FontWeight.bold)),
-    );
-  }
-
-  Widget _buildStockMovement(String title, String qty, Color color) {
-    return ListTile(
-      title: Text(title),
-      trailing: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(qty, style: TextStyle(color: color)),
-      ),
-    );
-  }
+      );
+    }
 
-  Widget _sectionHeader(String title) {
-    return Container(
-      width: double.infinity,
-      color: Colors.grey.shade200,
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      child: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-      ),
-    );
-  }
-
-  Widget _sectionHeaderWithAction(
-      BuildContext context, String title, String actionText,
-      {Color actionColor = Colors.black}) {
-    return Container(
-      width: double.infinity,
-      color: Colors.grey.shade200,
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          InkWell(
-            onTap: () {
-              // Arahkan berdasarkan judul
-              if (title == 'Unit') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const KonversiSatuanPage()),
-                );
-              } else if (title == 'Transaksi Terkini') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const Dashboardscreen()),
-                );
-              } else if (title == 'Pergerakan Stok') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const Dashboardscreen()),
-                );
-              } else if (title == 'Transfer Gudang') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const Dashboardscreen()),
-                );
-              }
-            },
-            child: Text(
-              actionText,
+    Widget _buildInfoCard(String title, String value, Color color) {
+      return Container(
+        width: 200,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        child: Column(
+          children: [
+            Text(
+              value,
               style: TextStyle(
-                color: actionColor,
-                fontWeight: FontWeight.w500,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: color,
               ),
             ),
+            const SizedBox(height: 4),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: color),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget _buildChartPlaceholder(String title) {
+      return Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 2,
+        child: Container(
+          width: 250,
+          height: 150,
+          padding: const EdgeInsets.all(12),
+          child: Center(child: Text(title)),
+        ),
+      );
+    }
+
+    Widget _buildWarehouseRow(String name, String qty, {bool isBold = false}) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(name,
+                style:
+                    isBold ? const TextStyle(fontWeight: FontWeight.bold) : null),
+            Text(qty,
+                style:
+                    isBold ? const TextStyle(fontWeight: FontWeight.bold) : null),
+          ],
+        ),
+      );
+    }
+
+    Widget _buildTransactionRow(String title, String amount, String date) {
+      return ListTile(
+        title: Text(title),
+        subtitle: Text(date),
+        trailing:
+            Text(amount, style: const TextStyle(fontWeight: FontWeight.bold)),
+      );
+    }
+
+    Widget _buildStockMovement(String title, String qty, Color color) {
+      return ListTile(
+        title: Text(title),
+        trailing: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(20),
           ),
-        ],
-      ),
-    );
+          child: Text(qty, style: TextStyle(color: color)),
+        ),
+      );
+    }
+
+    Widget _sectionHeader(String title) {
+      return Container(
+        width: double.infinity,
+        color: Colors.grey.shade200,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        child: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+      );
+    }
+
+    Widget _sectionHeaderWithAction(
+        BuildContext context, String title, String actionText,
+        {Color actionColor = Colors.black}) {
+      return Container(
+        width: double.infinity,
+        color: Colors.grey.shade200,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            InkWell(
+              onTap: () {
+                // Arahkan berdasarkan judul
+                if (title == 'Unit') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const KonversiSatuanPage()),
+                  );
+                } else if (title == 'Transaksi Terkini') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => TransaksiTerkiniPage()),
+                  );
+                } else if (title == 'Pergerakan Stok') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => PergerakanStokPage()),
+                  );
+                } else if (title == 'Transfer Gudang') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => TransferGudangPage()),
+                  );
+                }
+              },
+              child: Text(
+                actionText,
+                style: TextStyle(
+                  color: actionColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
-}

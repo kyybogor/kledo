@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:intl/intl.dart';
+
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/produk/produkdetail.dart';
 
@@ -11,101 +15,45 @@ class ProdukPage extends StatefulWidget {
 
 class _ProdukPageState extends State<ProdukPage> {
   bool _showChart = true;
+  List<Map<String, dynamic>> _produkList = [];
 
-  final List<Map<String, dynamic>> _produkList = [
-    {
-      'name': 'Chelsea Boots',
-      'hpp': '299.000',
-      'hargaJual': '499.000',
-      'hppValue': '1.335',
-      'code': 'CB1',
-      'stok': 7230,
-      'penjualan': 12,
-      'nominalStok': '9.649.253',
-      'nominalPenjualan': '5.740.748',
-      'image': 'assets/chelsea_boots.jpg',
-      'warehouse': {
-        'Unassigned': 2086,
-        'Gudang Utama': 2027,
-        'Gudang Elektronik': 3117,
-      },
-      'transactions': [
-        {'type': 'Penjualan', 'amount': '899.099', 'date': '15/04/2025'},
-        {'type': 'Penjualan', 'amount': '998.000', 'date': '15/04/2025'},
-        {'type': 'Pembelian', 'amount': '598.000', 'date': '14/04/2025'},
-      ],
-      'movements': [
-        {'type': 'Penjualan', 'qty': -2},
-        {'type': 'Pembelian', 'qty': 2},
-        {'type': 'Penjualan', 'qty': -3},
-      ],
-    },
-    {
-      'name': 'iMac Computer',
-      'hpp': '0',
-      'hargaJual': '12.000.000',
-      'hppValue': '0',
-      'code': 'COM1',
-      'stok': 0,
-      'penjualan': 1,
-      'nominalStok': '0',
-      'nominalPenjualan': '12.000.000',
-      'image': 'assets/imac.jpg',
-      'warehouse': {
-        'Gudang Utama': 0,
-      },
-      'transactions': [],
-      'movements': [],
-    },
-    {
-      'name': 'Kneel High Boots',
-      'hpp': '299.000',
-      'hargaJual': '499.000',
-      'hppValue': '1.327',
-      'code': 'KH1',
-      'stok': 7213,
-      'penjualan': 14,
-      'nominalStok': '9.573.701',
-      'nominalPenjualan': '14.871.099',
-      'image': 'assets/kneel_boots.jpg',
-      'warehouse': {
-        'Unassigned': 2074,
-        'Gudang Utama': 2030,
-        'Gudang Elektronik': 3109,
-      },
-      'transactions': [
-        {'type': 'Penjualan', 'amount': '899.099', 'date': '15/04/2025'},
-        {'type': 'Penjualan', 'amount': '998.000', 'date': '15/04/2025'},
-        {'type': 'Pembelian', 'amount': '598.000', 'date': '14/04/2025'},
-      ],
-      'movements': [
-        {'type': 'Penjualan', 'qty': -2},
-        {'type': 'Pembelian', 'qty': 2},
-        {'type': 'Penjualan', 'qty': -3},
-      ],
-    },
-    {
-      'name': 'Moslem Brown Blue Dress',
-      'hpp': '49.000',
-      'hargaJual': '199.000',
-      'hppValue': '0',
-      'code': 'DR2',
-      'stok': 122,
-      'penjualan': 7,
-      'nominalStok': '2.000.000',
-      'nominalPenjualan': '1.393.000',
-      'image': 'assets/brown_blue_dress.jpg',
-      'warehouse': {
-        'Gudang Elektronik': 122,
-      },
-      'transactions': [
-        {'type': 'Penjualan', 'amount': '199.000', 'date': '12/04/2025'},
-      ],
-      'movements': [
-        {'type': 'Penjualan', 'qty': -1},
-      ],
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchProduk();
+  }
+
+  // Fungsi untuk format Rupiah
+  String formatRupiah(dynamic amount) {
+    try {
+      final value = double.tryParse(amount.toString()) ?? 0;
+      return NumberFormat.currency(
+        locale: 'id_ID',
+        symbol: 'Rp ',
+        decimalDigits: 0,
+      ).format(value);
+    } catch (e) {
+      return 'Rp 0';
+    }
+  }
+
+  Future<void> _fetchProduk() async {
+    final url = Uri.parse('http://192.168.1.15/hiyami/produk.php');
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _produkList = data.map((e) => Map<String, dynamic>.from(e)).toList();
+        });
+      } else {
+        print('Failed to load produk');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,8 +104,7 @@ class _ProdukPageState extends State<ProdukPage> {
             child: Row(
               children: [
                 _buildStatusCard('Produk Stok Tersedia', '2', Colors.green),
-                _buildStatusCard(
-                    'Produk Stok Hampir Habis', '0', Colors.orange),
+                _buildStatusCard('Produk Stok Hampir Habis', '0', Colors.orange),
                 _buildStatusCard('Produk Stok Habis', '0', Colors.red),
                 _buildStatusCard('Produk Nonaktif', '0', Colors.grey),
               ],
@@ -176,8 +123,7 @@ class _ProdukPageState extends State<ProdukPage> {
               children: [
                 Text(
                   _showChart ? 'Sembunyikan' : 'Lihat Selengkapnya',
-                  style: const TextStyle(
-                      color: Colors.blue, fontWeight: FontWeight.bold),
+                  style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
                 Icon(_showChart ? Icons.expand_less : Icons.expand_more),
               ],
@@ -198,9 +144,7 @@ class _ProdukPageState extends State<ProdukPage> {
           const SizedBox(height: 16),
 
           // List Produk
-          ..._produkList.map((produk) {
-            return _buildProductItem(produk);
-          }).toList(),
+          ..._produkList.map((produk) => _buildProductItem(produk)).toList(),
         ],
       ),
     );
@@ -212,9 +156,8 @@ class _ProdukPageState extends State<ProdukPage> {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${produk['hpp']} → ${produk['hargaJual']}'),
-          Text('${produk['hppValue']} (HPP)',
-              style: const TextStyle(fontSize: 12)),
+          Text('${formatRupiah(produk['hpp'])} → ${formatRupiah(produk['harga_jual'])}'),
+          Text('${produk['hpp_value']} (HPP)'),
           Text('${produk['code']}', style: const TextStyle(fontSize: 12)),
         ],
       ),
@@ -264,8 +207,7 @@ class _ProdukPageState extends State<ProdukPage> {
                 const SizedBox(height: 4),
                 Text(
                   count,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
