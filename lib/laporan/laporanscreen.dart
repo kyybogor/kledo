@@ -3,6 +3,7 @@ import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart'
     as dashboard;
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
+import 'package:flutter_application_kledo/laporan/labarugi.dart';
 import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
 
 class LaporanPage extends StatelessWidget {
@@ -150,7 +151,14 @@ class LaporanPage extends StatelessWidget {
                                       builder: (context) => ArusKasPage(),
                                     ),
                                   );
-                                }
+                                } else if (laporan == "Laba Rugi") {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LabaRugiPage(),
+                                    ),
+                                  );
+                                } else {}
                                 // Aksi ketika laporan diklik
                               },
                             ),
