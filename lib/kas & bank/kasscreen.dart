@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/kas%20&%20bank/detailkas.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'dart:convert';
 
 class Kasscreen extends StatefulWidget {
@@ -20,7 +22,7 @@ class _KasscreenState extends State<Kasscreen> {
   }
 
   Future<void> fetchData() async {
-    final url = Uri.parse('http://192.168.1.16/connect/JSON/transaksi.php');
+    final url = Uri.parse('http://192.168.1.5/connect/JSON/transaksi.php');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -34,6 +36,19 @@ class _KasscreenState extends State<Kasscreen> {
       }
     } catch (e) {
       print('Terjadi kesalahan: $e');
+    }
+  }
+
+  String formatRupiah(dynamic amount) {
+    final formatter =
+        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+
+    try {
+      if (amount == null || amount.toString().isEmpty) return 'Rp 0';
+      double value = double.tryParse(amount.toString()) ?? 0;
+      return formatter.format(value);
+    } catch (e) {
+      return 'Rp 0';
     }
   }
 
@@ -83,12 +98,13 @@ class _KasscreenState extends State<Kasscreen> {
                 )),
             _buildSectionTitle("Transaksi di Bank", () {}),
             ...transaksiBank.map((item) => _buildBankTransactionItem(
-                  title: item["title"],
-                  subtitle: item["subtitle"],
-                  date: item["date"],
-                  amount: item["amount"],
-                  isKirim: item["type"] == "Kirim Dana",
-                  reconciled: item["reconciled"] == true,
+                  title: item["title"] ?? "-",
+                  subtitle: item["subtitle"] ?? "-",
+                  date: item["date"] ?? "-",
+                  amount: item["amount"] ?? "0",
+                  isKirim:
+                      (item["subtitle"]?.toLowerCase() ?? "") == "kirim dana",
+                  reconciled: item["status"] == "Reconciled",
                 )),
           ],
         ),
@@ -169,38 +185,58 @@ class _KasscreenState extends State<Kasscreen> {
   }
 
   Widget _buildHayamiTransactionItem({
-    required String title,
-    required String subtitle,
-    required String date,
-    required String amount,
-  }) {
-    return ListTile(
-      title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(subtitle, style: const TextStyle(fontSize: 12)),
-          Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-        ],
-      ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.green[100],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(amount, style: const TextStyle(color: Colors.green)),
+  required String title,
+  required String subtitle,
+  required String date,
+  required String amount,
+}) {
+  final kasData = {
+    'id': '1', // contoh ID kas Hayami
+    'nama': "Terima pembayaran tagihan: $title",
+    'tanggal': date,
+    'status': 'Reconciled',
+  };
+
+  return ListTile(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Detailkas(kasData: kasData),
+        ),
+      );
+    },
+    title: Text(
+      "Terima pembayaran tagihan: $title", // tambahkan prefix di sini
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    ),
+    subtitle: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(subtitle, style: const TextStyle(fontSize: 12)),
+        Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+      ],
+    ),
+    trailing: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.green[100],
+            borderRadius: BorderRadius.circular(8),
           ),
-          const SizedBox(height: 4),
-          const Text("Unreconciled",
-              style: TextStyle(color: Colors.red, fontSize: 12)),
-        ],
-      ),
-    );
-  }
+          child: Text(
+            formatRupiah(amount),
+            style: const TextStyle(color: Colors.green),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 
   Widget _buildBankTransactionItem({
     required String title,
@@ -216,11 +252,16 @@ class _KasscreenState extends State<Kasscreen> {
 
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor:
-            subtitle == "Kirim Dana" ? Colors.red[50] : Colors.green[50],
+        backgroundColor: subtitle.toLowerCase() == "kirim dana"
+            ? Colors.red[50]
+            : Colors.green[50],
         child: Icon(
-          subtitle == "Kirim Dana" ? Icons.trending_down : Icons.trending_up,
-          color: subtitle == "Kirim Dana" ? Colors.red : Colors.green,
+          subtitle.toLowerCase() == "kirim dana"
+              ? Icons.trending_down
+              : Icons.trending_up,
+          color: subtitle.toLowerCase() == "kirim dana"
+              ? Colors.red
+              : Colors.green,
         ),
       ),
       title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -240,7 +281,8 @@ class _KasscreenState extends State<Kasscreen> {
               color: amountColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text(amount, style: TextStyle(color: amountColor)),
+            child: Text(formatRupiah(amount),
+                style: TextStyle(color: amountColor)),
           ),
           const SizedBox(height: 4),
           Text(statusText, style: TextStyle(color: statusColor, fontSize: 12)),

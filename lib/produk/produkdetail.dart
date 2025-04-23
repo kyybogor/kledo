@@ -1,5 +1,8 @@
   import 'package:flutter/material.dart';
   import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:flutter_application_kledo/produk/pergerakanstok.dart';
+import 'package:flutter_application_kledo/produk/transaksiterkini.dart';
+import 'package:flutter_application_kledo/produk/transfergudang.dart';
   import 'package:flutter_application_kledo/produk/unit.dart';
   import 'package:intl/intl.dart';
 
@@ -399,17 +402,17 @@
                 } else if (title == 'Transaksi Terkini') {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const Dashboardscreen()),
+                    MaterialPageRoute(builder: (_) => TransaksiTerkiniPage()),
                   );
                 } else if (title == 'Pergerakan Stok') {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const Dashboardscreen()),
+                    MaterialPageRoute(builder: (_) => PergerakanStokPage()),
                   );
                 } else if (title == 'Transfer Gudang') {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const Dashboardscreen()),
+                    MaterialPageRoute(builder: (_) => TransferGudangPage()),
                   );
                 }
               },
