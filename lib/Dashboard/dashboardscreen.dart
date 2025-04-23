@@ -5,9 +5,11 @@ import 'package:flutter_application_kledo/Pembelian/penawaran_pembelian/penawara
 import 'package:flutter_application_kledo/Pembelian/pengirimanpembelian.dart';
 import 'package:flutter_application_kledo/Pembelian/tagihanpembelian.dart';
 import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
+import 'package:flutter_application_kledo/assetetap/assetetap.dart';
 import 'package:flutter_application_kledo/biaya/biayascreen.dart';
 import 'package:flutter_application_kledo/kas%20&%20bank/kasdanbank.dart';
 import 'package:flutter_application_kledo/kas%20&%20bank/kasscreen.dart';
+import 'package:flutter_application_kledo/laporan/laporanscreen.dart';
 import 'package:flutter_application_kledo/pemesanan/pemesananscreen.dart';
 import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
 import 'package:flutter_application_kledo/produk/produk.dart';
@@ -168,7 +170,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const ProdukPage()),
+                                builder: (_) => LaporanPage()),
                         );
                           break;
                         case 'Kas & Bank':
@@ -177,6 +179,13 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                             MaterialPageRoute(
                                 builder: (_) => const KasDanBank()),
                         );
+                          break;
+                        case 'Aset Tetap':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AssetPage()),
+                          );
                         // Tambahkan case lainnya sesuai label
                         default:
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -651,6 +660,14 @@ class _KledoDrawerState extends State<KledoDrawer> {
                           if (item['title'] == 'Kas & Bank') {
                             destination = const Kasscreen();
                             
+                          }
+
+                          if (item['title'] == 'Laporan'){
+                            destination = LaporanPage();
+                          }
+
+                          if (item['title'] == 'Aset Tetap'){
+                            destination = const AssetPage();
                           }
                           // Tambah halaman lainnya sesuai kebutuhan
 
