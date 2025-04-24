@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:flutter_application_kledo/assetetap/detailasset.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart' show KledoDrawer;
 
 class AssetPage extends StatefulWidget {
@@ -8,160 +12,89 @@ class AssetPage extends StatefulWidget {
   State<AssetPage> createState() => _AssetPageState();
 }
 
-class _AssetPageState extends State<AssetPage>
-    with SingleTickerProviderStateMixin {
+class _AssetPageState extends State<AssetPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final List<Map<String, dynamic>> draftAssets = [];
+  final List<Map<String, dynamic>> registeredAssets = [];
+  final List<Map<String, dynamic>> soldAssets = [];
 
-  final List<Map<String, dynamic>> draftAssets = [
-    {
-      'name': 'Wisma Kantor BDG',
-      'code': 'FA/00001',
-      'date': '28/10/2024',
-      'amount': 3800000
-    },
-  ];
-  final List<Map<String, dynamic>> registeredAssets = [
-    {
-      'name': 'Wisma Kantor BDG',
-      'code': 'FA/00001',
-      'date': '28/10/2024',
-      'amount': 3800000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    }
-  ];
-  final List<Map<String, dynamic>> soldAssets = [
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
-    {
-      'name': 'Mobil Dinas B1299BK',
-      'code': 'FA/00002',
-      'date': '10/08/2024',
-      'amount': 3000000
-    },
+  List<Map<String, dynamic>> allAssets = [];
+  List<Map<String, dynamic>> filteredAssets = [];
 
-  ];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    fetchAssets();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      draftAssets.retainWhere((a) => a['name'].toLowerCase().contains(query));
+      registeredAssets.retainWhere((a) => a['name'].toLowerCase().contains(query));
+      soldAssets.retainWhere((a) => a['name'].toLowerCase().contains(query));
+    });
+  }
+
+  String formatRupiah(dynamic amount) {
+    try {
+      final value = double.tryParse(amount.toString()) ?? 0;
+      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
+          .format(value);
+    } catch (e) {
+      return 'Rp 0';
+    }
+  }
+
+  Future<void> fetchAssets() async {
+    final url = Uri.parse('http://192.168.1.15/Hiyami/asset.php'); // Ganti dengan URL kamu
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+
+        draftAssets.clear();
+        registeredAssets.clear();
+        soldAssets.clear();
+
+        for (var asset in data) {
+          final assetMap = {
+            'name': asset['name'],
+            'code': asset['code'],
+            'date': asset['date'],
+            'amount': asset['amount'],
+            'akun_akumulasi': asset['akun_akumulasi'],
+            'akun_penyusutan': asset['akun_penyusutan'],
+            'metode': asset['metode'],
+            'masa_manfaat': asset['masa_manfaat'],
+            'tanggal_pelepasan': asset['tanggal_pelepasan'],
+            'batas_biaya': asset['batas_biaya'],
+          };
+
+          switch (asset['status']) {
+            case 'draft':
+              draftAssets.add(assetMap);
+              break;
+            case 'registered':
+              registeredAssets.add(assetMap);
+              break;
+            case 'sold':
+              soldAssets.add(assetMap);
+              break;
+          }
+        }
+        setState(() {});
+      } else {
+        print('Failed to load assets: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   Widget buildAssetList(List<Map<String, dynamic>> assets) {
@@ -185,18 +118,16 @@ class _AssetPageState extends State<AssetPage>
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           elevation: 2,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: ListTile(
             contentPadding: const EdgeInsets.all(16),
-            title: Text(asset['name'],
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(asset['code']), Text(asset['date'])],
-              ),
+            title: Text(asset['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(asset['code']),
+                Text(asset['date']),
+              ],
             ),
             trailing: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -205,10 +136,18 @@ class _AssetPageState extends State<AssetPage>
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                asset['amount'].toString(),
+                formatRupiah(asset['amount']),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AssetDetailPage(asset: asset),
+                ),
+              );
+            },
           ),
         );
       },
@@ -218,7 +157,7 @@ class _AssetPageState extends State<AssetPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: KledoDrawer(),
+      drawer: const KledoDrawer(),
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -231,15 +170,7 @@ class _AssetPageState extends State<AssetPage>
           tabs: const [
             Tab(text: 'DRAFT'),
             Tab(text: 'TERDAFTAR'),
-            Tab(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('TERJUAL/'),
-                  Text('DILEPASKAN'),
-                ],
-              ),
-            ),
+            Tab(child: Column(children: [Text('TERJUAL/'), Text('DILEPASKAN')])),
           ],
         ),
       ),
@@ -248,6 +179,7 @@ class _AssetPageState extends State<AssetPage>
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Cari',
                 prefixIcon: const Icon(Icons.search),
@@ -274,7 +206,8 @@ class _AssetPageState extends State<AssetPage>
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.amber,
-        onPressed: () {},
+        onPressed: () {
+        },
         child: const Icon(Icons.add),
       ),
     );
