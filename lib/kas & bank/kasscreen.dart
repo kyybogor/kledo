@@ -192,7 +192,7 @@ class _KasscreenState extends State<Kasscreen> {
 }) {
   final kasData = {
     'id': '1', // contoh ID kas Hayami
-    'nama': "Terima pembayaran tagihan: $title", // tambahkan prefix di sini
+    'nama': "Terima pembayaran tagihan: $title",
     'tanggal': date,
     'status': 'Reconciled',
   };
