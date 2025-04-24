@@ -9,6 +9,7 @@ import 'package:flutter_application_kledo/assetetap/assetetap.dart';
 import 'package:flutter_application_kledo/biaya/biayascreen.dart';
 import 'package:flutter_application_kledo/kas%20&%20bank/kasdanbank.dart';
 import 'package:flutter_application_kledo/kas%20&%20bank/kasscreen.dart';
+import 'package:flutter_application_kledo/kontak/kontakscreen.dart';
 import 'package:flutter_application_kledo/laporan/laporanscreen.dart';
 import 'package:flutter_application_kledo/pemesanan/pemesananscreen.dart';
 import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
@@ -186,6 +187,13 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                             MaterialPageRoute(
                               builder: (_) => const AssetPage()),
                           );
+                          break;
+                        case 'Kontak':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const KontakScreen()),
+                        );
                         // Tambahkan case lainnya sesuai label
                         default:
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -668,6 +676,10 @@ class _KledoDrawerState extends State<KledoDrawer> {
 
                           if (item['title'] == 'Aset Tetap'){
                             destination = const AssetPage();
+                          }
+
+                          if (item['title'] == 'Kontak'){
+                            destination = const KontakScreen();
                           }
                           // Tambah halaman lainnya sesuai kebutuhan
 
