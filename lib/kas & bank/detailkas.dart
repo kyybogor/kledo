@@ -23,7 +23,7 @@ class _DetailkasState extends State<Detailkas> {
 
   Future<void> fetchTransaksi() async {
     final kasId = widget.kasData['id'].toString();
-    final url = Uri.parse("http://192.168.1.5/connect/JSON/transaksi.php");
+    final url = Uri.parse("http://192.168.1.6/connect/JSON/transaksi.php");
 
     try {
       final response = await http.get(url);

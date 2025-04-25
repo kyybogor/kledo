@@ -38,7 +38,7 @@ class _ProdukPageState extends State<ProdukPage> {
   }
 
   Future<void> _fetchProduk() async {
-    final url = Uri.parse('http://192.168.1.15/hiyami/produk.php');
+    final url = Uri.parse('http://192.168.1.4/hiyami/produk.php');
 
     try {
       final response = await http.get(url);
