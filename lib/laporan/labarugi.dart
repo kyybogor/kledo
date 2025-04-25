@@ -25,17 +25,26 @@ class LabaRugiPage extends StatelessWidget {
         border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Text(label,
-                style: isBold ? boldStyle : labelStyle,
-                overflow: TextOverflow.ellipsis),
+            child: Text(
+              label,
+              style: isBold ? boldStyle : labelStyle,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
           ),
           const SizedBox(width: 10),
-          Text(value,
+          Flexible(
+            child: Text(
+              value,
               style: isBold ? boldStyle : valueStyle,
-              overflow: TextOverflow.ellipsis),
+              textAlign: TextAlign.end,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+          ),
         ],
       ),
     );
