@@ -2,41 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/laporan/laporanscreen.dart';
 
 class NeracaPage extends StatelessWidget {
-  final TextStyle labelStyle = TextStyle(fontSize: 16);
-  final TextStyle valueStyle = TextStyle(fontSize: 16, color: Colors.blue);
+  final TextStyle labelStyle = const TextStyle(fontSize: 16);
+  final TextStyle valueStyle =
+      const TextStyle(fontSize: 16, color: Colors.blue);
   final TextStyle boldStyle =
-      TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+      const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
 
   Widget buildSectionHeader(String title) {
     return Container(
       width: double.infinity,
       color: Colors.grey[300],
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       child: Text(
         title,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
     );
   }
 
   Widget buildItem(String label, String value, {bool isBold = false}) {
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(label,
-                  style: isBold ? boldStyle : labelStyle,
-                  overflow: TextOverflow.ellipsis),
-            ),
-            SizedBox(width: 10), // Spasi antar teks
-            Text(value, style: isBold ? boldStyle : valueStyle),
-          ],
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.grey.shade300, width: 1),
         ),
       ),
-    ]);
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              label,
+              style: isBold ? boldStyle : labelStyle,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Flexible(
+            flex: 1,
+            child: Text(
+              value,
+              style: isBold ? boldStyle : valueStyle,
+              textAlign: TextAlign.right,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -44,30 +59,53 @@ class NeracaPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: Text("Neraca"),
+        title: const Text("Neraca"),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list),
             onPressed: () {},
           )
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(bottom: 80),
         child: ListView(
           children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Assets 24/04/2025",
+            Container(
+              width: double.infinity,
+              color: Colors.yellow[100],
+              padding: const EdgeInsets.all(12),
+              child: RichText(
+                text: TextSpan(
+                  style: const TextStyle(fontSize: 14, color: Colors.black),
+                  children: [
+                    const TextSpan(
+                        text:
+                            "Data yang tampil saat ini adalah data dummy. Setelah Anda siap, "),
+                    TextSpan(
+                      text: "klik disini",
+                      style: const TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline),
+                    ),
+                    const TextSpan(text: " untuk mengosongkan data."),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text("Assets 25/04/2025",
                   style: TextStyle(fontSize: 14, color: Colors.grey[600])),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             buildSectionHeader("Kas & Bank"),
             buildItem("Kas", "28.900.519"),
             buildItem("Rekening Bank", "29.421.935"),
@@ -91,15 +129,18 @@ class NeracaPage extends StatelessWidget {
             buildSectionHeader("Lainnya"),
             buildItem("Investasi", "(89.189)"),
             buildItem("Total Lainnya", "(89.189)", isBold: true),
-            SizedBox(height: 20),
-            Text("Total Assets 206.841.867", style: boldStyle),
-            SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Liabilitas & Modal 24/04/2025",
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text("Total Assets 206.841.867", style: boldStyle),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text("Liabilitas & Modal 25/04/2025",
                   style: TextStyle(fontSize: 14, color: Colors.grey[600])),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             buildSectionHeader("Liabilitas Jangka Pendek"),
             buildItem("Hutang Usaha", "42.879.684"),
             buildItem("Hutang Belum Ditagih", "8.499.009"),
@@ -120,8 +161,12 @@ class NeracaPage extends StatelessWidget {
             buildItem("Pendapatan Sampai Periode Terakhir", "0"),
             buildItem("Pendapatan Periode Ini", "49.617.639"),
             buildItem("total Perubahan Modal", "142.462.684"),
-            SizedBox(height: 20),
-            Text("Total Liabilitas & Modal 206.841.867", style: boldStyle),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text("Total Liabilitas & Modal 206.841.867",
+                  style: boldStyle),
+            ),
           ],
         ),
       ),
@@ -130,14 +175,14 @@ class NeracaPage extends StatelessWidget {
         children: [
           FloatingActionButton(
             heroTag: "share",
-            child: Icon(Icons.share),
+            child: const Icon(Icons.share),
             onPressed: () {},
             backgroundColor: Colors.blueAccent,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           FloatingActionButton(
             heroTag: "download",
-            child: Icon(Icons.download),
+            child: const Icon(Icons.download),
             onPressed: () {},
             backgroundColor: Colors.blue,
           ),
