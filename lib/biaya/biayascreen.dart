@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 
 // Import halaman-halaman tujuan
-import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
-import 'package:flutter_application_kledo/dibayarsebagian/dibayarsebagian.dart';
-import 'package:flutter_application_kledo/lunas/lunas.dart';
-
+import 'package:flutter_application_kledo/biaya/belumdibayarbiaya.dart';
+import 'package:flutter_application_kledo/biaya/dibayarsebagianbiaya.dart';
+import 'package:flutter_application_kledo/biaya/jatuhtempobiaya.dart';
+import 'package:flutter_application_kledo/biaya/lunasbiaya.dart';
+import 'package:flutter_application_kledo/biaya/transaksiberulangbiaya.dart';
 class BiayaPage extends StatefulWidget {
   const BiayaPage({super.key});
 
@@ -25,11 +26,11 @@ class _BiayaPageState extends State<BiayaPage> {
   };
 
   final Map<String, Widget> kategoriPages = {
-    'Belum Dibayar': const BelumDibayar(),
-    'Dibayar Sebagian': const DibayarSebagian(),
-    'Lunas': const Lunas(),
-    'Jatuh Tempo': const DibayarSebagian(),
-    'Transaksi Berulang': const DibayarSebagian(),
+    'Belum Dibayar': const BelumDibayarBiaya(),
+    'Dibayar Sebagian': const DibayarSebagianBiaya(),
+    'Lunas': const LunasBiaya(),
+    'Jatuh Tempo': const JatuhTempoBiaya(),
+    'Transaksi Berulang': const TransaksiBerulangBiaya(),
   };
 
   @override

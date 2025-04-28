@@ -67,8 +67,18 @@ class AssetDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(asset['name'] ?? 'Detail Aset',
-            style: const TextStyle(fontSize: 18)),
+        title: Column(
+          children: [
+            Text(
+              asset['name'] ?? 'Detail Aset',
+              style: const TextStyle(fontSize: 18),
+            ),
+            Text(
+              asset['code'] ?? 'Kode Tidak Tersedia',
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            ),
+          ],
+        ),
         centerTitle: true,
         leading: const BackButton(),
         elevation: 0,
@@ -102,10 +112,8 @@ class AssetDetailPage extends StatelessWidget {
               infoItem('Akun Penyusutan', getValue(asset['akun_penyusutan'])),
               infoItem('Metode Penyusutan', getValue(asset['metode']),
                   icon: Icons.build),
-              infoItem(
-                  'Masa Manfaat (tahun)',
-                  getValue(asset['masa_manfaat'].toString()) +
-                      '%',
+              infoItem('Masa Manfaat (tahun)',
+                  getValue(asset['masa_manfaat'].toString()) + '%',
                   icon: Icons.speed),
               infoItem(
                   'Tanggal Pelepasan', getValue(asset['tanggal_pelepasan']),
