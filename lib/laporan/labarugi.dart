@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/laporan/laporanscreen.dart';
 
 class LabaRugiPage extends StatelessWidget {
   final TextStyle labelStyle = TextStyle(fontSize: 16);

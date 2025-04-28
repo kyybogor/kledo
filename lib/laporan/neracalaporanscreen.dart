@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/laporan/laporanscreen.dart';
 
 class NeracaPage extends StatelessWidget {
   final TextStyle labelStyle = const TextStyle(fontSize: 16);
@@ -77,28 +76,6 @@ class NeracaPage extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 80),
         child: ListView(
           children: [
-            Container(
-              width: double.infinity,
-              color: Colors.yellow[100],
-              padding: const EdgeInsets.all(12),
-              child: RichText(
-                text: TextSpan(
-                  style: const TextStyle(fontSize: 14, color: Colors.black),
-                  children: [
-                    const TextSpan(
-                        text:
-                            "Data yang tampil saat ini adalah data dummy. Setelah Anda siap, "),
-                    TextSpan(
-                      text: "klik disini",
-                      style: const TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline),
-                    ),
-                    const TextSpan(text: " untuk mengosongkan data."),
-                  ],
-                ),
-              ),
-            ),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
