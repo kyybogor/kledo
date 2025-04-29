@@ -22,7 +22,7 @@ class _KasscreenState extends State<Kasscreen> {
   }
 
   Future<void> fetchData() async {
-    final url = Uri.parse('http://192.168.1.6/connect/JSON/transaksi.php');
+    final url = Uri.parse('http://192.168.1.26/connect/JSON/transaksi.php');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

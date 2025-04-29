@@ -22,7 +22,7 @@ class _KontakScreenState extends State<KontakScreen> {
 
   Future<void> fetchContacts() async {
     final response =
-        await http.get(Uri.parse("http://192.168.1.6/connect/JSON/kontak.php"));
+        await http.get(Uri.parse("http://192.168.1.26/connect/JSON/kontak.php"));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       setState(() {
