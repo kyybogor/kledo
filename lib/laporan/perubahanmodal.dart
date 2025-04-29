@@ -13,7 +13,7 @@ class _PerubahanModalPageState extends State<PerubahanModalPage> {
 
   // Mengambil data dari API
   Future<void> fetchData() async {
-    final response = await http.get(Uri.parse('http://192.168.1.25/hiyami/perubahanmodal.php'));
+    final response = await http.get(Uri.parse('http://192.168.1.23/hiyami/perubahanmodal.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);

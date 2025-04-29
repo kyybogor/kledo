@@ -1,131 +1,390 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/produk/produkdetail.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
-class LabaRugiPage extends StatelessWidget {
-  final TextStyle labelStyle = TextStyle(fontSize: 16);
-  final TextStyle valueStyle = TextStyle(fontSize: 16, color: Colors.blue);
-  final TextStyle boldStyle =
-      TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
-
-  Widget buildSectionHeader(String title) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-      color: Colors.grey[200],
-      child: Text(
-        title,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  Widget buildItem(String label, String value, {bool isBold = false}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              style: isBold ? boldStyle : labelStyle,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Flexible(
-            child: Text(
-              value,
-              style: isBold ? boldStyle : valueStyle,
-              textAlign: TextAlign.end,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+class Dashboardscreen extends StatelessWidget {
+  const Dashboardscreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text("Dashboard")),
+      body: const Center(child: Text("Ini halaman Dashboard")),
+    );
+  }
+}
+
+void main() => runApp(const MaterialApp(home: LabaRugiPage()));
+
+class LabaRugiPage extends StatefulWidget {
+  const LabaRugiPage({super.key});
+
+  @override
+  _LabaRugiPageState createState() => _LabaRugiPageState();
+}
+
+class _LabaRugiPageState extends State<LabaRugiPage> {
+  List<LabaRugiItem> items = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    final response =
+        await http.get(Uri.parse('http://192.168.1.23/hiyami/tes.php'));
+
+    if (response.statusCode == 200) {
+      List jsonData = jsonDecode(response.body);
+      setState(() {
+        items = jsonData.map((e) => LabaRugiItem.fromJson(e)).toList();
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Gagal mengambil data dari server')),
+      );
+    }
+  }
+
+  Widget? getPageByKode(String kode, LabaRugiItem item) {
+    switch (kode) {
+      default:
+        return DetailLabaRugiPage(item: item);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const TextStyle labelStyle = TextStyle(fontSize: 16);
+    const TextStyle valueStyle = TextStyle(fontSize: 16, color: Colors.blue);
+    const TextStyle boldStyle =
+        TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+
+    Widget buildItem(String label, String value,
+        {bool isBold = false, LabaRugiItem? item}) {
+      final textWidget = Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(label, style: isBold ? boldStyle : labelStyle),
+          ),
+          Flexible(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: Text(
+                  value,
+                  style: isBold ? boldStyle : valueStyle,
+                  textAlign: TextAlign.end,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+
+      return InkWell(
+        onTap: (item != null && item.kode.isNotEmpty)
+            ? () {
+                final page = getPageByKode(item.kode, item);
+                if (page != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => page),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Halaman belum tersedia')),
+                  );
+                }
+              }
+            : null,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
+          ),
+          child: textWidget,
+        ),
+      );
+    }
+
+    Map<String, List<LabaRugiItem>> groupedItems = {};
+    for (var item in items) {
+      groupedItems.putIfAbsent(item.kategori, () => []).add(item);
+    }
+
+    return Scaffold(
       appBar: AppBar(
         title: const Text("Laba Rugi"),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {},
-          )
-        ],
       ),
-      body: ListView(
-        children: [
-          buildSectionHeader("Pendapatan Perdagangan"),
-          buildItem("(4-40100) Diskon Penjualan", "33.333"),
-          buildItem("(4-40000) Pendapatan", "126.492.027"),
-          buildItem("(7-70101) Biaya Tambahan Pelanggan", "(15.315)"),
-          buildItem("(7-70001) Pendapatan Bunga - Deposito", "59.459"),
-          buildItem("Total Pendapatan Perdagangan", "126.569.505",
-              isBold: true),
-          buildSectionHeader("Beban Pokok Penjualan"),
-          buildItem("(5-50000) Beban Pokok Pendapatan", "39.361.323"),
-          buildItem("(5-50400) Biaya Impor", "(52.252)"),
-          buildItem("(5-50300) Pengiriman & Pengangkutan", "(50.450)"),
-          buildItem("Total Beban Pokok", "39.264.090", isBold: true),
-          buildItem("Laba Kotor", "87.305.414", isBold: true),
-          buildSectionHeader("Biaya Operasional"),
-          buildItem("(6-60301) Alat Tulis Kantor & Printing", "29.730"),
-          buildItem("(6-60300) Beban Kantor", "(17.117)"),
-          buildItem("(6-60003) Bensin, Tol dan Parkir Penjualan", "9.565.225"),
-          buildItem("(6-60219) IPL", "(61.261)"),
-          buildItem("(6-60001) Iklan & Promosi", "8.207.027"),
-          buildItem("(6-60108) Insentif", "(1.802)"),
-          buildItem("(6-60107) Jamsostek", "74.775"),
-          buildItem("(6-60002) Komisi & Fee", "8.918.829"),
-          buildItem("(6-60005) Komunikas - Penjualan", "4.532.523"),
-          buildItem("(6-60209) Legal & Profesional", "18.018"),
-          buildItem("(6-60205) Makanan", "(41.441)"),
-          buildItem("(6-60305) Pemborong", "89.189"),
-          buildItem("(6-60216) Pengeluaran Barang Rusak", "10.811"),
-          buildItem("(6-60502) Penyusutan - Kendaraan", "(77.477)"),
-          buildItem("(6-60004) Perjalanan Dinas - Penjualan", "9.713.694"),
-          buildItem("(6-60204) Perjalanan Dinas - Umum", "10.811"),
-          buildItem("(6-60106) THR & Bonus", "40.541"),
-          buildItem("(9-90000) Beban Pajak - Kini", "63.964"),
-          buildItem("(8-81002) Laba/Rugi Selisih Kurs - Belum Direalisasikan",
-              "39.640"),
-          buildItem("(8-80100) Penyesuaian Persediaan", "(3.427.900)"),
-          buildItem("Total Biaya Operasional", "37.687.776", isBold: true),
-          buildSectionHeader("Laba Bersih"),
-          buildItem("Laba Bersih", "49.617.639", isBold: true),
-        ],
-      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              children: groupedItems.entries.expand((entry) {
+                final isLabaBersih =
+                    entry.key.trim().toLowerCase() == 'laba bersih';
+
+                return [
+                  if (!isLabaBersih)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 12),
+                      color: Colors.grey[200],
+                      child: Text(
+                        entry.key,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ...entry.value.map((item) => buildItem(
+                        "${item.kode.isNotEmpty ? "(${item.kode}) " : ""}${item.deskripsi}",
+                        formatRupiah(item.nilai),
+                        isBold: item.kode.isEmpty,
+                        item: item,
+                      )),
+                ];
+              }).toList(),
+            ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
             heroTag: "share",
-            child: const Icon(Icons.share),
             onPressed: () {},
             backgroundColor: Colors.blueAccent,
+            child: const Icon(Icons.share),
           ),
           const SizedBox(height: 10),
           FloatingActionButton(
             heroTag: "download",
-            child: const Icon(Icons.download),
             onPressed: () {},
             backgroundColor: Colors.blue,
+            child: const Icon(Icons.download),
           ),
         ],
       ),
     );
+  }
+}
+
+// === Model Data ===
+
+class LabaRugiItem {
+  final String kategori;
+  final String kode;
+  final String deskripsi;
+  final String nilai;
+  final String date;
+  final List<LabaRugiDetail> detail;
+
+  LabaRugiItem({
+    required this.kategori,
+    required this.kode,
+    required this.deskripsi,
+    required this.nilai,
+    required this.detail,
+    required this.date,
+  });
+
+  factory LabaRugiItem.fromJson(Map<String, dynamic> json) {
+    var detailList = <LabaRugiDetail>[];
+    if (json['detail'] != null && json['detail'] is List) {
+      detailList = (json['detail'] as List)
+          .map((d) => LabaRugiDetail.fromJson(d))
+          .toList();
+    }
+
+    return LabaRugiItem(
+      kategori: json['kategori'] ?? '',
+      kode: json['kode'] ?? '',
+      deskripsi: json['deskripsi'] ?? '',
+      nilai: json['nilai'] ?? '',
+      date: json['date'] ?? '',
+      detail: detailList,
+    );
+  }
+}
+
+class LabaRugiDetail {
+  final String idLaba;
+  final String id;
+  final String nama;
+  final String tanggal;
+  final String nominal;
+
+  LabaRugiDetail({
+    required this.idLaba,
+    required this.id,
+    required this.nama,
+    required this.tanggal,
+    required this.nominal,
+  });
+
+  factory LabaRugiDetail.fromJson(Map<String, dynamic> json) {
+    return LabaRugiDetail(
+      idLaba: json['id_laba'] ?? '',
+      id: json['id'] ?? '',
+      nama: json['nama'] ?? '',
+      tanggal: json['tanggal'] ?? '',
+      nominal: json['nominal'] ?? '',
+    );
+  }
+}
+
+ 
+class DetailLabaRugiPage extends StatelessWidget {
+  final LabaRugiItem item;
+
+  const DetailLabaRugiPage({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final String namaAkun = "${item.deskripsi} (${item.kode})";
+
+    double totalNominal = 0.0;
+    for (var detail in item.detail) {
+      totalNominal += double.tryParse(
+              detail.nominal.replaceAll('.', '').replaceAll(',', '')) ??
+          0.0;
+    }
+
+    if (item.detail.isEmpty) {
+      totalNominal =
+          double.tryParse(item.nilai.replaceAll('.', '').replaceAll(',', '')) ??
+              0.0;
+    }
+
+String formatRupiah(double nominal, {int decimalDigits = 2}) {
+  if (nominal == nominal.roundToDouble()) {
+    decimalDigits = 0;
+  }
+
+  final formatter = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp ',
+    decimalDigits: decimalDigits,
+  );
+  return formatter.format(nominal);
+}
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: const BackButton(),
+        centerTitle: true,
+        title: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Transaksi ${item.deskripsi}",
+                  style: const TextStyle(fontSize: 16)),
+              Text(item.kode, style: const TextStyle(fontSize: 12)),
+            ],
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: ListView(
+        children: [
+          Container(
+            width: double.infinity,
+            color: Colors.grey[300],
+            padding: const EdgeInsets.all(12),
+            child: Text(
+              namaAkun,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Saldo Awal',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('0'),
+              ],
+            ),
+          ),
+          const Divider(),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Transaksi Terkait',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            ),
+          ),
+          ..._buildDetailList(item),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Saldo Akhir',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(formatRupiah(totalNominal),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildDetailList(LabaRugiItem item) {
+    if (item.detail.isEmpty) {
+      return [
+        ListTile(
+          title: Text(item.deskripsi),
+          subtitle: Text(item.date),
+          trailing: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.pink[100],
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Text(formatRupiah(item.nilai),
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ),
+      ];
+    }
+
+    return item.detail.map((detail) {
+      return ListTile(
+        title: Text(detail.nama),
+        subtitle: Text(detail.tanggal),
+        trailing: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.pink[100],
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Text(formatRupiah(detail.nominal),
+              style: const TextStyle(fontWeight: FontWeight.bold)),
+        ),
+      );
+    }).toList();
   }
 }

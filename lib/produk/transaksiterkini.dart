@@ -28,7 +28,7 @@ class Transaksi {
 }
 
 Future<List<Transaksi>> fetchTransaksi() async {
-  final response = await http.get(Uri.parse('http://192.168.1.25/Hiyami/transaksiterikini.php'));
+  final response = await http.get(Uri.parse('http://192.168.1.23/Hiyami/transaksiterikini.php'));
 
   if (response.statusCode == 200) {
     final List<dynamic> data = json.decode(response.body)['data'];

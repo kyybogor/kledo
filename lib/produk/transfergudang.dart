@@ -19,7 +19,7 @@ class _TransferGudangPageState extends State<TransferGudangPage> {
   }
 
   Future<void> fetchTransfers() async {
-    final String url = 'http://192.168.1.25/hiyami/percobaan.php';
+    final String url = 'http://192.168.1.23/hiyami/percobaan.php';
 
     try {
       final response = await http.get(Uri.parse(url));
