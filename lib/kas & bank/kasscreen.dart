@@ -22,7 +22,7 @@ class _KasscreenState extends State<Kasscreen> {
   }
 
   Future<void> fetchData() async {
-    final url = Uri.parse('http://192.168.1.6/connect/JSON/transaksi.php');
+    final url = Uri.parse('http://192.168.1.9/connect/JSON/transaksi.php');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -42,7 +42,6 @@ class _KasscreenState extends State<Kasscreen> {
   String formatRupiah(dynamic amount) {
     final formatter =
         NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
-
     try {
       if (amount == null || amount.toString().isEmpty) return 'Rp 0';
       double value = double.tryParse(amount.toString()) ?? 0;
@@ -74,38 +73,28 @@ class _KasscreenState extends State<Kasscreen> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildInfoCard(
-                        'Saldo', 'Rp 62,677,047', '+66,2%', Colors.green),
+                    _buildInfoCard('Saldo', 'Rp 62,677,047', '+66,2%', Colors.green),
                     const SizedBox(width: 8),
-                    _buildInfoCard(
-                        'Masuk', 'Rp 25,000,000', '+45%', Colors.blue),
+                    _buildInfoCard('Masuk', 'Rp 25,000,000', '+45%', Colors.blue),
                     const SizedBox(width: 8),
-                    _buildInfoCard(
-                        'Keluar', 'Rp 10,000,000', '-12%', Colors.red),
+                    _buildInfoCard('Keluar', 'Rp 10,000,000', '-12%', Colors.red),
                     const SizedBox(width: 8),
-                    _buildInfoCard(
-                        'Net', 'Rp 15,000,000', '-14%', Colors.black),
+                    _buildInfoCard('Net', 'Rp 15,000,000', '-14%', Colors.black),
                   ],
                 ),
               ),
             ),
             _buildSectionTitle("Transaksi di Hayami", () {}),
-            ...transaksiHayami.map((item) => _buildHayamiTransactionItem(
-                  title: item["title"] ?? "Judul tidak ada",
-                  subtitle: item["subtitle"] ?? "Tidak ada nama",
-                  date: item["date"] ?? "-",
-                  amount: item["amount"] ?? "0",
-                )),
+            ...transaksiHayami.map((item) => _buildHayamiTransactionItem(item)).toList(),
             _buildSectionTitle("Transaksi di Bank", () {}),
             ...transaksiBank.map((item) => _buildBankTransactionItem(
-                  title: item["title"] ?? "-",
-                  subtitle: item["subtitle"] ?? "-",
-                  date: item["date"] ?? "-",
-                  amount: item["amount"] ?? "0",
-                  isKirim:
-                      (item["subtitle"]?.toLowerCase() ?? "") == "kirim dana",
-                  reconciled: item["status"] == "Reconciled",
-                )),
+              title: item["title"] ?? "-",
+              subtitle: item["subtitle"] ?? "-",
+              date: item["date"] ?? "-",
+              amount: item["amount"] ?? "0",
+              isKirim: (item["subtitle"]?.toLowerCase() ?? "") == "kirim dana",
+              reconciled: item["status"] == "Reconciled",
+            )),
           ],
         ),
       ),
@@ -116,8 +105,7 @@ class _KasscreenState extends State<Kasscreen> {
     );
   }
 
-  Widget _buildInfoCard(
-      String title, String value, String change, Color color) {
+  Widget _buildInfoCard(String title, String value, String change, Color color) {
     bool isNegative = change.startsWith('-');
     return SizedBox(
       width: 220,
@@ -132,10 +120,7 @@ class _KasscreenState extends State<Kasscreen> {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 8),
             Row(
@@ -143,8 +128,7 @@ class _KasscreenState extends State<Kasscreen> {
               children: [
                 Text(
                   value,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 if (change.isNotEmpty)
                   Row(
@@ -155,8 +139,7 @@ class _KasscreenState extends State<Kasscreen> {
                         color: color,
                       ),
                       const SizedBox(width: 4),
-                      Text(change,
-                          style: TextStyle(color: color, fontSize: 13)),
+                      Text(change, style: TextStyle(color: color, fontSize: 13)),
                     ],
                   ),
               ],
@@ -176,67 +159,78 @@ class _KasscreenState extends State<Kasscreen> {
           Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
           GestureDetector(
             onTap: onTap,
-            child:
-                const Text("Lihat Semua", style: TextStyle(color: Colors.blue)),
+            child: const Text("Lihat Semua", style: TextStyle(color: Colors.blue)),
           )
         ],
       ),
     );
   }
 
-  Widget _buildHayamiTransactionItem({
-  required String title,
-  required String subtitle,
-  required String date,
-  required String amount,
-}) {
-  final kasData = {
-    'id': '1', // contoh ID kas Hayami
-    'nama': "Terima pembayaran tagihan: $title",
-    'tanggal': date,
-    'status': 'Reconciled',
-  };
+  Widget _buildHayamiTransactionItem(Map<String, dynamic> item) {
+    final title = item["title"] ?? "Judul tidak ada";
+    final subtitle = item["subtitle"] ?? "Tidak ada nama";
+    final date = item["date"] ?? "-";
+    final amount = item["amount"] ?? "0";
+    final status = item["status"] ?? "Unreconciled";
 
-  return ListTile(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Detailkas(kasData: kasData),
-        ),
-      );
-    },
-    title: Text(
-      "Terima pembayaran tagihan: $title", // tambahkan prefix di sini
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-    ),
-    subtitle: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(subtitle, style: const TextStyle(fontSize: 12)),
-        Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-      ],
-    ),
-    trailing: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: Colors.green[100],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            formatRupiah(amount),
-            style: const TextStyle(color: Colors.green),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+    final kasData = {
+      'id': item['id'],
+      'nama': "Terima pembayaran tagihan: $title",
+      'tanggal': date,
+      'status': status,
+      'instansi': item['instansi'],
+      'total': item['amount'],
+    };
 
+    return ListTile(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Detailkas(kasData: kasData),
+          ),
+        );
+      },
+      title: Text(
+        "Terima pembayaran tagihan: $title",
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(subtitle, style: const TextStyle(fontSize: 12)),
+          Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        ],
+      ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: status.toLowerCase() == 'reconciled' ? Colors.green[100] : Colors.red[100],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              formatRupiah(amount),
+              style: TextStyle(
+                color: status.toLowerCase() == 'reconciled' ? Colors.green : Colors.red,
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            status,
+            style: TextStyle(
+              color: status.toLowerCase() == 'reconciled' ? Colors.green : Colors.red,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildBankTransactionItem({
     required String title,
@@ -252,16 +246,10 @@ class _KasscreenState extends State<Kasscreen> {
 
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: subtitle.toLowerCase() == "kirim dana"
-            ? Colors.red[50]
-            : Colors.green[50],
+        backgroundColor: subtitle.toLowerCase() == "kirim dana" ? Colors.red[50] : Colors.green[50],
         child: Icon(
-          subtitle.toLowerCase() == "kirim dana"
-              ? Icons.trending_down
-              : Icons.trending_up,
-          color: subtitle.toLowerCase() == "kirim dana"
-              ? Colors.red
-              : Colors.green,
+          subtitle.toLowerCase() == "kirim dana" ? Icons.trending_down : Icons.trending_up,
+          color: subtitle.toLowerCase() == "kirim dana" ? Colors.red : Colors.green,
         ),
       ),
       title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -281,8 +269,7 @@ class _KasscreenState extends State<Kasscreen> {
               color: amountColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text(formatRupiah(amount),
-                style: TextStyle(color: amountColor)),
+            child: Text(formatRupiah(amount), style: TextStyle(color: amountColor)),
           ),
           const SizedBox(height: 4),
           Text(statusText, style: TextStyle(color: statusColor, fontSize: 12)),
