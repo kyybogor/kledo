@@ -3,6 +3,7 @@ import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
 import 'package:flutter_application_kledo/laporan/labarugi.dart';
 import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
+import 'package:flutter_application_kledo/laporan/perubahanmodal.dart';
 
 class LaporanPage extends StatelessWidget {
   final Map<String, List<String>> laporanKategori = {
@@ -156,7 +157,14 @@ class LaporanPage extends StatelessWidget {
                                       builder: (context) => LabaRugiPage(),
                                     ),
                                   );
-                                } else {}
+                                } else  if (laporan == "Perubahan Modal") {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PerubahanModalPage()
+                                      )
+                                  );
+                                } else{}
                                 // Aksi ketika laporan diklik
                               },
                             ),
