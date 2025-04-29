@@ -1,37 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
-import 'package:flutter_application_kledo/kas%20&%20bank/kasscreen.dart';
+import 'package:flutter_application_kledo/kas & bank/kasscreen.dart';
 
-
-class KasDanBank extends StatelessWidget {
+class KasDanBank extends StatefulWidget {
   const KasDanBank({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final kasData = [
-      {
-        "nama": "Kas",
-        "kode": "1-10001",
-        "warna": Colors.red,
-        "nominal": "62.677.047",
-        "halaman": const Kasscreen(),
-      },
-      {
-        "nama": "Rekening Bank",
-        "kode": "1-10002",
-        "warna": Colors.pink,
-        "nominal": "9.869.961",
-        //"halaman": const RekeningPage(),
-      },
-      {
-        "nama": "Giro",
-        "kode": "1-10003",
-        "warna": Colors.purple,
-        "nominal": "37.031.038",
-        //"halaman": const GiroPage(),
-      },
-    ];
+  State<KasDanBank> createState() => _KasDanBankState();
+}
 
+class _KasDanBankState extends State<KasDanBank> {
+  List<dynamic> kasData = [];
+  bool isLoading = true;
+
+  // Ganti URL di bawah sesuai servermu
+  final String apiUrl = "http://192.168.1.9/connect/JSON/kasdanbank.php";
+
+  final Map<String, Color> warnaMap = {
+    "Kas": Colors.red,
+    "Rekening Bank": Colors.pink,
+    "Giro": Colors.purple,
+  };
+
+  final Map<String, Widget> halamanMap = {
+    "Kas": Kasscreen(),
+    // "Rekening Bank": RekeningPage(), // Tambahkan jika tersedia
+    // "Giro": GiroPage(), // Tambahkan jika tersedia
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    fetchKasData();
+  }
+
+  Future<void> fetchKasData() async {
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          kasData = data;
+          isLoading = false;
+        });
+      } else {
+        throw Exception("Failed to load data");
+      }
+    } catch (e) {
+      print("Error: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       drawer: const KledoDrawer(),
       appBar: AppBar(
@@ -58,44 +85,56 @@ class KasDanBank extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: kasData.length,
-              itemBuilder: (context, index) {
-                final data = kasData[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: data['warna'] as Color,
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: kasData.length,
+                    itemBuilder: (context, index) {
+                      final data = kasData[index];
+                      final nama = data['nama'];
+                      final kode = data['kode'];
+                      final nominal = double.tryParse(data['nominal'].toString()) ?? 0;
+                      final warna = warnaMap[nama] ?? Colors.grey;
+
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: warna,
+                        ),
+                        title: Text(nama),
+                        subtitle: Text(kode),
+                        trailing: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 6,
+                            horizontal: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: warna.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            nominal.toStringAsFixed(0).replaceAllMapped(
+                                  RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                                  (Match m) => '${m[1]}.',
+                                ),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          if (halamanMap.containsKey(nama)) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => halamanMap[nama]!,
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    },
                   ),
-                  title: Text(data['nama'] as String),
-                  subtitle: Text(data['kode'] as String),
-                  trailing: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 6,
-                      horizontal: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: (data['warna'] as Color).withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      data['nominal'] as String,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => data['halaman'] as Widget,
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
           ),
         ],
       ),

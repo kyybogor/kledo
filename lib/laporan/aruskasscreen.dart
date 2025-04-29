@@ -19,7 +19,7 @@ class _ArusKasPageState extends State<ArusKasPage> {
 
   Future<void> fetchArusKas() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.26/connect/JSON/arus_kas.php'));
+      final response = await http.get(Uri.parse('http://192.168.1.9/connect/JSON/arus_kas.php'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 

@@ -14,6 +14,7 @@ class Detailkas extends StatefulWidget {
 
 class _DetailkasState extends State<Detailkas> {
   List<dynamic> transaksi = [];
+  double totalSeluruhAmount = 0.0;
 
   @override
   void initState() {
@@ -22,53 +23,49 @@ class _DetailkasState extends State<Detailkas> {
   }
 
   Future<void> fetchTransaksi() async {
-    final kasId = widget.kasData['id'].toString();
-    final url = Uri.parse("http://192.168.1.26/connect/JSON/transaksi.php");
+    final kasId = widget.kasData['id']?.toString() ?? '';
+    final url = Uri.parse("http://192.168.1.9/connect/JSON/transaksi.php");
 
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-
-        // Debug log
-        print("Response data: $data");
-        print("Kas ID: $kasId");
-
-        // Gabungkan semua data dari berbagai jenis jika perlu
         List<dynamic> semuaTransaksi = [];
+
         if (data is Map<String, dynamic>) {
           semuaTransaksi = [
             ...?data['hayami'],
             ...?data['bank'],
           ];
+
+          // Hitung total semua amount dari seluruh data
+          totalSeluruhAmount = semuaTransaksi.fold(0.0, (total, item) {
+            final amount = double.tryParse(item['amount']?.toString() ?? '') ?? 0.0;
+            return total + amount;
+          });
+
+          // Filter data hanya untuk kas_id terkait
+          final filtered = semuaTransaksi
+              .where((item) => item['kas_id']?.toString() == kasId)
+              .toList();
+
+          setState(() {
+            transaksi = filtered;
+          });
         }
-
-        final filtered = semuaTransaksi
-            .where((item) =>
-                item.containsKey('kas_id') &&
-                item['kas_id'].toString() == kasId)
-            .toList();
-
-        setState(() {
-          transaksi = filtered;
-        });
       } else {
-        print('Gagal mengambil data transaksi kas. Status: ${response.statusCode}');
+        debugPrint('Gagal mengambil data transaksi. Status: ${response.statusCode}');
       }
     } catch (e) {
-      print("Error saat mengambil data kas: $e");
+      debugPrint("Error saat mengambil data transaksi: $e");
     }
   }
 
   double getTotalAmount() {
-    double total = 0;
-    for (var item in transaksi) {
-      final jumlah = double.tryParse(item['amount'].toString());
-      if (jumlah != null) {
-        total += jumlah;
-      }
-    }
-    return total;
+    return transaksi.fold(0.0, (total, item) {
+      final amount = double.tryParse(item['amount']?.toString() ?? '') ?? 0.0;
+      return total + amount;
+    });
   }
 
   String formatRupiah(double number) {
@@ -79,9 +76,10 @@ class _DetailkasState extends State<Detailkas> {
   @override
   Widget build(BuildContext context) {
     final data = widget.kasData;
-    final nama = (data['nama'] ?? '-').split(':').last.trim();
-    final tanggal = data['tanggal'] ?? '-';
-    final status = data['status'] ?? 'Unreconciled';
+    final nama = (data['nama'] ?? '-').toString().split(':').last.trim();
+    final instansi = data['instansi']?.toString() ?? '-';
+    final tanggal = data['tanggal']?.toString() ?? '-';
+    final status = data['status']?.toString() ?? 'Unreconciled';
 
     return Scaffold(
       appBar: AppBar(
@@ -89,6 +87,7 @@ class _DetailkasState extends State<Detailkas> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        foregroundColor: Colors.white,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -103,7 +102,7 @@ class _DetailkasState extends State<Detailkas> {
         children: [
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
@@ -123,37 +122,61 @@ class _DetailkasState extends State<Detailkas> {
                         fontSize: 18,
                         color: Colors.white,
                         fontWeight: FontWeight.bold)),
-                const SizedBox(height: 4),
+                Text(instansi, style: const TextStyle(color: Colors.white70)),
+                const SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: Text(status,
-                      style: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.w500)),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CircleAvatar(
+                        radius: 6,
+                        backgroundColor: Colors.black,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(status,
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500)),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.calendar_today, color: Colors.white, size: 16),
+                    const Icon(Icons.calendar_today,
+                        color: Colors.white, size: 16),
                     const SizedBox(width: 6),
                     Text(tanggal, style: const TextStyle(color: Colors.white)),
                   ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Total Semua Transaksi: Rp ${formatRupiah(totalSeluruhAmount)}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          transaksi.isEmpty
-              ? const Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Center(child: Text("Tidak ada transaksi untuk kas ini.")),
-                )
-              : Expanded(
-                  child: Column(
+          Expanded(
+            child: transaksi.isEmpty
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text("Tidak ada transaksi untuk kas ini."),
+                    ),
+                  )
+                : Column(
                     children: [
                       Expanded(
                         child: ListView.builder(
@@ -161,35 +184,23 @@ class _DetailkasState extends State<Detailkas> {
                           itemCount: transaksi.length,
                           itemBuilder: (context, index) {
                             final item = transaksi[index];
-                            double subtotal = 0;
-                            for (int i = 0; i <= index; i++) {
-                              subtotal += double.tryParse(transaksi[i]['amount'].toString()) ?? 0;
-                            }
-                            return Column(
-                              children: [
-                                Card(
-                                  child: ListTile(
-                                    title: Text(item['subtitle'] ?? 'Tanpa Nama'),
-                                    subtitle: Text(item['date'] ?? ''),
-                                    trailing: Text(
-                                      "Rp ${formatRupiah(double.tryParse(item['amount'].toString()) ?? 0)}",
-                                      style: const TextStyle(
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
+                            final jumlah =
+                                double.tryParse(item['amount']?.toString() ?? '') ?? 0;
+
+                            return Card(
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: ListTile(
+                                title: Text(item['title'] ?? '-'),
+                                subtitle: Text(item['date'] ?? ''),
+                                trailing: Text(
+                                  "Rp ${formatRupiah(jumlah)}",
+                                  style: const TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 12.0, bottom: 8.0),
-                                    child: Text(
-                                      "Subtotal: Rp ${formatRupiah(subtotal)}",
-                                      style: const TextStyle(fontStyle: FontStyle.italic),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             );
                           },
                         ),
@@ -201,19 +212,28 @@ class _DetailkasState extends State<Detailkas> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text("Total",
+                            const Text("Total Transaksi Kas Ini",
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold)),
                             Text("Rp ${formatRupiah(getTotalAmount())}",
                                 style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ),
                     ],
                   ),
-                ),
+          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // TODO: Tambahkan fungsi share jika dibutuhkan
+        },
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.share),
       ),
     );
   }
