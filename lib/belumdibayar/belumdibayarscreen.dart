@@ -29,9 +29,10 @@ class _BelumDibayarState extends State<BelumDibayar> {
     fetchInvoices();
   }
 
-Future<void> fetchInvoices() async {
+  Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.9/connect/JSON/index.php'));
+      final response = await http
+          .get(Uri.parse('http://192.168.1.9/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -65,6 +66,7 @@ Future<void> fetchInvoices() async {
       });
     }
   }
+
   void filterByMonthYear() {
     setState(() {
       filteredInvoices = invoices.where((invoice) {
@@ -125,8 +127,8 @@ Future<void> fetchInvoices() async {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Belum Dibayar",
-              style: TextStyle(color: Colors.blue)),
+          title:
+              const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -255,17 +257,28 @@ Future<void> fetchInvoices() async {
                                   Text(invoice["date"]),
                                 ],
                               ),
-                              trailing: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.pink.shade50,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  formatRupiah(invoice["amount"]),
-                                  style: const TextStyle(color: Colors.pink),
-                                ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.pink.shade50,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      formatRupiah(invoice["amount"]),
+                                      style: const TextStyle(
+                                        color: Colors.pink,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Icon(Icons.arrow_forward_ios,
+                                      size: 16, color: Colors.grey),
+                                ],
                               ),
                               onTap: () async {
                                 final result = await Navigator.push(
@@ -275,7 +288,6 @@ Future<void> fetchInvoices() async {
                                         Detailbelumdibayar(invoice: invoice),
                                   ),
                                 );
-
                                 if (result == true) {
                                   fetchInvoices();
                                   dataChanged = true;
@@ -296,6 +308,7 @@ Future<void> fetchInvoices() async {
                                       TextButton(
                                         onPressed: () {
                                           Navigator.pop(context);
+                                          // Tambahkan logika hapus di sini jika diperlukan
                                         },
                                         child: const Text("Hapus"),
                                       ),

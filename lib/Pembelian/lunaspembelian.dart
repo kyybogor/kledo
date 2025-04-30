@@ -5,14 +5,14 @@ import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class Void extends StatefulWidget {
-  const Void({super.key});
+class LunasPembelian extends StatefulWidget {
+  const LunasPembelian({super.key});
 
   @override
-  State<Void> createState() => _VoidState();
+  State<LunasPembelian> createState() => _LunasPembelianState();
 }
 
-class _VoidState extends State<Void> {
+class _LunasPembelianState extends State<LunasPembelian> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
@@ -32,7 +32,7 @@ class _VoidState extends State<Void> {
   Future<void> fetchInvoices() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4'));
+          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=2'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -154,7 +154,7 @@ class _VoidState extends State<Void> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Void", style: TextStyle(color: Colors.blue)),
+          title: const Text("Lunas", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -285,13 +285,13 @@ class _VoidState extends State<Void> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 6),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
+                                      color: Colors.green.shade50,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Text(
                                       formatRupiah(invoice["amount"]),
                                       style: const TextStyle(
-                                        color: Colors.grey,
+                                        color: Colors.green,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

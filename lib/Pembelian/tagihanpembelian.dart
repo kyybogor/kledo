@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/Pembelian/belumdibayarpembelian.dart';
+import 'package:flutter_application_kledo/Pembelian/dibayarsebagianpembelian.dart';
+import 'package:flutter_application_kledo/Pembelian/lunaspembelian.dart';
 import 'package:flutter_application_kledo/Pembelian/pembelianscreen.dart';
+import 'package:flutter_application_kledo/Pembelian/voidpembelian.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
-import 'package:flutter_application_kledo/dibayarsebagian/dibayarsebagian.dart';
-import 'package:flutter_application_kledo/lunas/lunas.dart';
-import 'package:flutter_application_kledo/void/void.dart';
 
 class TagihanPembelianPage extends StatefulWidget {
   const TagihanPembelianPage({super.key});
@@ -38,8 +38,10 @@ class _TagihanPembelianPageState extends State<TagihanPembelianPage> {
   };
 
   final Map<String, String> statusEndpoints = {
-    "Belum Dibayar": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1',
-    "Dibayar Sebagian": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3',
+    "Belum Dibayar":
+        'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1',
+    "Dibayar Sebagian":
+        'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3',
     "Lunas": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=2',
     "Void": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4',
     // Tambahkan endpoint lain jika ada untuk status lainnya
@@ -84,13 +86,13 @@ class _TagihanPembelianPageState extends State<TagihanPembelianPage> {
   Widget? getTargetPage(String label) {
     switch (label) {
       case "Belum Dibayar":
-        return const BelumDibayar();
+        return const BelumDibayarPembelian();
       case "Dibayar Sebagian":
-        return const DibayarSebagian();
+        return const DibayarSebagianPembelian();
       case "Lunas":
-        return const Lunas();
+        return const LunasPembelian();
       case "Void":
-        return const Void();
+        return const VoidPembelian();
       default:
         return null;
     }
@@ -105,7 +107,8 @@ class _TagihanPembelianPageState extends State<TagihanPembelianPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text("Tagihan Pembelian", style: TextStyle(color: Colors.blue)),
+        title: const Text("Tagihan Pembelian",
+            style: TextStyle(color: Colors.blue)),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -154,12 +157,15 @@ class _TagihanPembelianPageState extends State<TagihanPembelianPage> {
                               radius: 10,
                             ),
                             title: Text(label),
-                            trailing: Text("$count"),
+                            subtitle: Text("$count"),
+                            trailing: const Icon(Icons.arrow_forward_ios,
+                                size: 16, color: Colors.grey),
                             onTap: page != null
                                 ? () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => page),
+                                      MaterialPageRoute(
+                                          builder: (context) => page),
                                     );
                                   }
                                 : null,

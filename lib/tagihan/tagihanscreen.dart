@@ -40,8 +40,10 @@ class _TagihanPageState extends State<TagihanPage> {
   };
 
   final Map<String, String> statusEndpoints = {
-    "Belum Dibayar": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1',
-    "Dibayar Sebagian": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3',
+    "Belum Dibayar":
+        'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1',
+    "Dibayar Sebagian":
+        'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3',
     "Lunas": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=2',
     "Void": 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4',
     // Tambahkan endpoint lain jika ada untuk status lainnya
@@ -156,12 +158,15 @@ class _TagihanPageState extends State<TagihanPage> {
                               radius: 10,
                             ),
                             title: Text(label),
-                            trailing: Text("$count"),
+                            subtitle: Text("$count"),
+                            trailing: const Icon(Icons.arrow_forward_ios,
+                                size: 16, color: Colors.grey),
                             onTap: page != null
                                 ? () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => page),
+                                      MaterialPageRoute(
+                                          builder: (context) => page),
                                     );
                                   }
                                 : null,

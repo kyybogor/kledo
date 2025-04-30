@@ -73,28 +73,35 @@ class _KasscreenState extends State<Kasscreen> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildInfoCard('Saldo', 'Rp 62,677,047', '+66,2%', Colors.green),
+                    _buildInfoCard(
+                        'Saldo', 'Rp 62,677,047', '+66,2%', Colors.green),
                     const SizedBox(width: 8),
-                    _buildInfoCard('Masuk', 'Rp 25,000,000', '+45%', Colors.blue),
+                    _buildInfoCard(
+                        'Masuk', 'Rp 25,000,000', '+45%', Colors.blue),
                     const SizedBox(width: 8),
-                    _buildInfoCard('Keluar', 'Rp 10,000,000', '-12%', Colors.red),
+                    _buildInfoCard(
+                        'Keluar', 'Rp 10,000,000', '-12%', Colors.red),
                     const SizedBox(width: 8),
-                    _buildInfoCard('Net', 'Rp 15,000,000', '-14%', Colors.black),
+                    _buildInfoCard(
+                        'Net', 'Rp 15,000,000', '-14%', Colors.black),
                   ],
                 ),
               ),
             ),
             _buildSectionTitle("Transaksi di Hayami", () {}),
-            ...transaksiHayami.map((item) => _buildHayamiTransactionItem(item)).toList(),
+            ...transaksiHayami
+                .map((item) => _buildHayamiTransactionItem(item))
+                .toList(),
             _buildSectionTitle("Transaksi di Bank", () {}),
             ...transaksiBank.map((item) => _buildBankTransactionItem(
-              title: item["title"] ?? "-",
-              subtitle: item["subtitle"] ?? "-",
-              date: item["date"] ?? "-",
-              amount: item["amount"] ?? "0",
-              isKirim: (item["subtitle"]?.toLowerCase() ?? "") == "kirim dana",
-              reconciled: item["status"] == "Reconciled",
-            )),
+                  title: item["title"] ?? "-",
+                  subtitle: item["subtitle"] ?? "-",
+                  date: item["date"] ?? "-",
+                  amount: item["amount"] ?? "0",
+                  isKirim:
+                      (item["subtitle"]?.toLowerCase() ?? "") == "kirim dana",
+                  reconciled: item["status"] == "Reconciled",
+                )),
           ],
         ),
       ),
@@ -105,7 +112,8 @@ class _KasscreenState extends State<Kasscreen> {
     );
   }
 
-  Widget _buildInfoCard(String title, String value, String change, Color color) {
+  Widget _buildInfoCard(
+      String title, String value, String change, Color color) {
     bool isNegative = change.startsWith('-');
     return SizedBox(
       width: 220,
@@ -120,7 +128,10 @@ class _KasscreenState extends State<Kasscreen> {
           children: [
             Text(
               title,
-              style: const TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w500),
+              style: const TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 8),
             Row(
@@ -128,7 +139,8 @@ class _KasscreenState extends State<Kasscreen> {
               children: [
                 Text(
                   value,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 if (change.isNotEmpty)
                   Row(
@@ -139,7 +151,8 @@ class _KasscreenState extends State<Kasscreen> {
                         color: color,
                       ),
                       const SizedBox(width: 4),
-                      Text(change, style: TextStyle(color: color, fontSize: 13)),
+                      Text(change,
+                          style: TextStyle(color: color, fontSize: 13)),
                     ],
                   ),
               ],
@@ -159,7 +172,8 @@ class _KasscreenState extends State<Kasscreen> {
           Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
           GestureDetector(
             onTap: onTap,
-            child: const Text("Lihat Semua", style: TextStyle(color: Colors.blue)),
+            child:
+                const Text("Lihat Semua", style: TextStyle(color: Colors.blue)),
           )
         ],
       ),
@@ -203,30 +217,43 @@ class _KasscreenState extends State<Kasscreen> {
           Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: status.toLowerCase() == 'reconciled' ? Colors.green[100] : Colors.red[100],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              formatRupiah(amount),
-              style: TextStyle(
-                color: status.toLowerCase() == 'reconciled' ? Colors.green : Colors.red,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: status.toLowerCase() == 'reconciled'
+                      ? Colors.green[100]
+                      : Colors.red[100],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  formatRupiah(amount),
+                  style: TextStyle(
+                    color: status.toLowerCase() == 'reconciled'
+                        ? Colors.green
+                        : Colors.red,
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(height: 4),
+              Text(
+                status,
+                style: TextStyle(
+                  color: status.toLowerCase() == 'reconciled'
+                      ? Colors.green
+                      : Colors.red,
+                  fontSize: 12,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            status,
-            style: TextStyle(
-              color: status.toLowerCase() == 'reconciled' ? Colors.green : Colors.red,
-              fontSize: 12,
-            ),
-          ),
+          const SizedBox(width: 8),
+          const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
         ],
       ),
     );
@@ -246,10 +273,16 @@ class _KasscreenState extends State<Kasscreen> {
 
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: subtitle.toLowerCase() == "kirim dana" ? Colors.red[50] : Colors.green[50],
+        backgroundColor: subtitle.toLowerCase() == "kirim dana"
+            ? Colors.red[50]
+            : Colors.green[50],
         child: Icon(
-          subtitle.toLowerCase() == "kirim dana" ? Icons.trending_down : Icons.trending_up,
-          color: subtitle.toLowerCase() == "kirim dana" ? Colors.red : Colors.green,
+          subtitle.toLowerCase() == "kirim dana"
+              ? Icons.trending_down
+              : Icons.trending_up,
+          color: subtitle.toLowerCase() == "kirim dana"
+              ? Colors.red
+              : Colors.green,
         ),
       ),
       title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -260,19 +293,29 @@ class _KasscreenState extends State<Kasscreen> {
           Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: amountColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(formatRupiah(amount), style: TextStyle(color: amountColor)),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: amountColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(formatRupiah(amount),
+                    style: TextStyle(color: amountColor)),
+              ),
+              const SizedBox(height: 4),
+              Text(statusText,
+                  style: TextStyle(color: statusColor, fontSize: 12)),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(statusText, style: TextStyle(color: statusColor, fontSize: 12)),
+          const SizedBox(width: 8),
+          const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
         ],
       ),
     );

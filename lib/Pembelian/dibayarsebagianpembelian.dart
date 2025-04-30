@@ -5,21 +5,21 @@ import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class Void extends StatefulWidget {
-  const Void({super.key});
+class DibayarSebagianPembelian extends StatefulWidget {
+  const DibayarSebagianPembelian({super.key});
 
   @override
-  State<Void> createState() => _VoidState();
+  State<DibayarSebagianPembelian> createState() => _DibayarSebagianPembelianState();
 }
 
-class _VoidState extends State<Void> {
+class _DibayarSebagianPembelianState extends State<DibayarSebagianPembelian> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
   bool isLoading = true;
   bool dataChanged = false;
 
-  String selectedMonth = DateFormat('MM').format(DateTime.now());
+  String selectedMonth = DateFormat('MMMM').format(DateTime.now());
   String selectedYear = DateFormat('yyyy').format(DateTime.now());
 
   @override
@@ -32,7 +32,7 @@ class _VoidState extends State<Void> {
   Future<void> fetchInvoices() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4'));
+          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -71,7 +71,7 @@ class _VoidState extends State<Void> {
         try {
           final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
           final matchMonth = selectedMonth == 'Semua' ||
-              invoiceDate.month.toString().padLeft(2, '0') == selectedMonth;
+              DateFormat('MMMM').format(invoiceDate) == selectedMonth;
           final matchYear = selectedYear == 'Semua' ||
               invoiceDate.year.toString() == selectedYear;
           return matchMonth && matchYear;
@@ -82,48 +82,22 @@ class _VoidState extends State<Void> {
     });
   }
 
-  Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://192.168.1.102/connect/JSON/delete.php'),
-        body: {
-          'invoice': invoice['invoice'],
-        },
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          dataChanged = true;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Data berhasil dihapus")),
-        );
-      } else {
-        throw Exception("Gagal menghapus data");
-      }
-    } catch (e) {
-      print("Error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gagal menghapus data")),
-      );
-    }
-  }
-
   void _onSearchChanged() {
     String keyword = _searchController.text.toLowerCase();
     setState(() {
       filteredInvoices = invoices.where((invoice) {
-        final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
-        final matchMonth = selectedMonth == 'Semua' ||
-            invoiceDate.month.toString().padLeft(2, '0') == selectedMonth;
-        final matchYear = selectedYear == 'Semua' ||
-            invoiceDate.year.toString() == selectedYear;
-        return invoice["name"].toString().toLowerCase().contains(keyword) &&
-            matchMonth &&
-            matchYear;
+        try {
+          final invoiceDate = DateFormat('yyyy-MM-dd').parse(invoice["date"]);
+          final matchMonth = selectedMonth == 'Semua' ||
+              DateFormat('MMMM').format(invoiceDate) == selectedMonth;
+          final matchYear = selectedYear == 'Semua' ||
+              invoiceDate.year.toString() == selectedYear;
+          return invoice["name"].toString().toLowerCase().contains(keyword) &&
+              matchMonth &&
+              matchYear;
+        } catch (e) {
+          return false;
+        }
       }).toList();
     });
   }
@@ -131,7 +105,8 @@ class _VoidState extends State<Void> {
   String formatRupiah(String amount) {
     try {
       final double value = double.parse(amount);
-      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
+      return NumberFormat.currency(
+              locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
           .format(value);
     } catch (e) {
       return amount;
@@ -154,7 +129,8 @@ class _VoidState extends State<Void> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Void", style: TextStyle(color: Colors.blue)),
+          title: const Text("Dibayar Sebagian",
+              style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -183,77 +159,96 @@ class _VoidState extends State<Void> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
               child: Row(
                 children: [
                   Flexible(
                     flex: 1,
-                    child: DropdownButtonFormField<String>(
-                      value: selectedMonth,
-                      isExpanded: true,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.calendar_today),
-                        labelText: "Bulan",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.blue.shade50,
-                      ),
-                      items: ['Semua', ...List.generate(12, (index) {
-                        final month = (index + 1).toString().padLeft(2, '0');
-                        return month;
-                      })].map((month) {
-                        return DropdownMenuItem(
-                          value: month,
-                          child: Text(
-                            month == 'Semua'
-                                ? 'Semua Bulan'
-                                : DateFormat('MMMM').format(DateTime(0, int.parse(month))),
+                    child: Container(
+                      padding: const EdgeInsets.only(right: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
                           ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            selectedMonth = value;
-                          });
-                          filterByMonthYear();
-                        }
-                      },
+                        ],
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        value: selectedMonth,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.calendar_today),
+                          labelText: "Bulan",
+                          border: InputBorder.none,
+                        ),
+                        items: [
+                          'Semua',
+                          ...List.generate(12, (index) {
+                            final month = DateFormat('MMMM')
+                                .format(DateTime(0, index + 1));
+                            return month;
+                          })
+                        ].map((month) {
+                          return DropdownMenuItem(
+                            value: month,
+                            child:
+                                Text(month == 'Semua' ? 'Semua Bulan' : month),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              selectedMonth = value;
+                            });
+                            filterByMonthYear();
+                          }
+                        },
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Flexible(
                     flex: 1,
-                    child: DropdownButtonFormField<String>(
-                      value: selectedYear,
-                      isExpanded: true,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.date_range),
-                        labelText: "Tahun",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.blue.shade50,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                       ),
-                      items: ['Semua', '2023', '2024', '2025'].map((year) {
-                        return DropdownMenuItem(
-                          value: year,
-                          child: Text(year == 'Semua' ? 'Semua Tahun' : year),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            selectedYear = value;
-                          });
-                          filterByMonthYear();
-                        }
-                      },
+                      child: DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        value: selectedYear,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.date_range),
+                          labelText: "Tahun",
+                          border: InputBorder.none,
+                        ),
+                        items: ['Semua', '2023', '2024', '2025'].map((year) {
+                          return DropdownMenuItem(
+                            value: year,
+                            child: Text(year == 'Semua' ? 'Semua Tahun' : year),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              selectedYear = value;
+                            });
+                            filterByMonthYear();
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -285,13 +280,13 @@ class _VoidState extends State<Void> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 6),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
+                                      color: Colors.amber.shade50,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Text(
                                       formatRupiah(invoice["amount"]),
                                       style: const TextStyle(
-                                        color: Colors.grey,
+                                        color: Colors.amber,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

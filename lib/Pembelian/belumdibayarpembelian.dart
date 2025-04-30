@@ -5,14 +5,14 @@ import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class Void extends StatefulWidget {
-  const Void({super.key});
+class BelumDibayarPembelian extends StatefulWidget {
+  const BelumDibayarPembelian({super.key});
 
   @override
-  State<Void> createState() => _VoidState();
+  State<BelumDibayarPembelian> createState() => _BelumDibayarPembelianState();
 }
 
-class _VoidState extends State<Void> {
+class _BelumDibayarPembelianState extends State<BelumDibayarPembelian> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];
@@ -31,29 +31,31 @@ class _VoidState extends State<Void> {
 
   Future<void> fetchInvoices() async {
     try {
-      final response = await http.get(Uri.parse(
-          'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4'));
+      final response = await http
+          .get(Uri.parse('http://192.168.1.9/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
-        invoices = data.map<Map<String, dynamic>>((item) {
+        invoices = data
+            .where((item) => item["status"] == "Belum Dibayar")
+            .map<Map<String, dynamic>>((item) {
           return {
-            "name": item["nama"] ?? item["1"],
+            "id": item["id"] ?? item["0"],
+            "name": item["name"] ?? item["1"],
             "invoice": item["invoice"] ?? item["2"],
             "date": item["date"] ?? item["3"],
-            "due": item["due"] ?? item["3"],
-            "alamat": item["alamat"] ?? item["3"],
-            "amount": item["amount"] ?? item["4"],
-            "status": item["status"] ?? item["5"],
+            "due": item["due"] ?? item["4"],
+            "alamat": item["alamat"] ?? item["6"],
+            "amount": item["amount"] ?? item["5"],
+            "status": item["status"] ?? item["7"],
           };
         }).toList();
 
         setState(() {
+          filteredInvoices = invoices;
           isLoading = false;
         });
-
-        filterByMonthYear();
       } else {
         throw Exception('Gagal mengambil data');
       }
@@ -82,36 +84,6 @@ class _VoidState extends State<Void> {
     });
   }
 
-  Future<void> deleteInvoice(Map<String, dynamic> invoice) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://192.168.1.102/connect/JSON/delete.php'),
-        body: {
-          'invoice': invoice['invoice'],
-        },
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          invoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          filteredInvoices.removeWhere((item) => item['invoice'] == invoice['invoice']);
-          dataChanged = true;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Data berhasil dihapus")),
-        );
-      } else {
-        throw Exception("Gagal menghapus data");
-      }
-    } catch (e) {
-      print("Error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gagal menghapus data")),
-      );
-    }
-  }
-
   void _onSearchChanged() {
     String keyword = _searchController.text.toLowerCase();
     setState(() {
@@ -131,7 +103,8 @@ class _VoidState extends State<Void> {
   String formatRupiah(String amount) {
     try {
       final double value = double.parse(amount);
-      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
+      return NumberFormat.currency(
+              locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
           .format(value);
     } catch (e) {
       return amount;
@@ -154,7 +127,8 @@ class _VoidState extends State<Void> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Void", style: TextStyle(color: Colors.blue)),
+          title:
+              const Text("Belum Dibayar", style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -183,7 +157,8 @@ class _VoidState extends State<Void> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
               child: Row(
                 children: [
                   Flexible(
@@ -201,16 +176,20 @@ class _VoidState extends State<Void> {
                         filled: true,
                         fillColor: Colors.blue.shade50,
                       ),
-                      items: ['Semua', ...List.generate(12, (index) {
-                        final month = (index + 1).toString().padLeft(2, '0');
-                        return month;
-                      })].map((month) {
+                      items: [
+                        'Semua',
+                        ...List.generate(12, (index) {
+                          final month = (index + 1).toString().padLeft(2, '0');
+                          return month;
+                        })
+                      ].map((month) {
                         return DropdownMenuItem(
                           value: month,
                           child: Text(
                             month == 'Semua'
                                 ? 'Semua Bulan'
-                                : DateFormat('MMMM').format(DateTime(0, int.parse(month))),
+                                : DateFormat('MMMM')
+                                    .format(DateTime(0, int.parse(month))),
                           ),
                         );
                       }).toList(),
@@ -285,13 +264,13 @@ class _VoidState extends State<Void> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 6),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
+                                      color: Colors.pink.shade50,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Text(
                                       formatRupiah(invoice["amount"]),
                                       style: const TextStyle(
-                                        color: Colors.grey,
+                                        color: Colors.pink,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

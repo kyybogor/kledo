@@ -278,17 +278,28 @@ class _LunasState extends State<Lunas> {
                                   Text(invoice["date"]),
                                 ],
                               ),
-                              trailing: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.green.shade50,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  formatRupiah(invoice["amount"]),
-                                  style: const TextStyle(color: Colors.green),
-                                ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.shade50,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      formatRupiah(invoice["amount"]),
+                                      style: const TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Icon(Icons.arrow_forward_ios,
+                                      size: 16, color: Colors.grey),
+                                ],
                               ),
                               onTap: () async {
                                 final result = await Navigator.push(
@@ -298,7 +309,6 @@ class _LunasState extends State<Lunas> {
                                         Detailbelumdibayar(invoice: invoice),
                                   ),
                                 );
-
                                 if (result == true) {
                                   fetchInvoices();
                                   dataChanged = true;
@@ -313,14 +323,13 @@ class _LunasState extends State<Lunas> {
                                         "Yakin ingin menghapus data ini?"),
                                     actions: [
                                       TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context),
+                                        onPressed: () => Navigator.pop(context),
                                         child: const Text("Batal"),
                                       ),
                                       TextButton(
                                         onPressed: () {
                                           Navigator.pop(context);
-                                          deleteInvoice(invoice);
+                                          // Tambahkan logika hapus di sini jika diperlukan
                                         },
                                         child: const Text("Hapus"),
                                       ),
