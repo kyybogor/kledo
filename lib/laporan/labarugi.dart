@@ -4,18 +4,6 @@ import 'package:flutter_application_kledo/produk/produkdetail.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class Dashboardscreen extends StatelessWidget {
-  const Dashboardscreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Dashboard")),
-      body: const Center(child: Text("Ini halaman Dashboard")),
-    );
-  }
-}
-
 void main() => runApp(const MaterialApp(home: LabaRugiPage()));
 
 class LabaRugiPage extends StatefulWidget {

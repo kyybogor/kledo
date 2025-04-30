@@ -11,7 +11,6 @@ class _PerubahanModalPageState extends State<PerubahanModalPage> {
   List<Map<String, dynamic>> data = [];
   bool isLoading = true;
 
-  // Mengambil data dari API
   Future<void> fetchData() async {
     final response = await http.get(Uri.parse('http://192.168.1.23/hiyami/perubahanmodal.php'));
 
@@ -27,18 +26,12 @@ class _PerubahanModalPageState extends State<PerubahanModalPage> {
     }
   }
 
-  // Fungsi untuk mengonversi nilai menjadi int
   int _toInt(dynamic value) {
-    if (value is int) {
-      return value; // Jika sudah int, tidak perlu diubah
-    }
-    if (value is String) {
-      return int.tryParse(value) ?? 0; // Jika string, coba parse ke int, jika gagal kembalikan 0
-    }
-    return 0; // Nilai lainnya kembalikan 0
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
   }
 
-  // Fungsi untuk menghitung total
   Map<String, int> hitungTotal() {
     Map<String, int> total = {
       "Awal": 0,
@@ -57,19 +50,28 @@ class _PerubahanModalPageState extends State<PerubahanModalPage> {
     return total;
   }
 
-  // Fungsi untuk menghitung perubahan bersih (penjumlahan total Awal, Debit, Kredit, dan Akhir)
   int hitungPerubahanBersih() {
     int perubahanBersih = 0;
-
     for (var item in data) {
-      // Menjumlahkan Awal, Debit, Kredit, dan Akhir untuk setiap item
       perubahanBersih += _toInt(item['awal']);
       perubahanBersih += _toInt(item['debit']);
       perubahanBersih += _toInt(item['kredit']);
       perubahanBersih += _toInt(item['akhir']);
     }
-
     return perubahanBersih;
+  }
+
+  Widget _buildInfoRow(String label, dynamic value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label),
+          Text(value.toString()),
+        ],
+      ),
+    );
   }
 
   @override
@@ -81,26 +83,26 @@ class _PerubahanModalPageState extends State<PerubahanModalPage> {
   @override
   Widget build(BuildContext context) {
     final total = hitungTotal();
-    final perubahanBersih = hitungPerubahanBersih(); // Mengambil perubahan bersih yang dihitung
+    final perubahanBersih = hitungPerubahanBersih();
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             "Perubahan Modal",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        leading: BackButton(),
+        leading: const BackButton(),
         actions: [
           IconButton(
-            icon: Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list),
             onPressed: () {},
           )
         ],
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 80.0),
@@ -109,7 +111,7 @@ class _PerubahanModalPageState extends State<PerubahanModalPage> {
                   children: [
                     ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: data.length,
                       itemBuilder: (context, index) {
                         final item = data[index];
@@ -119,53 +121,32 @@ class _PerubahanModalPageState extends State<PerubahanModalPage> {
                             Container(
                               width: double.infinity,
                               color: Colors.grey[300],
-                              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                               child: Text(
                                 item['section'],
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               child: Column(
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Awal"),
-                                      Text("${item['awal']}"),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Debit"),
-                                      Text("${item['debit']}"),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Kredit"),
-                                      Text("${item['kredit']}"),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Akhir"),
-                                      Text("${item['akhir']}"),
-                                    ],
-                                  ),
+                                  _buildInfoRow("Awal", item['awal']),
+                                  const Divider(),
+                                  _buildInfoRow("Debit", item['debit']),
+                                  const Divider(),
+                                  _buildInfoRow("Kredit", item['kredit']),
+                                  const Divider(),
+                                  _buildInfoRow("Akhir", item['akhir']),
                                 ],
                               ),
                             ),
-                            Divider(height: 20),
+                            const Divider(thickness: 1.5),
                           ],
                         );
                       },
                     ),
-                    // Menambahkan bagian Total
+                    // Bagian Total
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: Column(
@@ -173,67 +154,44 @@ class _PerubahanModalPageState extends State<PerubahanModalPage> {
                         children: [
                           Container(
                             width: double.infinity,
-                            color: Colors.grey[300], // Sama seperti baris lainnya
-                            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                            child: Text(
+                            color: Colors.grey[300],
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            child: const Text(
                               "Total",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             child: Column(
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("Total Awal"),
-                                    Text("${total['Awal']}"),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("Total Debit"),
-                                    Text("${total['Debit']}"),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("Total Kredit"),
-                                    Text("${total['Kredit']}"),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("Total Akhir"),
-                                    Text("${total['Akhir']}"),
-                                  ],
-                                ),
+                                _buildInfoRow("Total Awal", total['Awal']),
+                                const Divider(),
+                                _buildInfoRow("Total Debit", total['Debit']),
+                                const Divider(),
+                                _buildInfoRow("Total Kredit", total['Kredit']),
+                                const Divider(),
+                                _buildInfoRow("Total Akhir", total['Akhir']),
                               ],
                             ),
                           ),
-                          // Memberikan jarak sebelum bagian Perubahan Bersih
-                          SizedBox(height: 20), // Menambahkan jarak
-                          // Menambahkan bagian Perubahan Bersih
+                          const SizedBox(height: 20),
+                          // Bagian Perubahan Bersih
                           Container(
                             width: double.infinity,
-                            color: Colors.grey[300], // Sama dengan warna latar belakang Total
-                            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                            child: Text(
+                            color: Colors.grey[300],
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            child: const Text(
                               "Perubahan Bersih",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            child: Column(
                               children: [
-                                Text("Perubahan Bersih"),
-                                Text("$perubahanBersih"),
+                                _buildInfoRow("Perubahan Bersih", perubahanBersih),
+                                const Divider(),
                               ],
                             ),
                           ),
@@ -251,13 +209,13 @@ class _PerubahanModalPageState extends State<PerubahanModalPage> {
             heroTag: 'share',
             mini: true,
             onPressed: () {},
-            child: Icon(Icons.share),
+            child: const Icon(Icons.share),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           FloatingActionButton(
             heroTag: 'download',
             onPressed: () {},
-            child: Icon(Icons.download),
+            child: const Icon(Icons.download),
           ),
         ],
       ),

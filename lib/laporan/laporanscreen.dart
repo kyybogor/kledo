@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
+import 'package:flutter_application_kledo/laporan/detailpenjualan.dart';
 import 'package:flutter_application_kledo/laporan/labarugi.dart';
 import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
 import 'package:flutter_application_kledo/laporan/perubahanmodal.dart';
+import 'package:flutter_application_kledo/laporan/ringkasanbank.dart';
+import 'package:flutter_application_kledo/laporan/trialbalance.dart';
 
 class LaporanPage extends StatelessWidget {
   final Map<String, List<String>> laporanKategori = {
@@ -84,10 +87,12 @@ class LaporanPage extends StatelessWidget {
     ],
   };
 
+ LaporanPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: KledoDrawer(), // Tambahkan drawer kalau diperlukan
+      drawer: const KledoDrawer(), // Tambahkan drawer kalau diperlukan
       appBar: AppBar(
         title: const Text('Laporan'),
         centerTitle: true,
@@ -154,7 +159,7 @@ class LaporanPage extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => LabaRugiPage(),
+                                      builder: (context) => const LabaRugiPage(),
                                     ),
                                   );
                                 } else  if (laporan == "Perubahan Modal") {
@@ -164,7 +169,28 @@ class LaporanPage extends StatelessWidget {
                                       builder: (context) => PerubahanModalPage()
                                       )
                                   );
-                                } else{}
+                                } else if (laporan == "Ringkasan Bank"){
+                                  Navigator.push
+                                  (context,
+                                   MaterialPageRoute(
+                                    builder: (context) => const RingkasanBankPage()
+                                    )
+                                  );
+                                } else if (laporan == "Trial Balance"){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TrialBalancePage()
+                                      )
+                                  );
+                                } else if(laporan == "Detail Penjualan"){
+                                  Navigator.push(
+                                   context,
+                                   MaterialPageRoute(
+                                    builder: (context) => const DetailPenjualanPage()
+                                    )
+                                  );
+                                }
                                 // Aksi ketika laporan diklik
                               },
                             ),

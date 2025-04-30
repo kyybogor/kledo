@@ -7,6 +7,7 @@ import 'package:flutter_application_kledo/biaya/dibayarsebagianbiaya.dart';
 import 'package:flutter_application_kledo/biaya/jatuhtempobiaya.dart';
 import 'package:flutter_application_kledo/biaya/lunasbiaya.dart';
 import 'package:flutter_application_kledo/biaya/transaksiberulangbiaya.dart';
+
 class BiayaPage extends StatefulWidget {
   const BiayaPage({super.key});
 
@@ -78,7 +79,8 @@ class _BiayaPageState extends State<BiayaPage> {
               children: [
                 _buildInfoCard('Bulan Ini', '16.042.100', Colors.amber, '18'),
                 _buildInfoCard('30 Hari Lalu', '23.353.200', Colors.pink, '27'),
-                _buildInfoCard('Bulan Sebelumnya', '11.200.000', Colors.blue, '15'),
+                _buildInfoCard(
+                    'Bulan Sebelumnya', '11.200.000', Colors.blue, '15'),
               ],
             ),
           ),
@@ -96,7 +98,8 @@ class _BiayaPageState extends State<BiayaPage> {
               children: [
                 Text(
                   _showChart ? 'Sembunyikan' : 'Lihat Selengkapnya',
-                  style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
                 Icon(_showChart ? Icons.expand_less : Icons.expand_more),
               ],
@@ -129,7 +132,8 @@ class _BiayaPageState extends State<BiayaPage> {
     );
   }
 
-  Widget _buildInfoCard(String title, String amount, Color color, String count) {
+  Widget _buildInfoCard(
+      String title, String amount, Color color, String count) {
     return Container(
       width: 220,
       height: 80,
@@ -158,7 +162,8 @@ class _BiayaPageState extends State<BiayaPage> {
             child: Center(
               child: Text(
                 count,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -170,7 +175,9 @@ class _BiayaPageState extends State<BiayaPage> {
                 children: [
                   Text(title, style: const TextStyle(fontSize: 14)),
                   const SizedBox(height: 4),
-                  Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(amount,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16)),
                 ],
               ),
             ),
@@ -198,11 +205,9 @@ class _BiayaPageState extends State<BiayaPage> {
     );
   }
 
-  Widget _buildKategoriItem(String title, Color color, String count, Widget? page) {
-    return ListTile(
-      leading: CircleAvatar(backgroundColor: color, radius: 8),
-      title: Text(title),
-      trailing: Text(count),
+  Widget _buildKategoriItem(
+      String title, Color color, String count, Widget? page) {
+    return InkWell(
       onTap: page != null
           ? () {
               Navigator.push(
@@ -211,6 +216,26 @@ class _BiayaPageState extends State<BiayaPage> {
               );
             }
           : null,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        child: Row(
+          children: [
+            CircleAvatar(backgroundColor: color, radius: 8),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 4),
+                  Text(count, style: const TextStyle(color: Colors.grey)),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Colors.grey),
+          ],
+        ),
+      ),
     );
   }
 }
