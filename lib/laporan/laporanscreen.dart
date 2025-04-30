@@ -5,7 +5,6 @@ import 'package:flutter_application_kledo/laporan/detailpenjualan.dart';
 import 'package:flutter_application_kledo/laporan/labarugi.dart';
 import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
 import 'package:flutter_application_kledo/laporan/perubahanmodal.dart';
-import 'package:flutter_application_kledo/laporan/ringkasanbank.dart';
 import 'package:flutter_application_kledo/laporan/trialbalance.dart';
 
 class LaporanPage extends StatelessWidget {
@@ -168,13 +167,6 @@ class LaporanPage extends StatelessWidget {
                                     MaterialPageRoute(
                                       builder: (context) => PerubahanModalPage()
                                       )
-                                  );
-                                } else if (laporan == "Ringkasan Bank"){
-                                  Navigator.push
-                                  (context,
-                                   MaterialPageRoute(
-                                    builder: (context) => const RingkasanBankPage()
-                                    )
                                   );
                                 } else if (laporan == "Trial Balance"){
                                   Navigator.push(
