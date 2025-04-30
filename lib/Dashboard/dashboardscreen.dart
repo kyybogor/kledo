@@ -5,6 +5,7 @@ import 'package:flutter_application_kledo/Pembelian/penawaran_pembelian/penawara
 import 'package:flutter_application_kledo/Pembelian/pengirimanpembelian.dart';
 import 'package:flutter_application_kledo/Pembelian/tagihanpembelian.dart';
 import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
+import 'package:flutter_application_kledo/akun/akunscreen.dart';
 import 'package:flutter_application_kledo/assetetap/assetetap.dart';
 import 'package:flutter_application_kledo/biaya/biayascreen.dart';
 import 'package:flutter_application_kledo/kas%20&%20bank/kasdanbank.dart';
@@ -619,6 +620,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
                                   break;
                               }
 
+
                               if (destination != null) {
                                 Navigator.pushReplacement(
                                   context,
@@ -680,6 +682,10 @@ class _KledoDrawerState extends State<KledoDrawer> {
 
                           if (item['title'] == 'Kontak'){
                             destination = const KontakScreen();
+                          }
+
+                          if (item['title'] == 'Akun') {
+                            destination = const Akunscreen();
                           }
                           // Tambah halaman lainnya sesuai kebutuhan
 

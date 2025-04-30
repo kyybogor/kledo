@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 class Detailkas extends StatefulWidget {
   final Map<String, dynamic> kasData;
 
-  const Detailkas({super.key, required this.kasData});
+  const Detailkas({Key? key, required this.kasData}) : super(key: key);
 
   @override
   State<Detailkas> createState() => _DetailkasState();
@@ -14,7 +14,6 @@ class Detailkas extends StatefulWidget {
 
 class _DetailkasState extends State<Detailkas> {
   List<dynamic> transaksi = [];
-  double totalSeluruhAmount = 0.0;
 
   @override
   void initState() {
@@ -23,7 +22,6 @@ class _DetailkasState extends State<Detailkas> {
   }
 
   Future<void> fetchTransaksi() async {
-    final kasId = widget.kasData['id']?.toString() ?? '';
     final url = Uri.parse("http://192.168.1.9/connect/JSON/transaksi.php");
 
     try {
@@ -38,16 +36,14 @@ class _DetailkasState extends State<Detailkas> {
             ...?data['bank'],
           ];
 
-          // Hitung total semua amount dari seluruh data
-          totalSeluruhAmount = semuaTransaksi.fold(0.0, (total, item) {
-            final amount = double.tryParse(item['amount']?.toString() ?? '') ?? 0.0;
-            return total + amount;
-          });
+          final namaKas = widget.kasData['nama']?.toString().split(':').last.trim();
+          final instansiKas = widget.kasData['instansi']?.toString();
 
-          // Filter data hanya untuk kas_id terkait
-          final filtered = semuaTransaksi
-              .where((item) => item['kas_id']?.toString() == kasId)
-              .toList();
+          final filtered = semuaTransaksi.where((item) {
+            final title = item['title']?.toString().trim();
+            final instansi = item['instansi']?.toString().trim();
+            return title == namaKas && instansi == instansiKas;
+          }).toList();
 
           setState(() {
             transaksi = filtered;
@@ -59,13 +55,6 @@ class _DetailkasState extends State<Detailkas> {
     } catch (e) {
       debugPrint("Error saat mengambil data transaksi: $e");
     }
-  }
-
-  double getTotalAmount() {
-    return transaksi.fold(0.0, (total, item) {
-      final amount = double.tryParse(item['amount']?.toString() ?? '') ?? 0.0;
-      return total + amount;
-    });
   }
 
   String formatRupiah(double number) {
@@ -146,22 +135,21 @@ class _DetailkasState extends State<Detailkas> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.calendar_today,
-                        color: Colors.white, size: 16),
-                    const SizedBox(width: 6),
-                    Text(tanggal, style: const TextStyle(color: Colors.white)),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  "Total Semua Transaksi: Rp ${formatRupiah(totalSeluruhAmount)}",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.calendar_today, size: 16, color: Colors.white),
+                        const SizedBox(width: 6),
+                        Text(
+                          tanggal,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -176,64 +164,45 @@ class _DetailkasState extends State<Detailkas> {
                       child: Text("Tidak ada transaksi untuk kas ini."),
                     ),
                   )
-                : Column(
-                    children: [
-                      Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: transaksi.length,
-                          itemBuilder: (context, index) {
-                            final item = transaksi[index];
-                            final jumlah =
-                                double.tryParse(item['amount']?.toString() ?? '') ?? 0;
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: transaksi.length,
+                    itemBuilder: (context, index) {
+                      final item = transaksi[index];
+                      final jumlah = double.tryParse(item['amount']?.toString() ?? '') ?? 0;
 
-                            return Card(
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: ListTile(
-                                title: Text(item['title'] ?? '-'),
-                                subtitle: Text(item['date'] ?? ''),
-                                trailing: Text(
+                      return Column(
+                        children: [
+                          const Divider(thickness: 1),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Total Transaksi:",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
                                   "Rp ${formatRupiah(jumlah)}",
                                   style: const TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        width: double.infinity,
-                        color: Colors.grey.shade200,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Total Transaksi Kas Ini",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold)),
-                            Text("Rp ${formatRupiah(getTotalAmount())}",
-                                style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      ),
-                    ],
+                              ],
+                            ),
+                          ),
+                          const Divider(thickness: 1),
+                        ],
+                      );
+                    },
                   ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Tambahkan fungsi share jika dibutuhkan
-        },
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.share),
       ),
     );
   }
