@@ -92,10 +92,7 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
               DateFormat('MMMM').format(invoiceDate) == selectedMonth;
           final matchYear = selectedYear == 'Semua' ||
               invoiceDate.year.toString() == selectedYear;
-          return invoice["name"]
-                  .toString()
-                  .toLowerCase()
-                  .contains(keyword) &&
+          return invoice["name"].toString().toLowerCase().contains(keyword) &&
               matchMonth &&
               matchYear;
         } catch (e) {
@@ -108,7 +105,8 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
   String formatRupiah(String amount) {
     try {
       final double value = double.parse(amount);
-      return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
+      return NumberFormat.currency(
+              locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
           .format(value);
     } catch (e) {
       return amount;
@@ -131,7 +129,8 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("Dibayar Sebagian", style: TextStyle(color: Colors.blue)),
+          title: const Text("Dibayar Sebagian",
+              style: TextStyle(color: Colors.blue)),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -160,7 +159,8 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
               child: Row(
                 children: [
                   Flexible(
@@ -186,13 +186,18 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                           labelText: "Bulan",
                           border: InputBorder.none,
                         ),
-                        items: ['Semua', ...List.generate(12, (index) {
-                          final month = DateFormat('MMMM').format(DateTime(0, index + 1));
-                          return month;
-                        })].map((month) {
+                        items: [
+                          'Semua',
+                          ...List.generate(12, (index) {
+                            final month = DateFormat('MMMM')
+                                .format(DateTime(0, index + 1));
+                            return month;
+                          })
+                        ].map((month) {
                           return DropdownMenuItem(
                             value: month,
-                            child: Text(month == 'Semua' ? 'Semua Bulan' : month),
+                            child:
+                                Text(month == 'Semua' ? 'Semua Bulan' : month),
                           );
                         }).toList(),
                         onChanged: (value) {
@@ -268,17 +273,28 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                                   Text(invoice["date"]),
                                 ],
                               ),
-                              trailing: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.amber.shade50,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  formatRupiah(invoice["amount"]),
-                                  style: const TextStyle(color: Colors.amber),
-                                ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.amber.shade50,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      formatRupiah(invoice["amount"]),
+                                      style: const TextStyle(
+                                        color: Colors.amber,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Icon(Icons.arrow_forward_ios,
+                                      size: 16, color: Colors.grey),
+                                ],
                               ),
                               onTap: () async {
                                 final result = await Navigator.push(
@@ -288,7 +304,6 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                                         Detailbelumdibayar(invoice: invoice),
                                   ),
                                 );
-
                                 if (result == true) {
                                   fetchInvoices();
                                   dataChanged = true;
@@ -303,13 +318,13 @@ class _DibayarSebagianState extends State<DibayarSebagian> {
                                         "Yakin ingin menghapus data ini?"),
                                     actions: [
                                       TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context),
+                                        onPressed: () => Navigator.pop(context),
                                         child: const Text("Batal"),
                                       ),
                                       TextButton(
                                         onPressed: () {
                                           Navigator.pop(context);
+                                          // Tambahkan logika hapus di sini jika diperlukan
                                         },
                                         child: const Text("Hapus"),
                                       ),

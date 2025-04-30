@@ -5,14 +5,14 @@ import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class Void extends StatefulWidget {
-  const Void({super.key});
+class VoidPembelian extends StatefulWidget {
+  const VoidPembelian({super.key});
 
   @override
-  State<Void> createState() => _VoidState();
+  State<VoidPembelian> createState() => _VoidPembelianState();
 }
 
-class _VoidState extends State<Void> {
+class _VoidPembelianState extends State<VoidPembelian> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> invoices = [];
   List<Map<String, dynamic>> filteredInvoices = [];

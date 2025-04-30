@@ -93,7 +93,8 @@ class _KasDanBankState extends State<KasDanBank> {
                       final data = kasData[index];
                       final nama = data['nama'];
                       final kode = data['kode'];
-                      final nominal = double.tryParse(data['nominal'].toString()) ?? 0;
+                      final nominal =
+                          double.tryParse(data['nominal'].toString()) ?? 0;
                       final warna = warnaMap[nama] ?? Colors.grey;
 
                       return ListTile(
@@ -102,25 +103,33 @@ class _KasDanBankState extends State<KasDanBank> {
                         ),
                         title: Text(nama),
                         subtitle: Text(kode),
-                        trailing: Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 6,
-                            horizontal: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: warna.withOpacity(0.8),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            nominal.toStringAsFixed(0).replaceAllMapped(
-                                  RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-                                  (Match m) => '${m[1]}.',
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                color: warna.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                nominal.toStringAsFixed(0).replaceAllMapped(
+                                      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                                      (Match m) => '${m[1]}.',
+                                    ),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 8),
+                            const Icon(Icons.arrow_forward_ios,
+                                size: 16, color: Colors.grey),
+                          ],
                         ),
                         onTap: () {
                           if (halamanMap.containsKey(nama)) {
