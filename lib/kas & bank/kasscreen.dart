@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/kas%20&%20bank/detailkas.dart';
+import 'package:flutter_application_kledo/kas%20&%20bank/editbankscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -21,23 +22,30 @@ class _KasscreenState extends State<Kasscreen> {
     fetchData();
   }
 
-  Future<void> fetchData() async {
-    final url = Uri.parse('http://192.168.1.9/connect/JSON/transaksi.php');
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        setState(() {
-          transaksiHayami = data['hayami'];
-          transaksiBank = data['bank'];
-        });
-      } else {
-        print('Gagal mengambil data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Terjadi kesalahan: $e');
+Future<void> fetchData() async {
+  final urlHayami = Uri.parse('http://192.168.1.9/connect/JSON/transaksi.php');
+  final urlBank = Uri.parse('http://192.168.1.9/connect/JSON/transaksi_bank.php');
+
+  try {
+    final responseHayami = await http.get(urlHayami);
+    final responseBank = await http.get(urlBank);
+
+    if (responseHayami.statusCode == 200 && responseBank.statusCode == 200) {
+      final dataHayami = jsonDecode(responseHayami.body);
+      final dataBank = jsonDecode(responseBank.body);
+
+      setState(() {
+        transaksiHayami = dataHayami['hayami'];
+        transaksiBank = dataBank['bank'];      
+      });
+    } else {
+      print('Error status code: Hayami ${responseHayami.statusCode}, Bank ${responseBank.statusCode}');
     }
+  } catch (e) {
+    print('Terjadi error: $e');
   }
+}
+
 
   String formatRupiah(dynamic amount) {
     final formatter =
@@ -272,6 +280,22 @@ class _KasscreenState extends State<Kasscreen> {
     String statusText = reconciled ? "Reconciled" : "Unreconciled";
 
     return ListTile(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditBankScreen(
+              bankData: {
+                "title": title,
+                "subtitle": subtitle,
+                "date": date,
+                "amount": amount,
+                "statusText": statusText,
+              },
+            ),
+          ),
+        );
+      },
       leading: CircleAvatar(
         backgroundColor: subtitle.toLowerCase() == "kirim dana"
             ? Colors.red[50]

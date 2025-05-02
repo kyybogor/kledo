@@ -73,7 +73,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
           ),
         ),
         iconTheme: const IconThemeData(
-            color: Colors.white), // <- ini bikin icon menu jadi putih
+            color: Colors.white),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
