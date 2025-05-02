@@ -89,7 +89,7 @@ class _TrialBalancePageState extends State<TrialBalancePage> {
                               );
                             },
                           ),
-                          Divider(), // Garis pemisah antara setiap item
+                          const Divider(height: 5,), // Garis pemisah antara setiap item
                         ],
                       );
                     }).toList(),
@@ -172,15 +172,15 @@ class AccountDetailPage extends StatelessWidget {
           const SizedBox(height: 16),
           sectionTitle("Saldo Awal"),
           valueRow("Debit", saldoAwalDebit),
-          Divider(),
+          const Divider(height: 5,),
           valueRow("Kredit", saldoAwalKredit),
           sectionTitle("Pergerakan"),
           valueRow("Debit", pergerakanDebit),
-          Divider(),
+          const Divider(height: 5,),
           valueRow("Kredit", pergerakanKredit),
           sectionTitle("Saldo Akhir"),
           valueRow("Debit", saldoAkhirDebit),
-          Divider(),
+          const Divider(height: 5,),
           valueRow("Kredit", saldoAkhirKredit),
         ],
       ),

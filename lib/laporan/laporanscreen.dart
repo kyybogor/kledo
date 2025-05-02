@@ -4,7 +4,10 @@ import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
 import 'package:flutter_application_kledo/laporan/detailpenjualan.dart';
 import 'package:flutter_application_kledo/laporan/labarugi.dart';
 import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
+import 'package:flutter_application_kledo/laporan/penjualanperproduk.dart';
 import 'package:flutter_application_kledo/laporan/perubahanmodal.dart';
+import 'package:flutter_application_kledo/laporan/profitabilitas.dart';
+import 'package:flutter_application_kledo/laporan/tagihanpelanggan.dart';
 import 'package:flutter_application_kledo/laporan/trialbalance.dart';
 
 class LaporanPage extends StatelessWidget {
@@ -37,7 +40,7 @@ class LaporanPage extends StatelessWidget {
       "Ongkos Kirim per Ekspedisi",
       "Pelunasan Pembayaran Tagihan",
       "Penjualan Produk per Pelanggan",
-      "Penjualan per Produk",
+      "Penjualan per Periode",
     ],
     "Pembelian": [
       "Detail Pembelian",
@@ -86,7 +89,7 @@ class LaporanPage extends StatelessWidget {
     ],
   };
 
- LaporanPage({super.key});
+  LaporanPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -158,28 +161,40 @@ class LaporanPage extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const LabaRugiPage(),
+                                      builder: (context) =>
+                                          const LabaRugiPage(),
                                     ),
                                   );
-                                } else  if (laporan == "Perubahan Modal") {
+                                } else if (laporan == "Perubahan Modal") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PerubahanModalPage()));
+                                } else if (laporan == "Trial Balance") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => TrialBalancePage()));
+                                } else if (laporan == "Detail Penjualan") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const DetailPenjualanPage()));
+                                } else if (laporan == "Penjualan per Produk") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PenjualanPerProdukPage()));
+                                } else if (laporan == "Profibilitas Produk") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProfitabilitasProdukPage()));
+                                } else if(laporan == "Tagihan Pelanggan"){
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => PerubahanModalPage()
-                                      )
-                                  );
-                                } else if (laporan == "Trial Balance"){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => TrialBalancePage()
-                                      )
-                                  );
-                                } else if(laporan == "Detail Penjualan"){
-                                  Navigator.push(
-                                   context,
-                                   MaterialPageRoute(
-                                    builder: (context) => const DetailPenjualanPage()
+                                      builder: (context) => const TagihanPelangganPage()
                                     )
                                   );
                                 }
