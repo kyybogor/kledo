@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/Splashscreen/splashscreen.dart'; // Sesuaikan path
 
 void main() {
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       //home: const Splashscreen(),
-      home: const Dashboardscreen()
+      home: const Splashscreen()
     );
   }
 }
