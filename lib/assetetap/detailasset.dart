@@ -95,7 +95,7 @@ class AssetDetailPage extends StatelessWidget {
                 icon: Icons.calendar_today),
             infoItem('Harga Beli', formatRupiah(asset['amount'].toString()),
                 icon: Icons.shopping_cart),
-            infoItem('Dikreditkan Dari Akun', '3-30000 - Modal Saham',
+            infoItem('Dikreditkan Dari Akun', asset['akun'],
                 icon: Icons.account_balance),
             infoItem('Deskripsi', asset['name'] ?? '', icon: Icons.description),
             sectionHeader('Penyusutan'),

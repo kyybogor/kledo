@@ -68,6 +68,7 @@ class _AssetPageState extends State<AssetPage> with SingleTickerProviderStateMix
             'code': asset['code'],
             'date': asset['date'],
             'amount': asset['amount'],
+            'akun': asset['akun'],
             'akun_akumulasi': asset['akun_akumulasi'],
             'akun_penyusutan': asset['akun_penyusutan'],
             'metode': asset['metode'],
