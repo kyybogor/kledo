@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:flutter_application_kledo/kontak/detailkontak.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -128,7 +129,7 @@ class DetailKontak extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String status = data['status'] ?? 'pegawai'; // default jika tidak ada
+    String status = data['status'] ?? 'pegawai';
 
     return Scaffold(
       appBar: AppBar(title: const Text("Kontak")),
@@ -171,8 +172,17 @@ class DetailKontak extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
-                                onPressed: () {},
-                                child: const Text("Lihat Detail")),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Detailkontak(data: data),
+                                  ),
+                                );
+                              },
+                              child: const Text("Lihat Detail"),
+                            ),
                           ),
                         ],
                       ),

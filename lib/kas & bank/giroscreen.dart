@@ -5,14 +5,14 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
-class Kasscreen extends StatefulWidget {
-  const Kasscreen({super.key});
+class Giroscreen extends StatefulWidget {
+  const Giroscreen({super.key});
 
   @override
-  State<Kasscreen> createState() => _KasscreenState();
+  State<Giroscreen> createState() => _GiroscreenState();
 }
 
-class _KasscreenState extends State<Kasscreen> {
+class _GiroscreenState extends State<Giroscreen> {
   List<dynamic> transaksiHayami = [];
   List<dynamic> transaksiBank = [];
 

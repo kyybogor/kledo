@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/kas%20&%20bank/giroscreen.dart';
+import 'package:flutter_application_kledo/kas%20&%20bank/rekeningbank.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -27,8 +29,8 @@ class _KasDanBankState extends State<KasDanBank> {
 
   final Map<String, Widget> halamanMap = {
     "Kas": Kasscreen(),
-    // "Rekening Bank": RekeningPage(), // Tambahkan jika tersedia
-    // "Giro": GiroPage(), // Tambahkan jika tersedia
+    "Rekening Bank": Rekeningbank(),
+    "Giro": Giroscreen(),
   };
 
   @override
@@ -63,6 +65,7 @@ class _KasDanBankState extends State<KasDanBank> {
       drawer: const KledoDrawer(),
       appBar: AppBar(
         title: const Text('Kas & Bank'),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
