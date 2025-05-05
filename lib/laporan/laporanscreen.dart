@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:flutter_application_kledo/inventori/ringkasaninventori.dart';
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
 import 'package:flutter_application_kledo/laporan/detailpenjualan.dart';
 import 'package:flutter_application_kledo/laporan/hutangpiutangperkontak.dart';
 import 'package:flutter_application_kledo/laporan/labarugi.dart';
 import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
+import 'package:flutter_application_kledo/laporan/pelunasanpembayarantagihan.dart';
 import 'package:flutter_application_kledo/laporan/penjualanperproduk.dart';
 import 'package:flutter_application_kledo/laporan/perubahanmodal.dart';
 import 'package:flutter_application_kledo/laporan/profitabilitas.dart';
 import 'package:flutter_application_kledo/laporan/ringkasaneksekutif.dart';
 import 'package:flutter_application_kledo/laporan/tagihanpelanggan.dart';
 import 'package:flutter_application_kledo/laporan/trialbalance.dart';
+import 'package:flutter_application_kledo/laporanAssetTetap/detailLaporanAset.dart';
+import 'package:flutter_application_kledo/laporanAssetTetap/pelepasanaset.dart';
+import 'package:flutter_application_kledo/laporanAssetTetap/ringkasanasset.dart';
 
 class LaporanPage extends StatelessWidget {
   final Map<String, List<String>> laporanKategori = {
@@ -210,6 +215,41 @@ class LaporanPage extends StatelessWidget {
                                       MaterialPageRoute(
                                           builder: (context) => const Hutangpiutangperkontak()
                                       )
+                                  );
+                                }else if(laporan == "Pelunasan Pembayaran Tagihan"){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const PelunasanListPage()
+                                    )
+                                  );
+                                } else if(laporan == "Ringkasan Inventori"){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const InventorySummaryPage()
+                                    )
+                                  );
+                                } else if(laporan == "Ringkasan Aset Tetap"){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const AsetRingkasanPage()
+                                    )
+                                  );
+                                }else if(laporan == "Pelepasan Aset"){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const PelepasanAsetPage()
+                                    )
+                                  );
+                                } else if(laporan == "Detil Aset Tetap"){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const DetilAsetTetapPage(),
+                                    )
                                   );
                                 }
                                 // Aksi ketika laporan diklik
