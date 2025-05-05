@@ -9,7 +9,6 @@ import 'package:flutter_application_kledo/akun/akunscreen.dart';
 import 'package:flutter_application_kledo/assetetap/assetetap.dart';
 import 'package:flutter_application_kledo/biaya/biayascreen.dart';
 import 'package:flutter_application_kledo/kas%20&%20bank/kasdanbank.dart';
-import 'package:flutter_application_kledo/kas%20&%20bank/kasscreen.dart';
 import 'package:flutter_application_kledo/kontak/kontakscreen.dart';
 import 'package:flutter_application_kledo/laporan/laporanscreen.dart';
 import 'package:flutter_application_kledo/pemesanan/pemesananscreen.dart';
@@ -35,24 +34,12 @@ class Dashboardscreen extends StatefulWidget {
 
 class _DashboardscreenState extends State<Dashboardscreen> {
   final List<Map<String, dynamic>> menuItems = [
-    {
-      'icon': Icons.shopping_bag,
-      'label': 'Penjualan',
-      'color': Colors.redAccent
-    },
-    {
-      'icon': Icons.shopping_cart,
-      'label': 'Pembelian',
-      'color': Colors.blueAccent
-    },
+    {'icon': Icons.shopping_bag, 'label': 'Penjualan', 'color': Colors.redAccent},
+    {'icon': Icons.shopping_cart, 'label': 'Pembelian', 'color': Colors.blueAccent},
     {'icon': Icons.money_off, 'label': 'Biaya', 'color': Colors.orangeAccent},
     {'icon': Icons.inventory, 'label': 'Produk', 'color': Colors.green},
     {'icon': Icons.bar_chart, 'label': 'Laporan', 'color': Colors.purple},
-    {
-      'icon': Icons.account_balance,
-      'label': 'Kas & Bank',
-      'color': Colors.teal
-    },
+    {'icon': Icons.account_balance, 'label': 'Kas & Bank', 'color': Colors.teal},
     {'icon': Icons.domain, 'label': 'Aset Tetap', 'color': Colors.indigo},
     {'icon': Icons.contacts, 'label': 'Kontak', 'color': Colors.brown},
   ];
@@ -60,7 +47,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: const Color(0xFFF4F6F8),
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
@@ -72,8 +59,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        iconTheme: const IconThemeData(
-            color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
@@ -99,32 +85,32 @@ class _DashboardscreenState extends State<Dashboardscreen> {
               width: double.infinity,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    Color(0xFF1E3C72),
-                    Color(0xFF2A5298)
-                  ], // Warna gradasi
+                  colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
               ),
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Hi pengguna!',
-                      style: TextStyle(fontSize: 22, color: Colors.white)),
-                  SizedBox(height: 4),
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
+                  SizedBox(height: 6),
                   Text('Yuk mudahkan keuangan bisnis dengan Hayami',
-                      style: TextStyle(color: Colors.white70)),
+                      style: TextStyle(color: Colors.white70, fontSize: 14)),
                 ],
               ),
             ),
             Container(
-              margin: const EdgeInsets.all(12),
-              padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                ],
               ),
               child: GridView.builder(
                 shrinkWrap: true,
@@ -132,8 +118,8 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 itemCount: menuItems.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
                 ),
                 itemBuilder: (context, index) {
                   var item = menuItems[index];
@@ -141,87 +127,59 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                     onTap: () {
                       switch (item['label']) {
                         case 'Penjualan':
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const Penjualanscreen()),
-                          );
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => const Penjualanscreen()));
                           break;
                         case 'Pembelian':
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const Pembelianscreen()),
-                          );
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => const Pembelianscreen()));
                           break;
                         case 'Biaya':
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const BiayaPage()),
-                          );
+                              context, MaterialPageRoute(builder: (_) => const BiayaPage()));
                           break;
                         case 'Produk':
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const ProdukPage()),
-                          );
+                              context, MaterialPageRoute(builder: (_) => const ProdukPage()));
                           break;
                         case 'Laporan':
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => LaporanPage()),
-                        );
+                              context, MaterialPageRoute(builder: (_) => LaporanPage()));
                           break;
                         case 'Kas & Bank':
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const KasDanBank()),
-                        );
+                              context, MaterialPageRoute(builder: (_) => const KasDanBank()));
                           break;
                         case 'Aset Tetap':
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const AssetPage()),
-                          );
+                              context, MaterialPageRoute(builder: (_) => const AssetPage()));
                           break;
                         case 'Kontak':
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const KontakScreen()),
-                        );
-                        // Tambahkan case lainnya sesuai label
+                              context, MaterialPageRoute(builder: (_) => const KontakScreen()));
+                          break;
                         default:
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text(
-                                    'Navigasi ke ${item['label']} belum tersedia')),
+                                content:
+                                    Text('Navigasi ke ${item['label']} belum tersedia')),
                           );
                       }
                     },
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(
-                            color: item['color']?.withOpacity(0.2) ??
-                                Colors.blue[50],
-                            borderRadius: BorderRadius.circular(
-                                12), // Bisa juga 0 untuk full kotak
+                            color: item['color']?.withOpacity(0.1),
+                            shape: BoxShape.circle,
                           ),
-                          child: Icon(item['icon'],
-                              color: item['color'] ?? Colors.blue),
+                          child: Icon(item['icon'], color: item['color'], size: 26),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 6),
                         Text(item['label'],
-                            style: const TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                             textAlign: TextAlign.center),
                       ],
                     ),
@@ -229,53 +187,16 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blue[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: const [
-                    Icon(Icons.computer, size: 40),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Demo dan konsultasi Online',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          Text('Gratis'),
-                          SizedBox(height: 4),
-                          Text('Yuk Jadwalkan Sekarang'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
 
-            const SizedBox(height: 16),
+            // SISA ISI TETAP (Kas & Bank, Performa Bisnis, Button)
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Kas & Bank',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text('Kas & Bank',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 8),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -304,59 +225,46 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 ),
               ),
             ),
-
-            // PERFORMA BISNIS SECTION
             const SizedBox(height: 20),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Performa Bisnis',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text('Performa Bisnis',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: SizedBox(
-                height: 160,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 11,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      width: 200,
-                      margin: const EdgeInsets.only(right: 12),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            blurRadius: 6,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text('Widget ${index + 1}',
-                            style: const TextStyle(fontSize: 16)),
-                      ),
-                    );
-                  },
-                ),
+            SizedBox(
+              height: 160,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: 11,
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 200,
+                    margin: const EdgeInsets.only(right: 12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 6,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text('Widget ${index + 1}',
+                          style: const TextStyle(fontSize: 16)),
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ElevatedButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -438,6 +346,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     );
   }
 }
+
 
 class KledoDrawer extends StatefulWidget {
   const KledoDrawer({super.key});
@@ -668,7 +577,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
                           }
 
                           if (item['title'] == 'Kas & Bank') {
-                            destination = const Kasscreen();
+                            destination = const KasDanBank();
                             
                           }
 

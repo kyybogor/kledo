@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
 import 'package:flutter_application_kledo/laporan/detailpenjualan.dart';
+import 'package:flutter_application_kledo/laporan/hutangpiutangperkontak.dart';
 import 'package:flutter_application_kledo/laporan/labarugi.dart';
 import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
 import 'package:flutter_application_kledo/laporan/penjualanperproduk.dart';
 import 'package:flutter_application_kledo/laporan/perubahanmodal.dart';
 import 'package:flutter_application_kledo/laporan/profitabilitas.dart';
+import 'package:flutter_application_kledo/laporan/ringkasaneksekutif.dart';
 import 'package:flutter_application_kledo/laporan/tagihanpelanggan.dart';
 import 'package:flutter_application_kledo/laporan/trialbalance.dart';
 
@@ -194,8 +196,20 @@ class LaporanPage extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const TagihanPelangganPage()
+                                      builder: (context) => const TagihanPelangganPage()));
+                                } else if(laporan == "Ringkasan Eksekutif"){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const RingkasanEksekutif()
                                     )
+                                  );
+                                } else if(laporan == "Hutang Piutang per Kontak"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Hutangpiutangperkontak()
+                                      )
                                   );
                                 }
                                 // Aksi ketika laporan diklik
