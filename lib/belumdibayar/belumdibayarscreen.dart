@@ -32,23 +32,23 @@ class _BelumDibayarState extends State<BelumDibayar> {
   Future<void> fetchInvoices() async {
     try {
       final response = await http
-          .get(Uri.parse('http://192.168.1.9/connect/JSON/index.php'));
+          .get(Uri.parse('http://192.168.1.9/connect/JSON/kontak.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
         invoices = data
-            .where((item) => item["status"] == "Belum Dibayar")
+            .where((item) => item["status_transaksi"] == "Belum Dibayar")
             .map<Map<String, dynamic>>((item) {
           return {
-            "id": item["id"] ?? item["0"],
-            "name": item["name"] ?? item["1"],
-            "invoice": item["invoice"] ?? item["2"],
-            "date": item["date"] ?? item["3"],
-            "due": item["due"] ?? item["4"],
-            "alamat": item["alamat"] ?? item["6"],
-            "amount": item["amount"] ?? item["5"],
-            "status": item["status"] ?? item["7"],
+            "id": item["id"],
+            "name": item["nama"],
+            "invoice": item["invoice"],
+            "date": item["date"],
+            "due": item["due"],
+            "alamat": item["alamat"],
+            "amount": item["amount"],
+            "status": item["status_transaksi"],
           };
         }).toList();
 

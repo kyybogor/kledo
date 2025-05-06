@@ -24,14 +24,14 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
   Future<void> fetchBarang() async {
     final invoiceId = widget.invoice['id'].toString();
     final url =
-        Uri.parse("http://192.168.1.9/connect/JSON/barang_invoice.php");
+        Uri.parse("http://192.168.1.9/connect/JSON/barang_kontak.php");
 
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final filtered = data
-            .where((item) => item['invoice_id'].toString() == invoiceId)
+            .where((item) => item['kontak_id'].toString() == invoiceId)
             .toList();
         setState(() {
           barang = filtered;
