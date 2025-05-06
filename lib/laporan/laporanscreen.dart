@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/inventori/ringkasaninventori.dart';
+import 'package:flutter_application_kledo/inventori/ringkasanstokgudang.dart';
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
 import 'package:flutter_application_kledo/laporan/detailpenjualan.dart';
 import 'package:flutter_application_kledo/laporan/hutangpiutangperkontak.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_application_kledo/laporan/trialbalance.dart';
 import 'package:flutter_application_kledo/laporanAssetTetap/detailLaporanAset.dart';
 import 'package:flutter_application_kledo/laporanAssetTetap/pelepasanaset.dart';
 import 'package:flutter_application_kledo/laporanAssetTetap/ringkasanasset.dart';
+import 'package:flutter_application_kledo/pajak/pajakpenjualan.dart';
 
 class LaporanPage extends StatelessWidget {
   final Map<String, List<String>> laporanKategori = {
@@ -191,12 +193,12 @@ class LaporanPage extends StatelessWidget {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => PenjualanPerProdukPage()));
+                                          builder: (context) => const PenjualanPerProdukPage()));
                                 } else if (laporan == "Profibilitas Produk") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ProfitabilitasProdukPage()));
+                                          builder: (context) => const ProfitabilitasProdukPage()));
                                 } else if(laporan == "Tagihan Pelanggan"){
                                   Navigator.push(
                                     context,
@@ -251,14 +253,27 @@ class LaporanPage extends StatelessWidget {
                                       builder: (context) => const DetilAsetTetapPage(),
                                     )
                                   );
+                                } else if(laporan == "Ringkasan Stok Gudang"){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const RingkasanStokGudangPage(),
+                                    )
+                                  );
+                                } else if(laporan == "Pajak Penjualan"){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const PajakPenjualanPage(),
+                                    )
+                                  );
                                 }
-                                // Aksi ketika laporan diklik
                               },
                             ),
                             const Divider(height: 1),
                           ],
                         )),
-                    const SizedBox(height: 8), // Spasi antar kategori
+                    const SizedBox(height: 8),
                   ],
                 );
               }).toList(),

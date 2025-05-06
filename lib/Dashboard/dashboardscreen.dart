@@ -118,8 +118,8 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 itemCount: menuItems.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 9,
+                  crossAxisSpacing: 9,
                 ),
                 itemBuilder: (context, index) {
                   var item = menuItems[index];

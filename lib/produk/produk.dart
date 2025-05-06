@@ -37,23 +37,29 @@ class _ProdukPageState extends State<ProdukPage> {
     }
   }
 
-  Future<void> _fetchProduk() async {
-    final url = Uri.parse('http://192.168.1.23/hiyami/produk.php');
+Future<void> _fetchProduk() async {
+  final url = Uri.parse('http://192.168.1.23/hiyami/tessss.php');
 
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
+  try {
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      if (jsonResponse['status'] == 'success') {
+        final List<dynamic> data = jsonResponse['data'];
         setState(() {
           _produkList = data.map((e) => Map<String, dynamic>.from(e)).toList();
         });
       } else {
-        print('Failed to load produk');
+        print('Status not success');
       }
-    } catch (e) {
-      print('Error: $e');
+    } else {
+      print('Failed to load produk');
     }
+  } catch (e) {
+    print('Error: $e');
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -150,27 +156,28 @@ class _ProdukPageState extends State<ProdukPage> {
     );
   }
 
-  Widget _buildProductItem(Map<String, dynamic> produk) {
-    return ListTile(
-      title: Text(produk['name'] ?? ''),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('${formatRupiah(produk['hpp'])} → ${formatRupiah(produk['harga_jual'])}'),
-          Text('${produk['hpp_value']} (HPP)'),
-          Text('${produk['code']}', style: const TextStyle(fontSize: 12)),
-        ],
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProductDetailPage(product: produk),
-          ),
-        );
-      },
-    );
-  }
+Widget _buildProductItem(Map<String, dynamic> produk) {
+  return ListTile(
+    title: Text(produk['produk_name'] ?? ''),
+    subtitle: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('${formatRupiah(produk['hpp'])} → ${formatRupiah(produk['harga_jual'])}'),
+        Text('${produk['hpp_value']} (HPP)'),
+        Text('${produk['produk_code']}', style: const TextStyle(fontSize: 12)),
+      ],
+    ),
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProductDetailPage(product: produk),
+        ),
+      );
+    },
+  );
+}
+
 
   Widget _buildStatusCard(String title, String count, Color color) {
     final screenWidth = MediaQuery.of(context).size.width;

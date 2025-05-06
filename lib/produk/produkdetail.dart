@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/produk/pergerakanstok.dart';
-import 'package:flutter_application_kledo/produk/transaksiterkini.dart';
-import 'package:flutter_application_kledo/produk/transfergudang.dart';
-import 'package:flutter_application_kledo/produk/unit.dart';
 import 'package:intl/intl.dart';
+import 'pergerakanstok.dart';
+import 'transaksiterkini.dart';
+import 'transfergudang.dart';
+import 'unit.dart';
 
 String formatRupiah(dynamic amount) {
   try {
@@ -25,12 +25,25 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Data yang digunakan untuk Transaksi Terkini dan Transfer Gudang
+    List<Map<String, String>> transaksiTerkini = [
+      {'title': 'Tagihan Penjualan', 'amount': '899.099', 'date': '15/04/2025'},
+      {'title': 'Tagihan Penjualan', 'amount': '998.000', 'date': '15/04/2025'},
+      {'title': 'Tagihan Pembelian', 'amount': '598.000', 'date': '14/04/2025'}
+    ];
+
+    List<Map<String, String>> transferGudang = [
+      {'kode': 'WT/00004', 'tanggal': '09/03/2025'},
+      {'kode': 'WT/00003', 'tanggal': '08/03/2025'},
+      {'kode': 'WT/00002', 'tanggal': '07/03/2025'}
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
           children: [
-            Text(product['name']!, style: const TextStyle(fontSize: 20)),
-            Text(product['code'], style: const TextStyle(fontSize: 12)),
+            Text(product['produk_name']!, style: const TextStyle(fontSize: 20)),
+            Text(product['produk_code'], style: const TextStyle(fontSize: 12)),
           ],
         ),
         centerTitle: true,
@@ -137,6 +150,7 @@ class ProductDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Menampilkan info produk seperti stok, penjualan, dan hpp
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -165,7 +179,7 @@ class ProductDetailPage extends StatelessWidget {
                       Row(children: [
                         const Icon(Icons.inventory_2),
                         const SizedBox(width: 8),
-                        Text(product['name']!)
+                        Text(product['produk_name']!)
                       ]),
                       const SizedBox(height: 4),
                       const Row(children: [
@@ -202,26 +216,28 @@ class ProductDetailPage extends StatelessWidget {
                 actionColor: Colors.blue),
             const SizedBox(height: 8),
             const Text('Satuan Dasar: Pcs'),
-            const SizedBox(height: 8,),
+            const SizedBox(
+              height: 8,
+            ),
             _sectionHeader('Gudang'),
             const SizedBox(height: 8),
-            if (product['unassigned'] == null &&
-                product['gudang_utama'] == null &&
-                product['gudang_elektronik'] == null)
+            if (product['gudang']?['unassigned'] == null &&
+                product['gudang']?['gudang_utama'] == null &&
+                product['gudang']?['gudang_elektronik'] == null)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: Text('Tidak ada data gudang.'),
               )
             else ...[
-              if (product['unassigned'] != null)
+              if (product['gudang']?['unassigned'] != null)
                 _buildWarehouseRow(
-                    'Unassigned', product['unassigned'].toString()),
-              if (product['gudang_utama'] != null)
-                _buildWarehouseRow(
-                    'Gudang Utama', product['gudang_utama'].toString()),
-              if (product['gudang_elektronik'] != null)
+                    'Unassigned', product['gudang']['unassigned'].toString()),
+              if (product['gudang']?['gudang_utama'] != null)
+                _buildWarehouseRow('Gudang Utama',
+                    product['gudang']['gudang_utama'].toString()),
+              if (product['gudang']?['gudang_elektronik'] != null)
                 _buildWarehouseRow('Gudang Elektronik',
-                    product['gudang_elektronik'].toString()),
+                    product['gudang']['gudang_elektronik'].toString()),
               const Divider(),
               _buildWarehouseRow(
                 'Total',
@@ -234,9 +250,11 @@ class ProductDetailPage extends StatelessWidget {
                 context, 'Transaksi Terkini', 'Lihat Semua',
                 actionColor: Colors.blue),
             const SizedBox(height: 8),
-            _buildTransactionRow('Tagihan Penjualan', '899.099', '15/04/2025'),
-            _buildTransactionRow('Tagihan Penjualan', '998.000', '15/04/2025'),
-            _buildTransactionRow('Tagihan Pembelian', '598.000', '14/04/2025'),
+            // Menampilkan transaksi terkini
+            ...transaksiTerkini.map((trx) {
+              return _buildTransactionRow(trx['title']!, trx['amount']!,
+                  trx['date']!);
+            }).toList(),
             const SizedBox(height: 24),
             _sectionHeaderWithAction(context, 'Pergerakan Stok', 'Lihat Semua',
                 actionColor: Colors.blue),
@@ -248,30 +266,15 @@ class ProductDetailPage extends StatelessWidget {
             _sectionHeaderWithAction(context, 'Transfer Gudang', 'Lihat Semua',
                 actionColor: Colors.blue),
             const SizedBox(height: 8),
-            ListTile(
-              title: const Text('WT/00004'),
-              subtitle: const Text('09/03/2025'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('WT/00003'),
-              subtitle: const Text('08/03/2025'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('WT/00002'),
-              subtitle: const Text('07/03/2025'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('WT/00001'),
-              subtitle: const Text('06/03/2025'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
-            ),
+            // Menampilkan transfer gudang
+            ...transferGudang.map((transfer) {
+              return ListTile(
+                title: Text(transfer['kode']!),
+                subtitle: Text(transfer['tanggal']!),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {},
+              );
+            }).toList(),
             const SizedBox(height: 80),
           ],
         ),
@@ -279,6 +282,7 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  // Widget untuk menampilkan info card
   Widget _buildInfoCard(String title, String value, Color color) {
     return Container(
       width: 200,
@@ -310,6 +314,7 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  // Widget untuk menampilkan row gudang
   Widget _buildWarehouseRow(String name, String qty, {bool isBold = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -327,6 +332,7 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  // Widget untuk menampilkan transaksi terkini
   Widget _buildTransactionRow(String title, String amount, String date) {
     return ListTile(
       title: Text(title),
@@ -336,6 +342,7 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  // Widget untuk menampilkan pergerakan stok
   Widget _buildStockMovement(String title, String qty, Color color) {
     return ListTile(
       title: Text(title),
@@ -350,6 +357,7 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  // Widget untuk menampilkan header
   Widget _sectionHeader(String title) {
     return Container(
       width: double.infinity,
@@ -362,6 +370,7 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  // Widget untuk menampilkan header dengan aksi
   Widget _sectionHeaderWithAction(
       BuildContext context, String title, String actionText,
       {Color actionColor = Colors.black}) {
@@ -385,7 +394,7 @@ class ProductDetailPage extends StatelessWidget {
               } else if (title == 'Transaksi Terkini') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => TransaksiTerkiniPage()),
+                  MaterialPageRoute(builder: (_) => TransaksiTerkiniPage(product: product,)),
                 );
               } else if (title == 'Pergerakan Stok') {
                 Navigator.push(
@@ -395,7 +404,7 @@ class ProductDetailPage extends StatelessWidget {
               } else if (title == 'Transfer Gudang') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => TransferGudangPage()),
+                  MaterialPageRoute(builder: (_) => TransferGudangPage(product: product,)),
                 );
               }
             },
