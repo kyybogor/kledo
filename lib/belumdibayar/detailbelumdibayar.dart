@@ -21,28 +21,47 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
     fetchBarang();
   }
 
-  Future<void> fetchBarang() async {
-    final invoiceId = widget.invoice['id'].toString();
-    final url =
-        Uri.parse("http://192.168.1.9/connect/JSON/barang_kontak.php");
+Future<void> fetchBarang() async {
+  final invoiceId = widget.invoice['id'].toString();
+  final url = Uri.parse("http://192.168.1.23/hiyami/aku.php");
 
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final filtered = data
-            .where((item) => item['kontak_id'].toString() == invoiceId)
-            .toList();
-        setState(() {
-          barang = filtered;
-        });
-      } else {
-        print('Gagal mengambil data barang. Status: ${response.statusCode}');
-      }
-    } catch (e) {
-      print("Error saat mengambil data barang: $e");
+  try {
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      // Menampilkan data yang diterima untuk debugging
+      print("Data yang diterima: $data");
+
+      // Memfilter produk berdasarkan invoiceId yang sesuai
+      final filtered = data
+          .where((item) => item['kontak_id'].toString() == invoiceId)
+          .map((item) {
+            // Mengonversi string ke double jika perlu
+            final jumlah = double.tryParse(item['jumlah'].toString()) ?? 0;
+            final harga = double.tryParse(item['harga'].toString()) ?? 0;
+            final total = double.tryParse(item['total'].toString()) ?? 0;
+
+            return {
+              'nama_barang': item['nama_barang'] ?? 'Tidak Diketahui', // Jika null, beri nilai default
+              'jumlah': jumlah.toString(),
+              'harga': harga.toString(),
+              'total': total.toString(),
+            };
+          })
+          .toList();
+
+      setState(() {
+        barang = filtered;
+      });
+    } else {
+      print('Gagal mengambil data barang. Status: ${response.statusCode}');
     }
+  } catch (e) {
+    print("Error saat mengambil data barang: $e");
   }
+}
+
 
   double getTotalSemuaBarang() {
     double total = 0;
