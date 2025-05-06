@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/kontak/kontakscreen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
 
 class Hutangpiutangperkontak extends StatefulWidget {
   const Hutangpiutangperkontak({super.key});
@@ -107,7 +107,12 @@ class _HutangpiutangperkontakState extends State<Hutangpiutangperkontak> {
                     ],
                   ),
                   onTap: () {
-                    // Aksi saat item diklik
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailKontak(data: item)
+                      ),
+                    );
                   },
                 );
               },
