@@ -11,6 +11,7 @@ import 'package:flutter_application_kledo/laporan/pelunasanpembayarantagihan.dar
 import 'package:flutter_application_kledo/laporan/penjualanperproduk.dart';
 import 'package:flutter_application_kledo/laporan/perubahanmodal.dart';
 import 'package:flutter_application_kledo/laporan/profitabilitas.dart';
+import 'package:flutter_application_kledo/laporan/ringkasan_bank.dart';
 import 'package:flutter_application_kledo/laporan/ringkasaneksekutif.dart';
 import 'package:flutter_application_kledo/laporan/tagihanpelanggan.dart';
 import 'package:flutter_application_kledo/laporan/trialbalance.dart';
@@ -266,6 +267,14 @@ class LaporanPage extends StatelessWidget {
                                     MaterialPageRoute(
                                       builder: (context) => const PajakPenjualanPage(),
                                     )
+                                  );
+                                }
+                                else if(laporan == "Ringkasan Bank"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const RingkasanBank(),
+                                      )
                                   );
                                 }
                               },

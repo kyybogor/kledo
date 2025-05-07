@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class RingkasanEksekutif extends StatefulWidget {
-  const RingkasanEksekutif({super.key});
+class RingkasanBank extends StatefulWidget {
+  const RingkasanBank({super.key});
 
   @override
-  State<RingkasanEksekutif> createState() => _RingkasanEksekutifState();
+  State<RingkasanBank> createState() => _RingkasanBankState();
 }
 
-class _RingkasanEksekutifState extends State<RingkasanEksekutif> {
+class _RingkasanBankState extends State<RingkasanBank> {
   Map<String, dynamic> data = {};
   bool isLoading = true;
 
@@ -21,7 +21,7 @@ class _RingkasanEksekutifState extends State<RingkasanEksekutif> {
 
   Future<void> fetchData() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.1.9/connect/JSON/ringkasan_eksekutif.php'));
+        'http://192.168.1.9/connect/JSON/ringkasan_bank.php'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -42,52 +42,24 @@ class _RingkasanEksekutifState extends State<RingkasanEksekutif> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ringkasan Eksekutif'),
+        title: const Text('Ringkasan Bank'),
         centerTitle: true,
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.filter_list)),
+        ],
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               children: [
                 const SizedBox(height: 10),
-                buildSection('Kas', data['Kas'], [
-                  'Kas masuk',
-                  'Kas keluar',
-                  'Perubahan kas',
-                  'Saldo penutupan',
-                ]),
+                buildSection('Kas', data['Kas']),
                 const SizedBox(height: 10),
-                buildSection('Profitabilitas', data['Profitabilitas'], [
-                  'Pendapatan',
-                  'Biaya penjualan',
-                  'Laba kotor',
-                  'Biaya',
-                  'Laba bersih',
-                ]),
+                buildSection('Rekening Bank', data['Rekening Bank']),
                 const SizedBox(height: 10),
-                buildSection('Neraca', data['Neraca'], [
-                  'Aset',
-                  'Liabilitas',
-                  'Modal pemilik',
-                ]),
+                buildSection('Giro', data['Giro']),
                 const SizedBox(height: 10),
-                buildSection('Pendapatan', data['Pendapatan'], [
-                  'Jumlah tagihan diterbitkan', 
-                  'Rata-rata nilai tagihan',
-                ]),
-                const SizedBox(height: 10),
-                buildSection('Peforma', data['Peforma'], [
-                  'Margin laba kotor',
-                  'Margin laba bersih',
-                  'Pengembalian investasi / ROI (p.a.)',
-                ]),
-                const SizedBox(height: 10),
-                buildSection('Posisi', data['Posisi'], [
-                  'Rata-rata lama konversi piutang',
-                  'Rata-rata lama konversi hutang',
-                  'Rasio hutang terhadap ekuitas',
-                  'Rasio aset terhadap liabilitas',
-                ]),
+                buildSection('Total', data['Total']),
               ],
             ),
       floatingActionButton: Column(
@@ -109,7 +81,7 @@ class _RingkasanEksekutifState extends State<RingkasanEksekutif> {
     );
   }
 
-  Widget buildSection(String title, dynamic sectionData, List<String> keys) {
+  Widget buildSection(String title, dynamic sectionData) {
     if (sectionData == null || sectionData is! Map) {
       return const SizedBox();
     }
@@ -118,7 +90,10 @@ class _RingkasanEksekutifState extends State<RingkasanEksekutif> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         sectionTitle(title),
-        for (var key in keys) buildRow(key, parse(sectionData[key])),
+        buildRow('Saldo Awal', parse(sectionData['Saldo Awal'])),
+        buildRow('Uang Diterima', parse(sectionData['Uang Diterima'])),
+        buildRow('Uang Dibelanjakan', parse(sectionData['Uang Dibelanjakan'])),
+        buildRow('Saldo Akhir', parse(sectionData['Saldo Akhir'])),
       ],
     );
   }
