@@ -18,35 +18,37 @@ class _InventorySummaryPageState extends State<InventorySummaryPage> {
   @override
   void initState() {
     super.initState();
-    futureItems = fetchItems();
+    futureItems = fetchProduct();
   }
 
-  Future<List<Map<String, dynamic>>> fetchItems() async {
+  Future<List<Map<String, dynamic>>> fetchProduct() async {
     final response =
-        await http.get(Uri.parse('http://192.168.1.23/hiyami/produk.php'));
+        await http.get(Uri.parse('http://192.168.1.23/hiyami/tessss.php'));
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data
-          .map<Map<String, dynamic>>((item) => {
-                'id': item['id'],
-                'name': item['name'],
-                'code': item['code'],
-                'stok':
-                    item['stok'] != null ? int.tryParse(item['stok']) ?? 0 : 0,
-                'nominal_stok': item['nominal_stok'] != null
-                    ? double.tryParse(item['nominal_stok']) ?? 0
-                    : 0.0,
-                'hpp': item['hpp'],
-                'hpp_value': item['hpp_value'],
-                'harga_jual': item['harga_jual'],
-                'penjualan': item['penjualan'],
-                'nominal_penjualan': item['nominal_penjualan'],
-                'gudang_utama': item['gudang_utama'],
-                'gudang_elektronik': item['gudang_elektronik'],
-                'total_gudang': item['total_gudang'],
-              })
-          .toList();
+      final data = jsonDecode(response.body);
+
+      if (data['status'] == 'success') {
+        final List<dynamic> itemsData = data['data'];
+        
+        return itemsData.map<Map<String, dynamic>>((item) => {
+              'id': item['produk_id'],
+              'name': item['produk_name'],
+              'code': item['produk_code'],
+              'stok': int.tryParse(item['stok']) ?? 0,
+              'nominal_stok': double.tryParse(item['nominal_stok']) ?? 0.0,
+              'hpp': item['hpp'],
+              'hpp_value': item['hpp_value'],
+              'harga_jual': item['harga_jual'],
+              'penjualan': item['penjualan'],
+              'nominal_penjualan': item['nominal_penjualan'],
+              'gudang_utama': item['gudang']['gudang_utama'],
+              'gudang_elektronik': item['gudang']['gudang_elektronik'],
+              'total_gudang': item['gudang']['total'],
+            }).toList();
+      } else {
+        throw Exception('Data tidak berhasil dimuat');
+      }
     } else {
       throw Exception('Gagal memuat data inventori');
     }
@@ -93,7 +95,7 @@ class _InventorySummaryPageState extends State<InventorySummaryPage> {
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
+            child: FutureBuilder<List<Map<String, dynamic>>>( 
               future: futureItems,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -231,12 +233,6 @@ class InventoriDetail extends StatelessWidget {
             const SizedBox(height: 24),
             InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ProductDetailPage(product: item),
-                  ),
-                );
               },
               child: buttonRow('Lihat Detail'),
             ),
@@ -247,6 +243,7 @@ class InventoriDetail extends StatelessWidget {
       ),
     );
   }
+  
 
   Widget infoRow(String label, String value) {
     return Padding(

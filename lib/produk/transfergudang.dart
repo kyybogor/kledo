@@ -7,7 +7,7 @@ class TransferGudangPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<dynamic> transfers = product['transfers'] ?? [];
+    final List<dynamic> transfers = product['transfer'] ?? [];
 
     return Scaffold(
       appBar: AppBar(
@@ -32,8 +32,8 @@ class TransferGudangPage extends StatelessWidget {
               itemCount: transfers.length,
               itemBuilder: (context, index) {
                 final transfer = transfers[index];
-                final kode = transfer['transfer_kode'] ?? 'N/A';
-                final tanggal = transfer['transfer_tanggal'] ?? 'N/A';
+                final kode = transfer['kode'] ?? 'N/A';
+                final tanggal = transfer['tanggal'] ?? 'N/A';
 
                 return ListTile(
                   title: Text(kode),

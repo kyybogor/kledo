@@ -22,25 +22,40 @@ class _RingkasanStokGudangPageState extends State<RingkasanStokGudangPage> {
 
   Future<void> fetchProducts() async {
     final response =
-        await http.get(Uri.parse('http://192.168.1.23/hiyami/produk.php'));
+        await http.get(Uri.parse('http://192.168.1.23/hiyami/tessss.php'));
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      setState(() {
-        products = data.map((item) {
-          return {
-            'name': item['name'],
-            'code': item['code'],
-            'details': {
-              'Unassigned': int.tryParse(item['unassigned'] ?? '0') ?? 0,
-              'Gudang Utama': int.tryParse(item['gudang_utama'] ?? '0') ?? 0,
-              'Gudang Elektronik':
-                  int.tryParse(item['gudang_elektronik'] ?? '0') ?? 0,
-            },
-          };
-        }).toList();
-        isLoading = false;
-      });
+      final jsonResponse = json.decode(response.body);
+
+      if (jsonResponse['status'] == 'success') {
+        final List<dynamic> data = jsonResponse['data'];
+
+        setState(() {
+          products = data.map((item) {
+            final gudang = item['gudang'] ?? {};
+            return {
+              'name': item['produk_name'] ?? 'N/A',
+              'code': item['produk_code'] ?? '',
+              'details': {
+                'Unassigned':
+                    int.tryParse(gudang['unassigned'].toString()) ?? 0,
+                'Gudang Utama':
+                    int.tryParse(gudang['gudang_utama'].toString()) ?? 0,
+                'Gudang Elektronik':
+                    int.tryParse(gudang['gudang_elektronik'].toString()) ?? 0,
+              },
+            };
+          }).toList();
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Data tidak valid dari server')),
+        );
+      }
     } else {
       setState(() {
         isLoading = false;

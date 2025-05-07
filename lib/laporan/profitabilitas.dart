@@ -3,14 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-
 class ProfitabilitasProdukPage extends StatefulWidget {
   const ProfitabilitasProdukPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ProfitabilitasProdukPageState createState() =>
-      _ProfitabilitasProdukPageState();
+  _ProfitabilitasProdukPageState createState() => _ProfitabilitasProdukPageState();
 }
 
 class _ProfitabilitasProdukPageState extends State<ProfitabilitasProdukPage> {
@@ -24,11 +21,12 @@ class _ProfitabilitasProdukPageState extends State<ProfitabilitasProdukPage> {
   }
 
   Future<void> fetchProduk() async {
-    final response = await http.get(Uri.parse(
-        'http://192.168.1.23/hiyami/produk.php')); // Ganti sesuai URL API
+    final response = await http.get(Uri.parse('http://192.168.1.23/hiyami/tessss.php'));
 
     if (response.statusCode == 200) {
-      final List<dynamic> jsonData = jsonDecode(response.body);
+      final jsonMap = jsonDecode(response.body);
+      final List<dynamic> jsonData = jsonMap['data'] ?? [];
+
       setState(() {
         produkList = jsonData.map((item) => Produk.fromJson(item)).toList();
         isLoading = false;
@@ -44,8 +42,7 @@ class _ProfitabilitasProdukPageState extends State<ProfitabilitasProdukPage> {
   }
 
   String formatRupiah(dynamic value) {
-    final formatter =
-        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+    final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
     return formatter.format(double.tryParse(value.toString()) ?? 0);
   }
 
@@ -62,6 +59,7 @@ class _ProfitabilitasProdukPageState extends State<ProfitabilitasProdukPage> {
     );
 
     final rataRata = totalTerjual == 0 ? 0.0 : totalPenjualan / totalTerjual;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profitabilitas Produk"),
@@ -88,8 +86,7 @@ class _ProfitabilitasProdukPageState extends State<ProfitabilitasProdukPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: Colors.amber[700],
                             borderRadius: BorderRadius.circular(20),
@@ -119,12 +116,12 @@ class _ProfitabilitasProdukPageState extends State<ProfitabilitasProdukPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Statistik Penjualan',style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Text('Statistik Penjualan', style: TextStyle(fontWeight: FontWeight.bold)),
                         const SizedBox(height: 10),
                         buildStatRow("Jumlah Terjual", "$totalTerjual"),
-                        const Divider(height:  5,),
+                        const Divider(height: 5),
                         buildStatRow("Total Penjualan", formatRupiah(totalPenjualan)),
-                        const Divider(height: 5,),
+                        const Divider(height: 5),
                         buildStatRow("Rata-rata", formatRupiah(rataRata)),
                       ],
                     ),
@@ -146,9 +143,7 @@ class _ProfitabilitasProdukPageState extends State<ProfitabilitasProdukPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: const TextStyle(fontSize: 16)),
-          Text(value,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         ],
       ),
     );
@@ -178,16 +173,14 @@ class Produk {
     final hargaJual = double.tryParse(json['harga_jual'] ?? '0') ?? 0;
     final hpp = double.tryParse(json['hpp'] ?? '0') ?? 0;
     final penjualan = int.tryParse(json['penjualan'] ?? '0') ?? 0;
-    final nominalPenjualan =
-        double.tryParse(json['nominal_penjualan'] ?? '0') ?? 0;
+    final nominalPenjualan = double.tryParse(json['nominal_penjualan'] ?? '0') ?? 0;
     final totalHPP = hpp * penjualan;
     final totalProfit = nominalPenjualan - totalHPP;
-    final profitMargin =
-        (nominalPenjualan == 0) ? 0 : (totalProfit / nominalPenjualan * 100);
+    final profitMargin = (nominalPenjualan == 0) ? 0 : (totalProfit / nominalPenjualan * 100);
 
     return Produk(
-      id: json['id'] ?? '',
-      name: json['name'] ?? '',
+      id: json['produk_id'] ?? '',
+      name: json['produk_name'] ?? '',
       hpp: hpp.toStringAsFixed(0),
       hargaJual: hargaJual.toStringAsFixed(0),
       nominalPenjualan: nominalPenjualan.toStringAsFixed(0),
@@ -203,8 +196,7 @@ class DetailProdukPage extends StatelessWidget {
   const DetailProdukPage({super.key, required this.produk});
 
   String formatRupiah(String value) {
-    final formatter =
-        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+    final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
     return formatter.format(double.tryParse(value) ?? 0);
   }
 
@@ -227,21 +219,20 @@ class DetailProdukPage extends StatelessWidget {
           Container(
             color: Colors.grey[200],
             padding: const EdgeInsets.all(12),
-            child: const Text('Penjualan',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text('Penjualan', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           buildDetailRow("Total Penjualan", formatRupiah(produk.nominalPenjualan)),
-          const Divider(height: 5,),
+          const Divider(height: 5),
           buildDetailRow("Total HPP", formatRupiah(totalHPP.toString())),
-          const Divider(height: 5,),
+          const Divider(height: 5),
           buildDetailRow("Total Profit", formatRupiah(totalProfit.toString())),
-          const Divider(height: 5,),
+          const Divider(height: 5),
           buildDetailRow("Profit Margin", "${produk.profitMargin}%"),
-          const Divider(height: 5,),
+          const Divider(height: 5),
           buildDetailRow("Harga Jual Rata-rata", formatRupiah(rataHargaJual.toString())),
-          const Divider(height: 5,),
+          const Divider(height: 5),
           buildDetailRow("HPP Per Unit", formatRupiah(hppPerUnit.toString())),
-          const Divider(height: 5,)
+          const Divider(height: 5),
         ],
       ),
     );

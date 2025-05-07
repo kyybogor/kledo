@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:intl/intl.dart';
 
 class TransaksiTerkiniPage extends StatelessWidget {
@@ -68,6 +67,7 @@ class TransaksiTerkiniPage extends StatelessWidget {
                     ],
                   ),
                   onTap: () {
+                    // Aksi jika ingin ditambahkan
                   },
                 );
               },

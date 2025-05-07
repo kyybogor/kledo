@@ -399,7 +399,7 @@ class ProductDetailPage extends StatelessWidget {
               } else if (title == 'Pergerakan Stok') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => PergerakanStokPage()),
+                  MaterialPageRoute(builder: (_) => PergerakanstokPage(product: product)),
                 );
               } else if (title == 'Transfer Gudang') {
                 Navigator.push(

@@ -21,22 +21,22 @@ class ProdukPenjualan {
     required this.rataRata,
   });
 
-  factory ProdukPenjualan.fromJson(Map<String, dynamic> json) {
-    final hargaJual = double.tryParse(json['harga_jual'] ?? '0') ?? 0;
-    final penjualan = int.tryParse(json['penjualan'] ?? '0') ?? 0;
-    final nominalPenjualan =
-        double.tryParse(json['nominal_penjualan'] ?? '0') ?? 0;
-    final rata2 = penjualan != 0 ? (nominalPenjualan / penjualan) : 0;
+factory ProdukPenjualan.fromJson(Map<String, dynamic> json) {
+  final hargaJual = double.tryParse(json['harga_jual'] ?? '0') ?? 0;
+  final penjualan = int.tryParse(json['penjualan'] ?? '0') ?? 0;
+  final nominalPenjualan = double.tryParse(json['nominal_penjualan'] ?? '0') ?? 0;
+  final rata2 = penjualan != 0 ? (nominalPenjualan / penjualan) : 0;
 
-    return ProdukPenjualan(
-      name: json['name'] ?? '',
-      sku: json['code'] ?? '',
-      harga: hargaJual.toStringAsFixed(0),
-      jumlahTerjual: penjualan,
-      total: nominalPenjualan.toStringAsFixed(0),
-      rataRata: rata2.toStringAsFixed(0),
-    );
-  }
+  return ProdukPenjualan(
+    name: json['produk_name'] ?? '',
+    sku: json['produk_code'] ?? '',
+    harga: hargaJual.toStringAsFixed(0),
+    jumlahTerjual: penjualan,
+    total: nominalPenjualan.toStringAsFixed(0),
+    rataRata: rata2.toStringAsFixed(0),
+  );
+}
+
 }
 
 // Halaman Utama
@@ -75,22 +75,23 @@ class _PenjualanPerProdukPageState extends State<PenjualanPerProdukPage> {
 
   Future<void> fetchProduk() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.1.23/hiyami/produk.php')); // Ganti dengan URL API kamu
+        'http://192.168.1.23/hiyami/tessss.php')); // Ganti dengan URL API kamu
 
     if (response.statusCode == 200) {
-      final List<dynamic> jsonData = jsonDecode(response.body);
-      setState(() {
-        dataPenjualan =
-            jsonData.map((item) => ProdukPenjualan.fromJson(item)).toList();
-        isLoading = false;
-      });
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal mengambil data dari server')),
-      );
+      final response =
+          await http.get(Uri.parse('http://192.168.1.23/hiyami/tessss.php'));
+
+      if (response.statusCode == 200) {
+        final jsonMap = jsonDecode(response.body);
+        final List<dynamic> jsonData = jsonMap['data'] ?? [];
+
+        setState(() {
+          dataPenjualan =
+              jsonData.map((item) => ProdukPenjualan.fromJson(item)).toList();
+          isLoading = false;
+        });
+      }
+
     }
   }
 
@@ -124,7 +125,9 @@ class _PenjualanPerProdukPageState extends State<PenjualanPerProdukPage> {
                 Expanded(
                     child: ListView.separated(
                   itemCount: dataPenjualan.length + 1,
-                  separatorBuilder: (context, index) => const Divider(height: 5,),
+                  separatorBuilder: (context, index) => const Divider(
+                    height: 5,
+                  ),
                   itemBuilder: (context, index) {
                     if (index < dataPenjualan.length) {
                       final item = dataPenjualan[index];
@@ -237,13 +240,21 @@ class DetailProdukPage extends StatelessWidget {
             ),
           ),
           buildRow('Kode/SKU', produk.sku),
-          const Divider(height: 5,),
+          const Divider(
+            height: 5,
+          ),
           buildRow('Harga Jual', formatRupiah(produk.harga)),
-          const Divider(height: 5,),
+          const Divider(
+            height: 5,
+          ),
           buildRow('Jumlah Terjual', '${produk.jumlahTerjual}'),
-          const Divider(height: 5,),
+          const Divider(
+            height: 5,
+          ),
           buildRow('Total Penjualan', formatRupiah(produk.total), bold: true),
-          const Divider(height: 5,),
+          const Divider(
+            height: 5,
+          ),
           buildRow('Rata-rata per Produk', formatRupiah(produk.rataRata)),
         ],
       ),
