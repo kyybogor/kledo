@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_kledo/produk/produkdetail.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart'; // Tambahan import
 
 class Detailbelumdibayar extends StatefulWidget {
   final Map<String, dynamic> invoice;
@@ -14,65 +15,64 @@ class Detailbelumdibayar extends StatefulWidget {
 
 class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
   List<dynamic> barang = [];
+  List<dynamic> allProduk = [];
 
   @override
   void initState() {
     super.initState();
-    fetchBarang();
+    fetchProduct();
   }
 
-Future<void> fetchBarang() async {
-  final invoiceId = widget.invoice['id'].toString();
-  final url = Uri.parse("http://192.168.1.23/hiyami/aku.php");
+  Future<void> fetchProduct() async {
+    final invoiceId = widget.invoice['id']?.toString() ?? '';
+    final url = Uri.parse("http://192.168.1.23/hiyami/tessss.php");
 
-  try {
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        allProduk = data['data'];
 
-      // Menampilkan data yang diterima untuk debugging
-      print("Data yang diterima: $data");
-
-      // Memfilter produk berdasarkan invoiceId yang sesuai
-      final filtered = data
-          .where((item) => item['kontak_id'].toString() == invoiceId)
-          .map((item) {
-            // Mengonversi string ke double jika perlu
-            final jumlah = double.tryParse(item['jumlah'].toString()) ?? 0;
-            final harga = double.tryParse(item['harga'].toString()) ?? 0;
-            final total = double.tryParse(item['total'].toString()) ?? 0;
+        final filtered = (data['data'] as List).expand((product) {
+          return (product['kontaks'] as List).where((kontak) {
+            return kontak['kontak_id'].toString() == invoiceId;
+          }).map((kontak) {
+            final barang = kontak['barang_kontak'] ?? {};
+            final jumlah = double.tryParse(barang['jumlah']?.toString() ?? '0') ?? 0;
+            final harga = double.tryParse(barang['harga']?.toString() ?? '0') ?? 0;
+            final total = jumlah * harga;
 
             return {
-              'nama_barang': item['nama_barang'] ?? 'Tidak Diketahui', // Jika null, beri nilai default
+              'nama_barang': barang['nama_barang'] ?? 'Tidak Diketahui',
+              'size': barang['size'] ?? 'Tidak Diketahui',
               'jumlah': jumlah.toString(),
               'harga': harga.toString(),
               'total': total.toString(),
+              'barang_id': barang['barang_id'],
             };
-          })
-          .toList();
+          }).toList();
+        }).toList();
 
-      setState(() {
-        barang = filtered;
-      });
-    } else {
-      print('Gagal mengambil data barang. Status: ${response.statusCode}');
+        setState(() {
+          barang = filtered;
+        });
+      } else {
+        print('Gagal mengambil data barang. Status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Error saat mengambil data barang: $e");
     }
-  } catch (e) {
-    print("Error saat mengambil data barang: $e");
   }
-}
-
 
   double getTotalSemuaBarang() {
     double total = 0;
     for (var item in barang) {
-      final harga = double.tryParse(item['total'].toString()) ?? 0;
+      final harga = double.tryParse(item['total']?.toString() ?? '0') ?? 0;
       total += harga;
     }
     return total;
   }
 
-  // Format angka dengan titik
   String formatRupiah(double number) {
     final formatter = NumberFormat("#,###", "id_ID");
     return formatter.format(number);
@@ -122,8 +122,7 @@ Future<void> fetchBarang() async {
             ),
           ),
           child: AppBar(
-            title: const Text('Tagihan',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            title: const Text('Tagihan', style: TextStyle(fontWeight: FontWeight.bold)),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             foregroundColor: Colors.white,
@@ -133,8 +132,7 @@ Future<void> fetchBarang() async {
       ),
       body: Column(
         children: [
-          _buildHeader(invoiceNumber, contactName, address, date, dueDate,
-              status, statusColor),
+          _buildHeader(invoiceNumber, contactName, address, date, dueDate, status, statusColor),
           const SizedBox(height: 12),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
@@ -149,8 +147,7 @@ Future<void> fetchBarang() async {
               children: [
                 Expanded(
                   child: barang.isEmpty
-                      ? const Center(
-                          child: Text("Tidak ada barang untuk invoice ini."))
+                      ? const Center(child: Text("Tidak ada barang untuk invoice ini."))
                       : ListView.builder(
                           padding: const EdgeInsets.all(16),
                           itemCount: barang.length,
@@ -158,24 +155,59 @@ Future<void> fetchBarang() async {
                             final item = barang[index];
                             return Card(
                               child: ListTile(
-                                title: Text(item['nama_barang']),
-                                subtitle: Text(
-                                    "${item['jumlah']} x Rp ${formatRupiah(double.tryParse(item['harga']) ?? 0)}"),
+                                title: Text(item['nama_barang'] ?? 'Tidak Diketahui'),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (item['size'] != null && item['size'].isNotEmpty)
+                                      Text("Ukuran: ${item['size']}"),
+                                    Text(
+                                      "${item['jumlah']} x Rp ${formatRupiah(double.tryParse(item['harga']?.toString() ?? '0') ?? 0)}",
+                                    ),
+                                  ],
+                                ),
                                 trailing: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 4, horizontal: 8),
+                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                   decoration: BoxDecoration(
                                     color: statusColor.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
-                                    "Rp ${formatRupiah(double.tryParse(item['total']) ?? 0)}",
+                                    "Rp ${formatRupiah(double.tryParse(item['total']?.toString() ?? '0') ?? 0)}",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: statusColor,
                                     ),
                                   ),
                                 ),
+                                onTap: () {
+                                  final barangId = item['barang_id']?.toString() ?? '';
+                                  Map<String, dynamic>? productDetail;
+
+                                  for (var produk in allProduk) {
+                                    final kontaks = produk['kontaks'] as List;
+                                    for (var kontak in kontaks) {
+                                      final barangKontak = kontak['barang_kontak'];
+                                      if (barangKontak != null &&
+                                          barangKontak['barang_id']?.toString() == barangId) {
+                                        productDetail = produk;
+                                        break;
+                                      }
+                                    }
+                                    if (productDetail != null) break;
+                                  }
+
+                                  if (productDetail != null) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => ProductDetailPage(product: productDetail!),
+                                      ),
+                                    );
+                                  } else {
+                                    print("Produk detail tidak ditemukan");
+                                  }
+                                },
                               ),
                             );
                           },
@@ -190,11 +222,9 @@ Future<void> fetchBarang() async {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text("Total Semua",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                         Text("Rp ${formatRupiah(getTotalSemuaBarang())}",
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -225,22 +255,19 @@ Future<void> fetchBarang() async {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(invoiceNumber,
-              style: const TextStyle(fontSize: 16, color: Colors.white70)),
+          Text(invoiceNumber, style: const TextStyle(fontSize: 16, color: Colors.white70)),
           const SizedBox(height: 16),
           Text(contactName,
-              style: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold)),
+              style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
           const SizedBox(height: 2),
-          Text(address,
-              style: const TextStyle(fontSize: 13, color: Colors.white)),
+          Text(address, style: const TextStyle(fontSize: 13, color: Colors.white)),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
             decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(30)),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+            ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -248,13 +275,12 @@ Future<void> fetchBarang() async {
                   width: 25,
                   height: 25,
                   decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.6),
-                      shape: BoxShape.circle),
+                    color: statusColor.withOpacity(0.6),
+                    shape: BoxShape.circle,
+                  ),
                 ),
                 const SizedBox(width: 8),
-                Text(status,
-                    style: const TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.w500)),
+                Text(status, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
               ],
             ),
           ),
@@ -264,8 +290,7 @@ Future<void> fetchBarang() async {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.calendar_today,
-                      size: 16, color: Colors.white),
+                  const Icon(Icons.calendar_today, size: 16, color: Colors.white),
                   const SizedBox(width: 6),
                   Text(date, style: const TextStyle(color: Colors.white)),
                 ],
