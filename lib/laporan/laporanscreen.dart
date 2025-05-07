@@ -3,6 +3,7 @@ import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/inventori/ringkasaninventori.dart';
 import 'package:flutter_application_kledo/inventori/ringkasanstokgudang.dart';
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
+import 'package:flutter_application_kledo/laporan/bukubesar.dart';
 import 'package:flutter_application_kledo/laporan/detailpenjualan.dart';
 import 'package:flutter_application_kledo/laporan/hutangpiutangperkontak.dart';
 import 'package:flutter_application_kledo/laporan/labarugi.dart';
@@ -268,13 +269,19 @@ class LaporanPage extends StatelessWidget {
                                       builder: (context) => const PajakPenjualanPage(),
                                     )
                                   );
-                                }
-                                else if(laporan == "Ringkasan Bank"){
+                                } else if(laporan == "Ringkasan Bank"){
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => const RingkasanBank(),
-                                      )
+                                    )
+                                  );
+                                } else if(laporan == "Buku Besar"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => BukuBesarScreen(),
+                                    )
                                   );
                                 }
                               },
