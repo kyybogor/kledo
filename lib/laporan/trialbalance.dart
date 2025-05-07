@@ -142,8 +142,11 @@ class _TrialBalancePageState extends State<TrialBalancePage> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
-                const Divider(),
-                
+                const Divider(
+                  height: 1,
+                  color: Colors.white,
+                ),
+
                 Container(
                   width: double.infinity,
                   color: Colors.grey[300],
@@ -268,11 +271,20 @@ class AccountDetailPage extends StatelessWidget {
       appBar: AppBar(
         leading: const BackButton(),
         title: null,
-        flexibleSpace: Align(
-          alignment: Alignment.center,
-          child: Text(
-            account['name'],
-            style: const TextStyle(fontSize: 20),
+        flexibleSpace: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 48), // Supaya tak bertabrakan dengan back button
+              child: Text(
+                account['name'],
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 20),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+              ),
+            ),
           ),
         ),
       ),
