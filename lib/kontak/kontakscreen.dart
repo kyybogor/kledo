@@ -60,7 +60,7 @@ class _KontakScreenState extends State<KontakScreen> {
             child: TextField(
               decoration: InputDecoration(
                 hintText: "Cari nama...",
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
@@ -72,10 +72,10 @@ class _KontakScreenState extends State<KontakScreen> {
               children: grouped.entries.expand((entry) {
                 return [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     color: Colors.grey[300],
                     child: Text(entry.key,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   ...entry.value.map((item) => Column(
                         children: [
@@ -89,12 +89,12 @@ class _KontakScreenState extends State<KontakScreen> {
                                     .toString()
                                     .substring(0, 2)
                                     .toUpperCase(),
-                                style: TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ),
                             title: Text(item['nama']),
                             subtitle: Text(item['instansi']),
-                            trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -105,7 +105,7 @@ class _KontakScreenState extends State<KontakScreen> {
                               );
                             },
                           ),
-                          Divider(height: 1),
+                          const Divider(height: 1),
                         ],
                       )),
                 ];
@@ -115,9 +115,7 @@ class _KontakScreenState extends State<KontakScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Tambah kontak nanti
-        },
+        onPressed: () {},
         child: const Icon(Icons.add),
       ),
     );
@@ -126,13 +124,37 @@ class _KontakScreenState extends State<KontakScreen> {
 
 class DetailKontak extends StatelessWidget {
   final dynamic data;
+
   const DetailKontak({super.key, required this.data});
 
-  Future<List<dynamic>> fetchTransaksiTerakhir(int id) async {
-    final response = await http.get(Uri.parse(
-        'http://192.168.1.9/connect/JSON/transaksi_kontak.php?id=$id'));
+  Future<List<dynamic>> fetchProduct(int id) async {
+    final response =
+        await http.get(Uri.parse('http://192.168.1.23/Hiyami/tessss.php'));
+
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      final jsonBody = json.decode(response.body);
+      final List<dynamic> produkList = jsonBody['data'] ?? [];
+
+      // Ambil semua transaksi dari 'kontaks' berdasarkan kontak_id
+      List<Map<String, dynamic>> hasil = [];
+
+      for (var produk in produkList) {
+        List<dynamic> kontaks = produk['kontaks'] ?? [];
+
+        for (var kontak in kontaks) {
+          if (int.tryParse(kontak['kontak_id'].toString()) == id) {
+            hasil.add({
+              'deskripsi': kontak['barang_kontak']?['nama_barang'] ??
+                  produk['produk_name'],
+              'tanggal': kontak['kontak_date'],
+              'jumlah': kontak['kontak_amount'],
+              'detail': kontak,
+            });
+          }
+        }
+      }
+
+      return hasil;
     } else {
       throw Exception('Gagal mengambil transaksi');
     }
@@ -151,11 +173,10 @@ class DetailKontak extends StatelessWidget {
         title: const Text(
           "Kontak",
           style: TextStyle(
-            color: Color(0xFF0D47A1), // Biru tua terang
+            color: Color(0xFF0D47A1),
           ),
         ),
-        iconTheme:
-            const IconThemeData(color: Color(0xFF0D47A1)), // Jika ada ikon back
+        iconTheme: const IconThemeData(color: Color(0xFF0D47A1)),
       ),
       body: Column(
         children: [
@@ -170,7 +191,7 @@ class DetailKontak extends StatelessWidget {
                     child: _buildInfoCard(context),
                   ),
                   FutureBuilder<List<dynamic>>(
-                    future: fetchTransaksiTerakhir(kontakId),
+                    future: fetchProduct(kontakId),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
@@ -190,13 +211,13 @@ class DetailKontak extends StatelessWidget {
                               width: double.infinity,
                               color: Colors.grey[300],
                               padding: const EdgeInsets.symmetric(vertical: 12),
-                              child: Padding(
+                              child: const Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
+                                    EdgeInsets.symmetric(horizontal: 16),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  children: const [
+                                  children: [
                                     Text("Transaksi Terakhir",
                                         style: TextStyle(fontSize: 14)),
                                     Text(
@@ -213,12 +234,25 @@ class DetailKontak extends StatelessWidget {
                                 children: [
                                   InkWell(
                                     onTap: () {
+                                      final detail = transaksi['detail'];
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               Detailbelumdibayar(
-                                                  invoice: transaksi),
+                                            invoice: {
+                                              'id': detail['kontak_id'],
+                                              'name': detail['kontak_name'],
+                                              'invoice': detail['kontak_code'],
+                                              'date': detail['kontak_date'],
+                                              'due': detail['kontak_due'],
+                                              'alamat': data['alamat'] ??
+                                                  '-',
+                                              'status': data['status_transaksi'] ??
+                                                  'Belum Dibayar',
+                                            },
+                                          ),
                                         ),
                                       );
                                     },
@@ -353,9 +387,9 @@ class DetailKontak extends StatelessWidget {
                   bottom: Radius.circular(12),
                 ),
               ),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
                     "Lihat Detail",
                     style: TextStyle(color: Colors.grey),
@@ -401,7 +435,7 @@ class DetailKontak extends StatelessWidget {
                       BoxShadow(
                           color: Colors.blue.withOpacity(0.4),
                           blurRadius: 6,
-                          offset: Offset(0, 3))
+                          offset: const Offset(0, 3))
                     ]
                   : [],
             ),

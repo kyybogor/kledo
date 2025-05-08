@@ -4,21 +4,23 @@ import 'package:flutter_application_kledo/inventori/ringkasaninventori.dart';
 import 'package:flutter_application_kledo/inventori/ringkasanstokgudang.dart';
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
 import 'package:flutter_application_kledo/laporan/bukubesar.dart';
-import 'package:flutter_application_kledo/laporan/detailpenjualan.dart';
+import 'package:flutter_application_kledo/laporan/penjualan/detailpenjualan.dart';
 import 'package:flutter_application_kledo/laporan/hutangpiutangperkontak.dart';
 import 'package:flutter_application_kledo/laporan/labarugi.dart';
 import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
-import 'package:flutter_application_kledo/laporan/pelunasanpembayarantagihan.dart';
-import 'package:flutter_application_kledo/laporan/penjualanperproduk.dart';
+import 'package:flutter_application_kledo/laporan/penjualan/pelunasanpembayarantagihan.dart';
+import 'package:flutter_application_kledo/laporan/penjualan/pendapatanperpelanggan.dart';
+import 'package:flutter_application_kledo/laporan/penjualan/penjualanperproduk.dart';
 import 'package:flutter_application_kledo/laporan/perubahanmodal.dart';
-import 'package:flutter_application_kledo/laporan/profitabilitas.dart';
+import 'package:flutter_application_kledo/laporan/penjualan/profitabilitas.dart';
 import 'package:flutter_application_kledo/laporan/ringkasan_bank.dart';
 import 'package:flutter_application_kledo/laporan/ringkasaneksekutif.dart';
-import 'package:flutter_application_kledo/laporan/tagihanpelanggan.dart';
+import 'package:flutter_application_kledo/laporan/penjualan/tagihanpelanggan.dart';
 import 'package:flutter_application_kledo/laporan/trialbalance.dart';
 import 'package:flutter_application_kledo/laporanAssetTetap/detailLaporanAset.dart';
 import 'package:flutter_application_kledo/laporanAssetTetap/pelepasanaset.dart';
 import 'package:flutter_application_kledo/laporanAssetTetap/ringkasanasset.dart';
+import 'package:flutter_application_kledo/pajak/pajakpemotongan.dart';
 import 'package:flutter_application_kledo/pajak/pajakpenjualan.dart';
 
 class LaporanPage extends StatelessWidget {
@@ -70,7 +72,7 @@ class LaporanPage extends StatelessWidget {
     ],
     "Pajak": [
       "Pajak Penjualan",
-      "Pajaka Pemotongan",
+      "Pajak Pemotongan",
     ],
     "Inventori": [
       "Ringkasan Inventori",
@@ -281,6 +283,20 @@ class LaporanPage extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => BukuBesarScreen(),
+                                    )
+                                  );
+                                } else if(laporan == "Pajak Pemotongan"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const PajakPemotonganPage(),
+                                    )
+                                  );
+                                } else if(laporan == "Pendapatan per Pelanggan"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const PendapatanPerpelangganPage(),
                                     )
                                   );
                                 }

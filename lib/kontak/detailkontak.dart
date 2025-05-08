@@ -110,14 +110,14 @@ class Detailkontak extends StatelessWidget {
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, // Buat teks rata kiri
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             data['nama'],
             textAlign: TextAlign.left,
             style: const TextStyle(
               fontSize: 20,
-              color: Color(0xFF0D47A1), // Biru tua terang
+              color: Color(0xFF0D47A1),
             ),
           ),
           const SizedBox(height: 4),
