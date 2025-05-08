@@ -10,7 +10,10 @@ class Detailkontak extends StatelessWidget {
     String status = data['status'] ?? 'pegawai';
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Kontak")),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text("Kontak")
+        ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,21 +104,33 @@ class Detailkontak extends StatelessWidget {
   }
 
   Widget _headerCard(Map data) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Text(
-              data['nama'],
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  return Card(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 3,
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, // Buat teks rata kiri
+        children: [
+          Text(
+            data['nama'],
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Color(0xFF0D47A1), // Biru tua terang
             ),
-            const SizedBox(height: 4),
-            Text(data['instansi'], style: const TextStyle(color: Colors.grey)),
-            const SizedBox(height: 16),
-            CircleAvatar(
+          ),
+          const SizedBox(height: 4),
+          Text(
+            data['instansi'],
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Center( // Tetap pusatkan avatar
+            child: CircleAvatar(
               radius: 30,
               backgroundColor: Colors.grey.shade400,
               child: Text(
@@ -123,15 +138,17 @@ class Detailkontak extends StatelessWidget {
                 style: const TextStyle(fontSize: 24, color: Colors.white),
               ),
             ),
-            const SizedBox(height: 16),
-            _infoRow(Icons.email, data['email']),
-            _infoRow(Icons.phone, data['telepon']),
-            _infoRow(Icons.location_on, data['alamat']),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+          _infoRow(Icons.email, data['email']),
+          _infoRow(Icons.phone, data['telepon']),
+          _infoRow(Icons.location_on, data['alamat']),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _infoRow(IconData icon, String text) {
     return Padding(

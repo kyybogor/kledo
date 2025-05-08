@@ -36,7 +36,7 @@ class _HutangpiutangperkontakState extends State<Hutangpiutangperkontak> {
     if (amount < 0) {
       return Colors.redAccent;
     } else {
-      return Colors.green;
+      return const Color.fromARGB(255, 102, 220, 165);
     }
   }
 
@@ -76,14 +76,22 @@ class _HutangpiutangperkontakState extends State<Hutangpiutangperkontak> {
           Expanded(
             child: ListView.separated(
               itemCount: filtered.length,
-              separatorBuilder: (context, index) =>
-                  const Divider(height: 1, color: Colors.grey),
+              separatorBuilder: (context, index) => const Divider(
+                height: 0.1, // tetap bisa dipakai untuk jarak
+                thickness: 0.2, // ini yang mengatur ketebalan garis
+                color: Colors.grey,
+              ),
               itemBuilder: (context, index) {
                 final item = filtered[index];
                 final amount = num.tryParse(item['amount'].toString()) ?? 0;
 
                 return ListTile(
-                  title: Text(item['nama']),
+                  title: Text(
+                    item['nama'],
+                    style: const TextStyle(
+                      fontSize: 14, // atau 13 jika ingin lebih kecil lagi
+                    ),
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -91,13 +99,13 @@ class _HutangpiutangperkontakState extends State<Hutangpiutangperkontak> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: getAmountColor(amount).withOpacity(0.2),
+                          color: getAmountColor(amount),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
                           formatRupiah(amount),
-                          style: TextStyle(
-                            color: getAmountColor(amount),
+                          style: const TextStyle(
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -110,32 +118,13 @@ class _HutangpiutangperkontakState extends State<Hutangpiutangperkontak> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => DetailKontak(data: item)
+                        builder: (context) => DetailKontak(data: item),
                       ),
                     );
                   },
                 );
               },
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            mini: true,
-            onPressed: () {
-              // Fungsi share
-            },
-            child: const Icon(Icons.share),
-          ),
-          const SizedBox(height: 10),
-          FloatingActionButton(
-            onPressed: () {
-              // Fungsi download
-            },
-            child: const Icon(Icons.download),
           ),
         ],
       ),

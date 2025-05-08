@@ -128,7 +128,7 @@ class DetailBukuBesar extends StatelessWidget {
         children: [
           buildRow("Debit", debit),
           buildRow("Kredit", kredit),
-          Divider(height: 0.5, thickness: 0.5, color: Colors.grey[300]), // bawah
+          Divider(height: 0.5, thickness: 0.5, color: Colors.grey[300]),
         ],
       ),
     );

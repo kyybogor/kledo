@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:flutter_application_kledo/kontak/detailkontak.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -143,7 +144,19 @@ class DetailKontak extends StatelessWidget {
     int kontakId = int.tryParse(data['id'].toString()) ?? 0;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Kontak")),
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          "Kontak",
+          style: TextStyle(
+            color: Color(0xFF0D47A1), // Biru tua terang
+          ),
+        ),
+        iconTheme:
+            const IconThemeData(color: Color(0xFF0D47A1)), // Jika ada ikon back
+      ),
       body: Column(
         children: [
           _buildStatusTabs(status),
@@ -198,45 +211,59 @@ class DetailKontak extends StatelessWidget {
                             ...snapshot.data!.map((transaksi) {
                               return Column(
                                 children: [
-                                  Container(
-                                    color: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 16),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                transaksi['deskripsi'],
-                                                style: const TextStyle(
-                                                    fontSize: 13),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                transaksi['tanggal'],
-                                                style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              Detailbelumdibayar(
+                                                  invoice: transaksi),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      color: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Row(
+                                        children: [
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  transaksi['deskripsi'] ??
+                                                      'Tanpa deskripsi',
+                                                  style: const TextStyle(
+                                                      fontSize: 13),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  transaksi['tanggal'] ?? '-',
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          double.tryParse(transaksi['jumlah']
-                                                      .toString())
-                                                  ?.toStringAsFixed(2) ??
-                                              transaksi['jumlah'].toString(),
-                                          style: const TextStyle(fontSize: 13),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        const Icon(Icons.arrow_forward_ios,
-                                            size: 14, color: Colors.grey),
-                                        const SizedBox(width: 12),
-                                      ],
+                                          Text(
+                                            double.tryParse(transaksi['jumlah']
+                                                        .toString())
+                                                    ?.toStringAsFixed(2) ??
+                                                transaksi['jumlah'].toString(),
+                                            style:
+                                                const TextStyle(fontSize: 13),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          const Icon(Icons.arrow_forward_ios,
+                                              size: 14, color: Colors.grey),
+                                          const SizedBox(width: 12),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   const Divider(
@@ -270,20 +297,35 @@ class DetailKontak extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start, // 👈 Untuk rata kiri
               children: [
-                Text(data['nama'],
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(
+                  data['nama'],
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Color(0xFF005BBB),
+                  ),
+                  textAlign: TextAlign.left,
+                ),
                 const SizedBox(height: 4),
-                Text(data['instansi'],
-                    style: const TextStyle(color: Colors.grey)),
+                Text(
+                  data['instansi'],
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
                 const SizedBox(height: 16),
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey.shade400,
-                  child: Text(data['nama'][0].toUpperCase(),
-                      style:
-                          const TextStyle(fontSize: 24, color: Colors.white)),
+                Center(
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.grey.shade400,
+                    child: Text(
+                      data['nama'][0].toUpperCase(),
+                      style: const TextStyle(fontSize: 24, color: Colors.white),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 _infoRow(Icons.email, data['email']),
