@@ -4,6 +4,7 @@ import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
 import 'package:flutter_application_kledo/kontak/detailkontak.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class KontakScreen extends StatefulWidget {
   const KontakScreen({super.key});
@@ -72,7 +73,8 @@ class _KontakScreenState extends State<KontakScreen> {
               children: grouped.entries.expand((entry) {
                 return [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     color: Colors.grey[300],
                     child: Text(entry.key,
                         style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -94,7 +96,8 @@ class _KontakScreenState extends State<KontakScreen> {
                             ),
                             title: Text(item['nama']),
                             subtitle: Text(item['instansi']),
-                            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                            trailing:
+                                const Icon(Icons.arrow_forward_ios, size: 16),
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -138,21 +141,33 @@ class DetailKontak extends StatelessWidget {
       // Ambil semua transaksi dari 'kontaks' berdasarkan kontak_id
       List<Map<String, dynamic>> hasil = [];
 
-      for (var produk in produkList) {
-        List<dynamic> kontaks = produk['kontaks'] ?? [];
 
-        for (var kontak in kontaks) {
-          if (int.tryParse(kontak['kontak_id'].toString()) == id) {
-            hasil.add({
-              'deskripsi': kontak['barang_kontak']?['nama_barang'] ??
-                  produk['produk_name'],
-              'tanggal': kontak['kontak_date'],
-              'jumlah': kontak['kontak_amount'],
-              'detail': kontak,
-            });
-          }
-        }
+final formatter = NumberFormat('#,###.00', 'id_ID'); // 2 angka desimal + titik ribuan
+
+for (var produk in produkList) {
+  List<dynamic> kontaks = produk['kontaks'] ?? [];
+
+  for (var kontak in kontaks) {
+    if (int.tryParse(kontak['kontak_id'].toString()) == id) {
+      var rawTotal = kontak['barang_kontak']?['total'];
+
+      double parsedTotal = 0.0;
+      if (rawTotal != null) {
+        String cleaned = rawTotal.toString().replaceAll(',', '.'); // ubah koma ke titik jika perlu
+        parsedTotal = double.tryParse(cleaned) ?? 0.0;
       }
+
+      var formattedTotal = formatter.format(parsedTotal);
+
+      hasil.add({
+        'deskripsi': kontak['barang_kontak']?['nama_barang'] ?? produk['produk_name'],
+        'tanggal': kontak['kontak_date'],
+        'jumlah': formattedTotal,
+        'detail': kontak,
+      });
+    }
+  }
+}
 
       return hasil;
     } else {
@@ -212,8 +227,7 @@ class DetailKontak extends StatelessWidget {
                               color: Colors.grey[300],
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               child: const Padding(
-                                padding:
-                                    EdgeInsets.symmetric(horizontal: 16),
+                                padding: EdgeInsets.symmetric(horizontal: 16),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -247,10 +261,10 @@ class DetailKontak extends StatelessWidget {
                                               'invoice': detail['kontak_code'],
                                               'date': detail['kontak_date'],
                                               'due': detail['kontak_due'],
-                                              'alamat': data['alamat'] ??
-                                                  '-',
-                                              'status': data['status_transaksi'] ??
-                                                  'Belum Dibayar',
+                                              'alamat': data['alamat'] ?? '-',
+                                              'status':
+                                                  data['status_transaksi'] ??
+                                                      'Belum Dibayar',
                                             },
                                           ),
                                         ),

@@ -4,6 +4,7 @@ import 'package:flutter_application_kledo/inventori/ringkasaninventori.dart';
 import 'package:flutter_application_kledo/inventori/ringkasanstokgudang.dart';
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
 import 'package:flutter_application_kledo/laporan/bukubesar.dart';
+import 'package:flutter_application_kledo/laporan/jurnal.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/detailpenjualan.dart';
 import 'package:flutter_application_kledo/laporan/hutangpiutangperkontak.dart';
 import 'package:flutter_application_kledo/laporan/labarugi.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/pelunasanpembayarantagihan.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/pendapatanperpelanggan.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/penjualanperproduk.dart';
+import 'package:flutter_application_kledo/laporan/penjualan/penjualanprodukperpelanggan.dart';
 import 'package:flutter_application_kledo/laporan/perubahanmodal.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/profitabilitas.dart';
 import 'package:flutter_application_kledo/laporan/ringkasan_bank.dart';
@@ -297,6 +299,20 @@ class LaporanPage extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => const PendapatanPerpelangganPage(),
+                                    )
+                                  );
+                                } else if(laporan == "Jurnal"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const JurnalListPage(),
+                                    )
+                                  );
+                                } else if(laporan == "Penjualan Produk per Pelanggan"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const SalesListPage(),
                                     )
                                   );
                                 }
