@@ -3,6 +3,7 @@ import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/inventori/ringkasaninventori.dart';
 import 'package:flutter_application_kledo/inventori/ringkasanstokgudang.dart';
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
+import 'package:flutter_application_kledo/laporan/biayaperkontak.dart';
 import 'package:flutter_application_kledo/laporan/bukubesar.dart';
 import 'package:flutter_application_kledo/laporan/jurnal.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/detailpenjualan.dart';
@@ -313,6 +314,13 @@ class LaporanPage extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => const SalesListPage(),
+                                    )
+                                  );
+                                } else if(laporan == "Biaya per Kontak"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Biayaperkontak(),
                                     )
                                   );
                                 }
