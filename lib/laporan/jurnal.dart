@@ -253,7 +253,7 @@ class JurnalDetailPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${item.akunPiutang ?? "Tidak Diketahui"},',
+                                  '${item.akunPiutang ?? "Belum Ada Akun Piutang"}',
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15),

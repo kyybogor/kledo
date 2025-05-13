@@ -11,8 +11,11 @@ import 'package:flutter_application_kledo/laporan/labarugi.dart';
 import 'package:flutter_application_kledo/laporan/neracalaporanscreen.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/pelunasanpembayarantagihan.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/pendapatanperpelanggan.dart';
+import 'package:flutter_application_kledo/laporan/penjualan/penjualanperkategori.dart';
+import 'package:flutter_application_kledo/laporan/penjualan/penjualanperperiode.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/penjualanperproduk.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/penjualanprodukperpelanggan.dart';
+import 'package:flutter_application_kledo/laporan/penjualan/umurpiutang.dart';
 import 'package:flutter_application_kledo/laporan/perubahanmodal.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/profitabilitas.dart';
 import 'package:flutter_application_kledo/laporan/ringkasan_bank.dart';
@@ -313,6 +316,27 @@ class LaporanPage extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => const SalesListPage(),
+                                    )
+                                  );
+                                } else if(laporan == "Penjualan per Kategori Produk"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const PenjualanPerKategoriPage(),
+                                    )
+                                  );
+                                } else if(laporan == "Penjualan per Periode"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const PenjualanPerPeriodePage(),
+                                    )
+                                  );
+                                } else if(laporan == "Umur Piutang"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const UmurPiutangPage(),
                                     )
                                   );
                                 }

@@ -182,10 +182,10 @@ class ProductDetailPage extends StatelessWidget {
                         Text(product['produk_name']!)
                       ]),
                       const SizedBox(height: 4),
-                      const Row(children: [
-                        Icon(Icons.category),
-                        SizedBox(width: 8),
-                        Text('Kategori: Shoes')
+                      Row(children: [
+                        const Icon(Icons.category),
+                        const SizedBox(width: 8),
+                        Text('Kategori: ' +product['kategori']!)
                       ]),
                       const SizedBox(height: 4),
                       const Row(children: [
