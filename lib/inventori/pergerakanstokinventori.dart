@@ -1,105 +1,182 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class InventoryMovementPage extends StatelessWidget {
-  final List<Map<String, String>> items = [
-    {'name': 'Chelsea Boots', 'code': 'CB1'},
-    {'name': 'Kneel High Boots', 'code': 'KH1'},
-  ];
+class InventoryMovementPage extends StatefulWidget {
+  const InventoryMovementPage({super.key});
+
+  @override
+  _InventoryMovementPageState createState() => _InventoryMovementPageState();
+}
+
+class _InventoryMovementPageState extends State<InventoryMovementPage> {
+  List<dynamic> products = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchInventory();
+  }
+
+  Future<void> fetchInventory() async {
+    final url = Uri.parse('http://192.168.1.23/Hiyami/tessss.php');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        setState(() {
+          products = jsonData['data'];
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Gagal memuat data');
+      }
+    } catch (e) {
+      print(e);
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pergerakan Stok Inventori'),
-        leading: BackButton(),
+        title: const Text('Pergerakan Stok Inventori'),
+        centerTitle: true,
+        leading: const BackButton(),
         actions: [
           IconButton(
-            icon: Icon(Icons.filter_alt_outlined),
+            icon: const Icon(Icons.filter_alt_outlined),
             onPressed: () {},
           )
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: items.length,
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: products.length + 1,
               itemBuilder: (context, index) {
-                var item = items[index];
-                return ListTile(
-                  title: Text(item['name']!),
-                  subtitle: Text(item['code']!),
-                  trailing: CircleAvatar(
-                    backgroundColor: Colors.amber,
-                    child: Text('0'),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => InventoryDetailPage(
-                          name: item['name']!,
-                          code: item['code']!,
+                if (index < products.length) {
+                  final item = products[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(item['produk_name']),
+                        subtitle: Text(item['produk_code']),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.amber,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                item['stok'].toString(),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            const Icon(Icons.arrow_forward_ios,
+                                size: 12, color: Colors.grey),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => InventoryDetailPage(item: item),
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(height: 1),
+                    ],
+                  );
+                } else {
+                  // Bagian Total
+                  return Column(
+                    children: [
+                      const Divider(height: 1),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Total',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              products
+                                  .fold<int>(
+                                      0,
+                                      (sum, item) =>
+                                          sum + int.parse(item['stok']))
+                                  .toString(),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-          const Divider(),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Total', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text('0'),
-              ],
-            ),
-          ),
-        ],
-      ),
+                    ],
+                  );
+                }
+              }),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.download),
-        onPressed: () {},
+        onPressed: fetchInventory,
+        child: const Icon(Icons.download),
       ),
     );
   }
 }
 
 class InventoryDetailPage extends StatelessWidget {
-  final String name;
-  final String code;
+  final Map<String, dynamic> item;
 
-  const InventoryDetailPage({required this.name, required this.code});
+  const InventoryDetailPage({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> details = [
-      {'label': 'Kode', 'value': code},
-      {'label': 'Kuantitas Awal', 'value': '0'},
-      {'label': 'Pergerakan Kuantitas', 'value': '0'},
-      {'label': 'Kuantitas Akhir', 'value': '0'},
-      {'label': 'Nilai Awal', 'value': '0'},
-      {'label': 'Pergerakan Nilai', 'value': '0'},
-      {'label': 'Nilai Akhir', 'value': '0'},
+    final details = [
+      {'label': 'Kode', 'value': item['produk_code']},
+      {'label': 'Stok', 'value': item['stok'].toString()},
+      {'label': 'Penjualan', 'value': item['penjualan'].toString()},
+      {'label': 'HPP', 'value': item['hpp']},
+      {'label': 'Harga Jual', 'value': item['harga_jual']},
+      {'label': 'Nominal Stok', 'value': item['nominal_stok']},
+      {'label': 'Nominal Penjualan', 'value': item['nominal_penjualan']},
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
-        leading: BackButton(),
+        title: Text(item['produk_name']),
+        centerTitle: true,
+        leading: const BackButton(),
       ),
       body: ListView(
         children: [
-          ...details.map((item) {
-            return ListTile(
-              title: Text(item['label']!),
-              trailing: Text(item['value']!),
-            );
-          }).toList(),
+          ...details.map((e) => Column(
+                children: [
+                  ListTile(
+                    title: Text(e['label']!),
+                    trailing: Text(e['value']!),
+                  ),
+                  const Divider(height: 5),
+                ],
+              )),
+          const SizedBox(
+            height: 20,
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -108,8 +185,17 @@ class InventoryDetailPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey[200],
                       foregroundColor: Colors.black),
-                  onPressed: () {},
-                  child: Row(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => StockMovementDetailPage(
+                            kontaks: item['kontaks'] ?? [],
+                            name: item['produk_name']),
+                      ),
+                    );
+                  },
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Lihat detail pergerakan"),
@@ -117,25 +203,60 @@ class InventoryDetailPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 8),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[200],
-                      foregroundColor: Colors.black),
-                  onPressed: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Buka Inventori"),
-                      Icon(Icons.keyboard_arrow_down),
-                    ],
-                  ),
-                ),
               ],
             ),
-          )
+          ),
         ],
       ),
+    );
+  }
+}
+
+class StockMovementDetailPage extends StatelessWidget {
+  final List<dynamic> kontaks;
+  final String name;
+
+  const StockMovementDetailPage(
+      {super.key, required this.kontaks, required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("$name"),
+        centerTitle: true,
+        leading: const BackButton(),
+      ),
+      body: kontaks.isEmpty
+          ? const Center(child: Text('Tidak ada transaksi.'))
+          : ListView.builder(
+              itemCount: kontaks.length,
+              itemBuilder: (context, index) {
+                final k = kontaks[index];
+                final qty = int.parse(k['barang_kontak']['jumlah']);
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Text('${k['kontak_name']} (${k['kontak_code']})'),
+                      subtitle: Text(k['kontak_date']),
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: qty < 0 ? Colors.red[200] : Colors.green[300],
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          qty.abs().toString(),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 1), 
+                  ],
+                );
+              },
+            ),
     );
   }
 }

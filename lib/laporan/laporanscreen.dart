@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:flutter_application_kledo/inventori/pergerakanstokgudang.dart';
+import 'package:flutter_application_kledo/inventori/pergerakanstokinventori.dart';
 import 'package:flutter_application_kledo/inventori/ringkasaninventori.dart';
 import 'package:flutter_application_kledo/inventori/ringkasanstokgudang.dart';
 import 'package:flutter_application_kledo/laporan/aruskasscreen.dart';
+import 'package:flutter_application_kledo/laporan/biayaperkontak.dart';
 import 'package:flutter_application_kledo/laporan/bukubesar.dart';
 import 'package:flutter_application_kledo/laporan/jurnal.dart';
 import 'package:flutter_application_kledo/laporan/penjualan/detailpenjualan.dart';
@@ -337,6 +340,27 @@ class LaporanPage extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => const UmurPiutangPage(),
+                                    )
+                                  );
+                                } else if(laporan == "Biaya per Kontak"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Biayaperkontak(),
+                                    )
+                                  );
+                                } else if(laporan == "Pergerakan Stok Inventori"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const InventoryMovementPage(),
+                                    )
+                                  );
+                                } else if(laporan == "Pergerakan Stok Gudang"){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const StockMovementPage(),
                                     )
                                   );
                                 }
