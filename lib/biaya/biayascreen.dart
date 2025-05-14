@@ -18,6 +18,7 @@ class BiayaPage extends StatefulWidget {
 }
 
 class _BiayaPageState extends State<BiayaPage> {
+  List<dynamic> data = [];
   bool _showChart = true;
   bool isLoading = true;
 
@@ -45,6 +46,13 @@ class _BiayaPageState extends State<BiayaPage> {
     'Transaksi Berulang': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=5',
   };
 
+final Map<String, Color> infoCardColors = {
+  'Bulan Ini': Colors.amber,
+  '30 Hari Lalu': Colors.pink,
+  'Belum Dibayar': Colors.orange,
+  'Jatuh Tempo': Colors.green,
+};
+
   final Map<String, Widget> kategoriPages = {
     'Belum Dibayar': const BelumDibayarBiaya(),
     'Dibayar Sebagian': const DibayarSebagianBiaya(),
@@ -52,11 +60,26 @@ class _BiayaPageState extends State<BiayaPage> {
     'Jatuh Tempo': const JatuhTempoBiaya(),
     'Transaksi Berulang': const TransaksiBerulangBiaya(),
   };
+  
 
   @override
   void initState() {
     super.initState();
     fetchBiayaCounts();
+    fetchData();
+  }
+
+Future<void> fetchData() async {
+    final response = await http.get(Uri.parse('http://192.168.1.23/Hiyami/infocard.php'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        data = json.decode(response.body);
+      });
+    } else {
+      // Handle error
+      print('Failed to load data');
+    }
   }
 
   Future<void> fetchBiayaCounts() async {
@@ -126,18 +149,21 @@ class _BiayaPageState extends State<BiayaPage> {
           const SizedBox(height: 12),
 
           // Info Cards - Horizontal Scroll
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            child: Row(
-              children: [
-                _buildInfoCard('Bulan Ini', '16.042.100', Colors.amber, '18'),
-                _buildInfoCard('30 Hari Lalu', '23.353.200', Colors.pink, '27'),
-                _buildInfoCard('Belum Dibayar', '11.200.000', Colors.orange, '15'),
-                _buildInfoCard('Jatuh Tempo', '11.200.000', Colors.green, '15'),
-              ],
-            ),
-          ),
+SingleChildScrollView(
+  scrollDirection: Axis.horizontal,
+  physics: const BouncingScrollPhysics(),
+  child: Row(
+    children: data.map<Widget>((item) {
+      final String title = item['keterangan'];
+      final String amount = item['jumlah'];
+      final String percent = item['persentase'];
+      final Color color = infoCardColors[title] ?? Colors.grey;
+
+      return _buildInfoCard(title, amount, color, percent);
+    }).toList(),
+  ),
+),
+
           const SizedBox(height: 16),
 
           InkWell(
