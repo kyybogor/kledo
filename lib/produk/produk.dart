@@ -16,6 +16,9 @@ class ProdukPage extends StatefulWidget {
 class _ProdukPageState extends State<ProdukPage> {
   bool _showChart = true;
   List<Map<String, dynamic>> _produkList = [];
+  int totalProduk = 0;
+  int produkHampirHabis = 0;
+  int produkHabis = 0;
 
   @override
   void initState() {
@@ -23,7 +26,6 @@ class _ProdukPageState extends State<ProdukPage> {
     _fetchProduk();
   }
 
-  // Fungsi untuk format Rupiah
   String formatRupiah(dynamic amount) {
     try {
       final value = double.tryParse(amount.toString()) ?? 0;
@@ -37,29 +39,52 @@ class _ProdukPageState extends State<ProdukPage> {
     }
   }
 
-Future<void> _fetchProduk() async {
-  final url = Uri.parse('http://192.168.1.23/hiyami/tessss.php');
+  Future<void> _fetchProduk() async {
+    final url = Uri.parse('http://192.168.1.23/hiyami/tessss.php');
 
-  try {
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      if (jsonResponse['status'] == 'success') {
-        final List<dynamic> data = jsonResponse['data'];
-        setState(() {
-          _produkList = data.map((e) => Map<String, dynamic>.from(e)).toList();
-        });
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        if (jsonResponse['status'] == 'success') {
+          final List<dynamic> data = jsonResponse['data'];
+          setState(() {
+            _produkList = data.map((e) => Map<String, dynamic>.from(e)).toList();
+            _calculateProduk();
+          });
+        } else {
+          print('Status not success');
+        }
       } else {
-        print('Status not success');
+        print('Failed to load produk');
       }
-    } else {
-      print('Failed to load produk');
+    } catch (e) {
+      print('Error: $e');
     }
-  } catch (e) {
-    print('Error: $e');
   }
-}
 
+  void _calculateProduk() {
+    int total = 0;
+    int hampirHabis = 0;
+    int habis = 0;
+
+    for (var produk in _produkList) {
+      int stok = int.tryParse(produk['stok'].toString()) ?? 0;
+      total++;
+
+      if (stok == 0) {
+        habis++;
+      } else if (stok < 10) {
+        hampirHabis++;
+      }
+    }
+
+    setState(() {
+      totalProduk = total;
+      produkHampirHabis = hampirHabis;
+      produkHabis = habis;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,15 +129,16 @@ Future<void> _fetchProduk() async {
           ),
           const SizedBox(height: 12),
 
+          // Status Cards
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             child: Row(
               children: [
-                _buildStatusCard('Produk Stok Tersedia', '2', Colors.green),
-                _buildStatusCard('Produk Stok Hampir Habis', '0', Colors.orange),
-                _buildStatusCard('Produk Stok Habis', '0', Colors.red),
-                _buildStatusCard('Produk Nonaktif', '0', Colors.grey),
+                _buildStatusCard('Produk Tersedia', (totalProduk - produkHampirHabis - produkHabis).toString(), Colors.green),
+                _buildStatusCard('Produk Hampir Habis', produkHampirHabis.toString(), Colors.orange),
+                _buildStatusCard('Produk Habis', produkHabis.toString(), Colors.red),
+                _buildStatusCard('Total Produk', totalProduk.toString(), Colors.blue),
               ],
             ),
           ),
@@ -156,28 +182,27 @@ Future<void> _fetchProduk() async {
     );
   }
 
-Widget _buildProductItem(Map<String, dynamic> produk) {
-  return ListTile(
-    title: Text(produk['produk_name'] ?? ''),
-    subtitle: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('${formatRupiah(produk['hpp'])} → ${formatRupiah(produk['harga_jual'])}'),
-        Text('${produk['hpp_value']} (HPP)'),
-        Text('${produk['produk_code']}', style: const TextStyle(fontSize: 12)),
-      ],
-    ),
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProductDetailPage(product: produk),
-        ),
-      );
-    },
-  );
-}
-
+  Widget _buildProductItem(Map<String, dynamic> produk) {
+    return ListTile(
+      title: Text(produk['produk_name'] ?? ''),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${formatRupiah(produk['hpp'])} → ${formatRupiah(produk['harga_jual'])}'),
+          Text('${produk['hpp_value']} (HPP)'),
+          Text('${produk['produk_code']}', style: const TextStyle(fontSize: 12)),
+        ],
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailPage(product: produk),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildStatusCard(String title, String count, Color color) {
     final screenWidth = MediaQuery.of(context).size.width;

@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:http/http.dart' as http;
 
 // Import halaman-halaman tujuan
 import 'package:flutter_application_kledo/biaya/belumdibayarbiaya.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_application_kledo/biaya/dibayarsebagianbiaya.dart';
 import 'package:flutter_application_kledo/biaya/jatuhtempobiaya.dart';
 import 'package:flutter_application_kledo/biaya/lunasbiaya.dart';
 import 'package:flutter_application_kledo/biaya/transaksiberulangbiaya.dart';
+import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 
 class BiayaPage extends StatefulWidget {
   const BiayaPage({super.key});
@@ -17,6 +19,15 @@ class BiayaPage extends StatefulWidget {
 
 class _BiayaPageState extends State<BiayaPage> {
   bool _showChart = true;
+  bool isLoading = true;
+
+  Map<String, int> biayaCounts = {
+    'Belum Dibayar': 0,
+    'Dibayar Sebagian': 0,
+    'Lunas': 0,
+    'Jatuh Tempo': 0,
+    'Transaksi Berulang': 0,
+  };
 
   final Map<String, Color> kategoriColors = {
     'Belum Dibayar': Colors.pink,
@@ -26,6 +37,14 @@ class _BiayaPageState extends State<BiayaPage> {
     'Transaksi Berulang': Colors.blue,
   };
 
+  final Map<String, String> statusEndpoints = {
+    'Belum Dibayar': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1',
+    'Dibayar Sebagian': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3',
+    'Lunas': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=2',
+    'Jatuh Tempo': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4',
+    'Transaksi Berulang': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=5',
+  };
+
   final Map<String, Widget> kategoriPages = {
     'Belum Dibayar': const BelumDibayarBiaya(),
     'Dibayar Sebagian': const DibayarSebagianBiaya(),
@@ -33,6 +52,42 @@ class _BiayaPageState extends State<BiayaPage> {
     'Jatuh Tempo': const JatuhTempoBiaya(),
     'Transaksi Berulang': const TransaksiBerulangBiaya(),
   };
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBiayaCounts();
+  }
+
+  Future<void> fetchBiayaCounts() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    Map<String, int> newCounts = {
+      for (var key in biayaCounts.keys) key: 0,
+    };
+
+    try {
+      for (var entry in statusEndpoints.entries) {
+        final response = await http.get(Uri.parse(entry.value));
+        if (response.statusCode == 200) {
+          final List<dynamic> data = json.decode(response.body);
+          newCounts[entry.key] = data.length;
+        }
+      }
+
+      setState(() {
+        biayaCounts = newCounts;
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +107,6 @@ class _BiayaPageState extends State<BiayaPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Tambah aksi jika diperlukan
         },
         child: const Icon(Icons.add),
       ),
@@ -79,14 +133,13 @@ class _BiayaPageState extends State<BiayaPage> {
               children: [
                 _buildInfoCard('Bulan Ini', '16.042.100', Colors.amber, '18'),
                 _buildInfoCard('30 Hari Lalu', '23.353.200', Colors.pink, '27'),
-                _buildInfoCard(
-                    'Bulan Sebelumnya', '11.200.000', Colors.blue, '15'),
+                _buildInfoCard('Belum Dibayar', '11.200.000', Colors.orange, '15'),
+                _buildInfoCard('Jatuh Tempo', '11.200.000', Colors.green, '15'),
               ],
             ),
           ),
           const SizedBox(height: 16),
 
-          // "Lihat Selengkapnya"
           InkWell(
             onTap: () {
               setState(() {
@@ -107,7 +160,6 @@ class _BiayaPageState extends State<BiayaPage> {
           ),
           const SizedBox(height: 12),
 
-          // Multiple Charts - Fullscreen Width Scroll
           if (_showChart)
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -120,11 +172,10 @@ class _BiayaPageState extends State<BiayaPage> {
             ),
           if (_showChart) const SizedBox(height: 16),
 
-          // Kategori List
           ...kategoriPages.keys.map((label) => _buildKategoriItem(
                 label,
                 kategoriColors[label] ?? Colors.grey,
-                '20', // Ganti dengan jumlah dinamis jika perlu
+                '${biayaCounts[label]}',
                 kategoriPages[label],
               )),
         ],

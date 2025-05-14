@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/pemesanan/pemesananscreen.dart';
 import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
 import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
 import 'package:flutter_application_kledo/pengiriman/pengirimanscreen.dart';
+import 'package:intl/intl.dart';
 
 class Penjualanscreen extends StatefulWidget {
   const Penjualanscreen({super.key});
@@ -49,6 +53,35 @@ class Penjualanscreen extends StatefulWidget {
   State<Penjualanscreen> createState() => _PenjualanscreenState();
 }
 
+bool isBulanSelected = true;
+
+String formatRupiah(dynamic amount) {
+  try {
+    final value = double.tryParse(amount.toString()) ?? 0;
+    return NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    ).format(value);
+  } catch (e) {
+    return 'Rp 0';
+  }
+}
+
+Future<List<dynamic>> fetchStatCards({required bool isMonthly}) async {
+  final url = isMonthly
+      ? 'http://192.168.1.23/hiyami/penjualan_bulan.php'
+      : 'http://192.168.1.23/Hiyami/penjualan_tahun.php';
+
+  final response = await http.get(Uri.parse(url));
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    return jsonData['data'];
+  } else {
+    throw Exception('Gagal memuat data');
+  }
+}
+
 class _PenjualanscreenState extends State<Penjualanscreen> {
   List<bool> isSelected = [true, false];
   int currentPage = 0;
@@ -82,66 +115,64 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
     );
   }
 
-Widget _buildAppBar() {
-  return ClipPath(
-    clipper: BottomWaveClipper(),
-    child: Container(
-      height: 130,
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
-        child: Column(
-          children: [
-Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    Builder(
-      builder: (context) => Padding(
-        padding: const EdgeInsets.only(top: 28), 
-        child: Container(
-          height: 48,
-          width: 48,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
-            iconSize: 26,
-            onPressed: () => Scaffold.of(context).openDrawer(),
+  Widget _buildAppBar() {
+    return ClipPath(
+      clipper: BottomWaveClipper(),
+      child: Container(
+        height: 130,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
-      ),
-    ),
-    Padding(
-      padding: const EdgeInsets.only(top: 28),
-      child: const Text(
-        'Penjualan',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Builder(
+                    builder: (context) => Padding(
+                      padding: const EdgeInsets.only(top: 28),
+                      child: Container(
+                        height: 48,
+                        width: 48,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.menu, color: Colors.white),
+                          iconSize: 26,
+                          onPressed: () => Scaffold.of(context).openDrawer(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 28),
+                    child: const Text(
+                      'Penjualan',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 48), // Ini biar kanan dan kiri seimbang
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-    const SizedBox(width: 48), // Ini biar kanan dan kiri seimbang
-  ],
-),
-
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildIconMenu() {
     return Container(
@@ -217,63 +248,71 @@ Row(
   }
 
   Widget _buildToggleWaktu() {
-    List<bool> waktuSelected = [true, false];
-
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: ToggleButtons(
-            isSelected: waktuSelected,
-            onPressed: (int index) {
-              setState(() {
-                for (int i = 0; i < waktuSelected.length; i++) {
-                  waktuSelected[i] = i == index;
-                }
-              });
-            },
-            borderRadius: BorderRadius.circular(8),
-            selectedBorderColor: Colors.blue,
-            selectedColor: Colors.blue,
-            fillColor: Colors.blue.withOpacity(0.1),
-            color: Colors.black54,
-            constraints: const BoxConstraints(minHeight: 30, minWidth: 85),
-            children: const [
-              Text('Bulan'),
-              Text('Tahun'),
-            ],
-          ),
-        );
-      },
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ToggleButtons(
+        isSelected: [isBulanSelected, !isBulanSelected],
+        onPressed: (int index) {
+          setState(() {
+            isBulanSelected = index == 0;
+          });
+        },
+        borderRadius: BorderRadius.circular(8),
+        selectedBorderColor: Colors.blue,
+        selectedColor: Colors.blue,
+        fillColor: Colors.blue.withOpacity(0.1),
+        color: Colors.black54,
+        constraints: const BoxConstraints(minHeight: 30, minWidth: 85),
+        children: const [
+          Text('Bulan'),
+          Text('Tahun'),
+        ],
+      ),
     );
   }
 
   Widget _buildStatCards() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Tagihan Penjualan',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(4, (index) {
-              return Container(
-                margin: const EdgeInsets.only(right: 12),
-                width: 200,
-                child: const _StatCard(
-                  title: 'Judul',
-                  amount: 'Rp 0',
-                  growth: '+0%',
-                  count: '0',
-                  subtitle: 'Bulan Lalu',
-                ),
-              );
-            }),
-          ),
-        ),
-      ],
+    return FutureBuilder<List<dynamic>>(
+      future: fetchStatCards(isMonthly: isBulanSelected),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('Tidak ada data'));
+        }
+
+        final statsData = snapshot.data!;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              isBulanSelected ? 'Tagihan Bulanan' : 'Tagihan Tahunan',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: statsData.map((data) {
+                  return Container(
+                    margin: const EdgeInsets.only(right: 12),
+                    width: 200,
+                    child: _StatCard(
+                      title: data['title'] ?? '-',
+                      amount: formatRupiah(data['amount'] ?? '0'),
+                      growth: data['growth'] ?? '-',
+                      count: data['count'] ?? '0',
+                      subtitle: data['subtitle'] ?? '',
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -502,7 +541,8 @@ class BottomWaveClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     final path = Path();
     path.lineTo(0, size.height - 30);
-    path.quadraticBezierTo(size.width / 2, size.height, size.width, size.height - 30);
+    path.quadraticBezierTo(
+        size.width / 2, size.height, size.width, size.height - 30);
     path.lineTo(size.width, 0);
     path.close();
     return path;
