@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 // Import halaman-halaman tujuan
-import 'package:flutter_application_kledo/biaya/belumdibayarbiaya.dart';
-import 'package:flutter_application_kledo/biaya/dibayarsebagianbiaya.dart';
-import 'package:flutter_application_kledo/biaya/jatuhtempobiaya.dart';
-import 'package:flutter_application_kledo/biaya/lunasbiaya.dart';
-import 'package:flutter_application_kledo/biaya/transaksiberulangbiaya.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:hayami_app/biaya/belumdibayarbiaya.dart';
+import 'package:hayami_app/biaya/dibayarsebagianbiaya.dart';
+import 'package:hayami_app/biaya/jatuhtempobiaya.dart';
+import 'package:hayami_app/biaya/lunasbiaya.dart';
+import 'package:hayami_app/biaya/transaksiberulangbiaya.dart';
+import 'package:hayami_app/Dashboard/dashboardscreen.dart';
 
 class BiayaPage extends StatefulWidget {
   const BiayaPage({super.key});

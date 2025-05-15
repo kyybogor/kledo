@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 // Import halaman-halaman
-import 'package:flutter_application_kledo/belumdibayar/belumdibayarscreen.dart';
-import 'package:flutter_application_kledo/dibayarsebagian/dibayarsebagian.dart';
-import 'package:flutter_application_kledo/lunas/lunas.dart';
-import 'package:flutter_application_kledo/void/void.dart';
-import 'package:flutter_application_kledo/penjualan/penjualanscreen.dart';
+import 'package:hayami_app/belumdibayar/belumdibayarscreen.dart';
+import 'package:hayami_app/dibayarsebagian/dibayarsebagian.dart';
+import 'package:hayami_app/lunas/lunas.dart';
+import 'package:hayami_app/void/void.dart';
+import 'package:hayami_app/penjualan/penjualanscreen.dart';
 
 class TagihanPage extends StatefulWidget {
   const TagihanPage({super.key});

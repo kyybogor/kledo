@@ -62,7 +62,8 @@ class _ProfitabilitasProdukPageState extends State<ProfitabilitasProdukPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profitabilitas Produk"),
+        foregroundColor: Colors.blueAccent,
+        title: const Text("Profitabilitas Produk", style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
         leading: const BackButton(),
         actions: const [

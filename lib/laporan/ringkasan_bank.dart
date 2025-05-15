@@ -42,7 +42,8 @@ class _RingkasanBankState extends State<RingkasanBank> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ringkasan Bank'),
+        foregroundColor: Colors.blueAccent,
+        title: const Text('Ringkasan Bank', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.filter_list)),

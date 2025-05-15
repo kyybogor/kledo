@@ -99,7 +99,8 @@ class _JurnalListPageState extends State<JurnalListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Jurnal'),
+        foregroundColor: Colors.blueAccent,
+        title: const Text('Jurnal', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
         leading: const BackButton(),
       ),

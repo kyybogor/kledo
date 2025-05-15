@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/produk/produkdetail.dart';
+import 'package:hayami_app/produk/produkdetail.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -82,14 +82,14 @@ class _InventorySummaryPageState extends State<InventorySummaryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ringkasan Inventori'),
+        title: const Text('Ringkasan Inventori', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
         elevation: 0.5,
       ),
       body: Column(

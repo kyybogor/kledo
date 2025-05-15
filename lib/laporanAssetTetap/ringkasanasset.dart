@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/assetetap/detailasset.dart';
+import 'package:hayami_app/assetetap/detailasset.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -106,7 +106,8 @@ class _AsetRingkasanPageState extends State<AsetRingkasanPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Ringkasan Aset Tetap"),
+        title: const Text("Ringkasan Aset Tetap", style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

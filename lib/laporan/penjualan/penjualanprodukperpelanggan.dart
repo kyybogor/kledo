@@ -69,7 +69,8 @@ class _SalesListPageState extends State<SalesListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Penjualan Produk per Pelanggan'),
+        foregroundColor: Colors.blueAccent,
+        title: const Text('Penjualan Produk per Pelanggan', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
         leading: const BackButton(),
       ),

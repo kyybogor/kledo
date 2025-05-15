@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Pembelian/pembelianscreen.dart';
-import 'package:flutter_application_kledo/Pembelian/openpembelian.dart';
-import 'package:flutter_application_kledo/Pembelian/selesaipembelian.dart';
+import 'package:hayami_app/Pembelian/pembelianscreen.dart';
+import 'package:hayami_app/Pembelian/openpembelian.dart';
+import 'package:hayami_app/Pembelian/selesaipembelian.dart';
 import 'package:http/http.dart' as http;
 
 class PengirimanPembelianPage extends StatefulWidget {

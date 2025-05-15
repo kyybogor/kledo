@@ -124,7 +124,8 @@ class _ArusKasPageState extends State<ArusKasPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Arus Kas'),
+        foregroundColor: Colors.blueAccent,
+        title: const Text('Arus Kas', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
       ),
       body: SafeArea(

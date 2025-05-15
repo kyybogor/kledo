@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
-import 'package:flutter_application_kledo/tagihan/tambahtagihan.dart';
+import 'package:hayami_app/belumdibayar/detailbelumdibayar.dart';
+import 'package:hayami_app/tagihan/tambahtagihan.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 

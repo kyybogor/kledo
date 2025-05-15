@@ -75,7 +75,8 @@ class _StockMovementPageState extends State<StockMovementPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pergerakan Stok Gudang"),
+        title: const Text("Pergerakan Stok Gudang", style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         centerTitle: true,
         leading: const BackButton(),
         actions: [

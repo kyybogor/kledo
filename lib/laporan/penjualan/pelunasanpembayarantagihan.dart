@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
+import 'package:hayami_app/belumdibayar/detailbelumdibayar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -46,7 +46,8 @@ class _PelunasanListPageState extends State<PelunasanListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pelunasan Pembayaran'),
+        title: const Text('Pelunasan Pembayaran', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),

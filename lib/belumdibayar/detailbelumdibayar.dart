@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/produk/produkdetail.dart';
+import 'package:hayami_app/produk/produkdetail.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 

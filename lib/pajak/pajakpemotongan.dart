@@ -68,7 +68,8 @@ class _PajakPemotonganPageState extends State<PajakPemotonganPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pajak Pemotongan'),
+        title: const Text('Pajak Pemotongan', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         centerTitle: true,
         leading: const BackButton(),
         actions: const [

@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
-import 'package:flutter_application_kledo/produk/produkdetail.dart';
+import 'package:hayami_app/Dashboard/dashboardscreen.dart';
+import 'package:hayami_app/produk/produkdetail.dart';
 
 class ProdukPage extends StatefulWidget {
   const ProdukPage({super.key});

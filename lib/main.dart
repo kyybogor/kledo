@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Splashscreen/splashscreen.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
+import 'package:hayami_app/Splashscreen/splashscreen.dart';
+import 'package:hayami_app/Dashboard/dashboardscreen.dart';
 
 void main() {
   runApp(const MyApp());

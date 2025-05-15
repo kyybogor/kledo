@@ -42,7 +42,8 @@ class _RingkasanEksekutifState extends State<RingkasanEksekutif> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ringkasan Eksekutif'),
+        foregroundColor: Colors.blueAccent,
+        title: const Text('Ringkasan Eksekutif', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
       ),
       body: isLoading

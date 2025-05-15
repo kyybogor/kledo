@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/kontak/kontakscreen.dart';
+import 'package:hayami_app/kontak/kontakscreen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -56,7 +56,8 @@ class _HutangpiutangperkontakState extends State<Hutangpiutangperkontak> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Hutang Piutang"),
+        foregroundColor: Colors.blueAccent,
+        title: const Text("Hutang Piutang", style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
       ),
       body: Column(
         children: [

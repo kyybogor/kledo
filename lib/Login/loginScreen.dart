@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
-import 'package:flutter_application_kledo/Login/forget.dart';
-import 'package:flutter_application_kledo/Login/otp.dart';
-import 'package:flutter_application_kledo/SignUp/dashboardSignUp.dart';
-import 'package:flutter_application_kledo/api/api_service.dart';
+import 'package:hayami_app/Dashboard/dashboardscreen.dart';
+import 'package:hayami_app/Login/forget.dart';
+import 'package:hayami_app/Login/otp.dart';
+import 'package:hayami_app/SignUp/dashboardSignUp.dart';
+import 'package:hayami_app/api/api_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

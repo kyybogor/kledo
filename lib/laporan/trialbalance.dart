@@ -37,7 +37,8 @@ class _TrialBalancePageState extends State<TrialBalancePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Trial Balance'),
+        foregroundColor: Colors.blueAccent,
+        title: const Text('Trial Balance', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
         leading: const BackButton(),
         actions: [

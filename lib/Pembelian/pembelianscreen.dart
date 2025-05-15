@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
-import 'package:flutter_application_kledo/Pembelian/pemesananpembelian.dart';
-import 'package:flutter_application_kledo/Pembelian/pengirimanpembelian.dart';
-import 'package:flutter_application_kledo/Pembelian/tagihanpembelian.dart';
-import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
+import 'package:hayami_app/Dashboard/dashboardscreen.dart';
+import 'package:hayami_app/Pembelian/pemesananpembelian.dart';
+import 'package:hayami_app/Pembelian/pengirimanpembelian.dart';
+import 'package:hayami_app/Pembelian/tagihanpembelian.dart';
+import 'package:hayami_app/penawaran/penawaranscreen.dart';
 import 'package:intl/intl.dart';
 
 
@@ -172,10 +172,6 @@ Row(
         child: Container(
           height: 48,
           width: 48,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            shape: BoxShape.circle,
-          ),
           child: IconButton(
             icon: const Icon(Icons.menu, color: Colors.white),
             iconSize: 26,

@@ -60,7 +60,8 @@ class _PenjualanPerKategoriPageState extends State<PenjualanPerKategoriPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Penjualan per Kategori Produk'),
+        title: const Text('Penjualan per Kategori Produk', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         centerTitle: true,
         leading: const BackButton(),
         actions: [

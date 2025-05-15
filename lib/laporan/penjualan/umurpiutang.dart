@@ -49,7 +49,8 @@ class _UmurPiutangPageState extends State<UmurPiutangPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Umur Piutang'),
+        foregroundColor: Colors.blueAccent,
+        title: const Text('Umur Piutang', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
         leading: const BackButton(),
         actions: [

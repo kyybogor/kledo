@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:flutter_application_kledo/assetetap/detailasset.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart' show KledoDrawer;
+import 'package:hayami_app/assetetap/detailasset.dart';
+import 'package:hayami_app/Dashboard/dashboardscreen.dart' show KledoDrawer;
 
 class AssetPage extends StatefulWidget {
   const AssetPage({super.key});

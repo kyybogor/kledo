@@ -103,7 +103,8 @@ class _PenjualanPerProdukPageState extends State<PenjualanPerProdukPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text("Penjualan per Produk"),
+        foregroundColor: Colors.blueAccent,
+        title: const Text("Penjualan per Produk", style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
       ),
       body: isLoading

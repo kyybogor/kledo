@@ -68,7 +68,8 @@ class _PendapatanPerpelangganPageState
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Pendapatan per Orang"),
+          foregroundColor: Colors.blueAccent,
+          title: const Text("Pendapatan per Orang", style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
           centerTitle: true,
           leading: const BackButton(),
         ),

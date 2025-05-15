@@ -90,7 +90,7 @@ class _PerubahanModalPageState extends State<PerubahanModalPage> {
         title: const Center(
           child: Text(
             "Perubahan Modal",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold,),
           ),
         ),
         leading: const BackButton(),

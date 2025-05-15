@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/kas%20&%20bank/giroscreen.dart';
-import 'package:flutter_application_kledo/kas%20&%20bank/rekeningbank.dart';
+import 'package:hayami_app/kas%20&%20bank/giroscreen.dart';
+import 'package:hayami_app/kas%20&%20bank/rekeningbank.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
-import 'package:flutter_application_kledo/kas & bank/kasscreen.dart';
+import 'package:hayami_app/Dashboard/dashboardscreen.dart';
+import 'package:hayami_app/kas & bank/kasscreen.dart';
 
 class KasDanBank extends StatefulWidget {
   const KasDanBank({super.key});

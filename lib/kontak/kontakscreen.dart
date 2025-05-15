@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
-import 'package:flutter_application_kledo/belumdibayar/detailbelumdibayar.dart';
-import 'package:flutter_application_kledo/kontak/detailkontak.dart';
+import 'package:hayami_app/Dashboard/dashboardscreen.dart';
+import 'package:hayami_app/belumdibayar/detailbelumdibayar.dart';
+import 'package:hayami_app/kontak/detailkontak.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';

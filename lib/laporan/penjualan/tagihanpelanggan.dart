@@ -65,7 +65,8 @@ class _TagihanPelangganPageState extends State<TagihanPelangganPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tagihan Pelanggan'),
+        foregroundColor: Colors.blueAccent,
+        title: const Text('Tagihan Pelanggan', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

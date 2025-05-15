@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
-import 'package:flutter_application_kledo/open/openscreen.dart';
-import 'package:flutter_application_kledo/selesai/selesaiscreen.dart';
+import 'package:hayami_app/Penjualan/penjualanscreen.dart';
+import 'package:hayami_app/open/openscreen.dart';
+import 'package:hayami_app/selesai/selesaiscreen.dart';
 import 'package:http/http.dart' as http;
 
 class PengirimanPage extends StatefulWidget {

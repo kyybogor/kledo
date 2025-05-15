@@ -42,7 +42,8 @@ class _InventoryMovementPageState extends State<InventoryMovementPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pergerakan Stok Inventori'),
+        title: const Text('Pergerakan Stok Inventori', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         centerTitle: true,
         leading: const BackButton(),
         actions: [

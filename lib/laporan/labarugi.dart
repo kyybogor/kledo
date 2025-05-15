@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/produk/produkdetail.dart';
+import 'package:hayami_app/produk/produkdetail.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -114,7 +114,8 @@ class _LabaRugiPageState extends State<LabaRugiPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Laba Rugi"),
+        foregroundColor: Colors.blueAccent,
+        title: const Text("Laba Rugi", style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
       ),
       body: isLoading

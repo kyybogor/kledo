@@ -55,9 +55,7 @@ class _NeracaPageState extends State<NeracaPage> {
     );
   }
 
-  // Widget untuk menampilkan item label dan value
   Widget buildItem(String label, String value, {bool isBold = false}) {
-    // Menentukan warna berdasarkan label
     Color valueColor = (label == "Total Assets") ? Colors.black : Colors.blue;
 
     return Container(
@@ -93,7 +91,6 @@ class _NeracaPageState extends State<NeracaPage> {
     );
   }
 
-  // Fungsi untuk mendapatkan tanggal hari ini
   String getFormattedDate() {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd MMMM yyyy');
@@ -104,13 +101,14 @@ class _NeracaPageState extends State<NeracaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.blueAccent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: const Text("Neraca"),
+        title: const Text("Neraca", style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(  // FutureBuilder to fetch data from API

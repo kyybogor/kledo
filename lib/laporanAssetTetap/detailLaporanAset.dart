@@ -69,7 +69,8 @@ class _DetilAsetTetapPageState extends State<DetilAsetTetapPage> {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: const Text('Detil Aset Tetap'),
+        title: const Text('Detil Aset Tetap', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         centerTitle: true,
         actions: const [
           Padding(

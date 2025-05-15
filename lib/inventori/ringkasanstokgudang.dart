@@ -75,7 +75,8 @@ class _RingkasanStokGudangPageState extends State<RingkasanStokGudangPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ringkasan Stok Gudang'),
+        title: const Text('Ringkasan Stok Gudang', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         centerTitle: true,
         leading: const BackButton(),
         actions: [

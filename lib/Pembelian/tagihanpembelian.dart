@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Pembelian/belumdibayarpembelian.dart';
-import 'package:flutter_application_kledo/Pembelian/dibayarsebagianpembelian.dart';
-import 'package:flutter_application_kledo/Pembelian/lunaspembelian.dart';
-import 'package:flutter_application_kledo/Pembelian/pembelianscreen.dart';
-import 'package:flutter_application_kledo/Pembelian/voidpembelian.dart';
+import 'package:hayami_app/Pembelian/belumdibayarpembelian.dart';
+import 'package:hayami_app/Pembelian/dibayarsebagianpembelian.dart';
+import 'package:hayami_app/Pembelian/lunaspembelian.dart';
+import 'package:hayami_app/Pembelian/pembelianscreen.dart';
+import 'package:hayami_app/Pembelian/voidpembelian.dart';
 import 'package:http/http.dart' as http;
 
 class TagihanPembelianPage extends StatefulWidget {

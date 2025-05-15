@@ -54,7 +54,8 @@ class _PelepasanAsetPageState extends State<PelepasanAsetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pelepasan Aset'),
+        title: const Text('Pelepasan Aset', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         centerTitle: true,
         leading: const BackButton(),
         actions: const [

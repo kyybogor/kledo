@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/SignUp/free.dart';
-import 'package:flutter_application_kledo/SignUp/champion.dart';
-import 'package:flutter_application_kledo/SignUp/pro.dart';
-import 'package:flutter_application_kledo/SignUp/elite.dart';
+import 'package:hayami_app/SignUp/free.dart';
+import 'package:hayami_app/SignUp/champion.dart';
+import 'package:hayami_app/SignUp/pro.dart';
+import 'package:hayami_app/SignUp/elite.dart';
 
 class PackageSelectionPage extends StatelessWidget {
   const PackageSelectionPage({super.key});

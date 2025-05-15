@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/Pembelian/pembelianscreen.dart';
-import 'package:flutter_application_kledo/Pembelian/pemesananpembelian.dart';
-import 'package:flutter_application_kledo/Pembelian/penawaran_pembelian/penawaranpembelian.dart';
-import 'package:flutter_application_kledo/Pembelian/pengirimanpembelian.dart';
-import 'package:flutter_application_kledo/Pembelian/tagihanpembelian.dart';
-import 'package:flutter_application_kledo/Penjualan/penjualanscreen.dart';
-import 'package:flutter_application_kledo/akun/akunscreen.dart';
-import 'package:flutter_application_kledo/assetetap/assetetap.dart';
-import 'package:flutter_application_kledo/biaya/biayascreen.dart';
-import 'package:flutter_application_kledo/kas%20&%20bank/kasdanbank.dart';
-import 'package:flutter_application_kledo/kontak/kontakscreen.dart';
-import 'package:flutter_application_kledo/laporan/laporanscreen.dart';
-import 'package:flutter_application_kledo/pemesanan/pemesananscreen.dart';
-import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
-import 'package:flutter_application_kledo/produk/produk.dart';
-import 'package:flutter_application_kledo/tagihan/tagihanscreen.dart';
-import 'package:flutter_application_kledo/pengiriman/pengirimanscreen.dart';
+import 'package:hayami_app/Pembelian/pembelianscreen.dart';
+import 'package:hayami_app/Pembelian/pemesananpembelian.dart';
+import 'package:hayami_app/Pembelian/penawaran_pembelian/penawaranpembelian.dart';
+import 'package:hayami_app/Pembelian/pengirimanpembelian.dart';
+import 'package:hayami_app/Pembelian/tagihanpembelian.dart';
+import 'package:hayami_app/Penjualan/penjualanscreen.dart';
+import 'package:hayami_app/akun/akunscreen.dart';
+import 'package:hayami_app/assetetap/assetetap.dart';
+import 'package:hayami_app/biaya/biayascreen.dart';
+import 'package:hayami_app/kas%20&%20bank/kasdanbank.dart';
+import 'package:hayami_app/kontak/kontakscreen.dart';
+import 'package:hayami_app/laporan/laporanscreen.dart';
+import 'package:hayami_app/pemesanan/pemesananscreen.dart';
+import 'package:hayami_app/penawaran/penawaranscreen.dart';
+import 'package:hayami_app/produk/produk.dart';
+import 'package:hayami_app/tagihan/tagihanscreen.dart';
+import 'package:hayami_app/pengiriman/pengirimanscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
@@ -429,9 +429,9 @@ class _KledoDrawerState extends State<KledoDrawer> {
                               fontSize: 24,
                               fontWeight: FontWeight.bold)),
                       SizedBox(height: 8),
-                      Text('Zahlfan Wiranto',
+                      Text('User',
                           style: TextStyle(color: Colors.white, fontSize: 16)),
-                      Text('prt ayam',
+                      Text('Your Instation',
                           style:
                               TextStyle(color: Colors.white70, fontSize: 14)),
                     ],

@@ -82,7 +82,8 @@ class _PenjualanPerPeriodePageState extends State<PenjualanPerPeriodePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Penjualan per Periode'),
+        foregroundColor: Colors.blueAccent,
+        title: const Text('Penjualan per Periode', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

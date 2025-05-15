@@ -49,7 +49,8 @@ class _PajakPenjualanPageState extends State<PajakPenjualanPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pajak Penjualan'),
+        title: const Text('Pajak Penjualan', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        foregroundColor: Colors.blueAccent,
         centerTitle: true,
         leading: const BackButton(),
         actions: const [Icon(Icons.filter_list)],

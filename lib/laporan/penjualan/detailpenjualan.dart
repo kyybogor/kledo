@@ -126,8 +126,10 @@ class _DetailPenjualanPageState extends State<DetailPenjualanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail Penjualan'),
+        foregroundColor: Colors.blueAccent,
+        title: const Text('Detail Penjualan', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
         leading: const BackButton(),
+        centerTitle: true,
         actions: [
           IconButton(
               icon: const Icon(Icons.filter_alt_outlined), onPressed: () {}),

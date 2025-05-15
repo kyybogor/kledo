@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_kledo/kas%20&%20bank/detailkas.dart';
-import 'package:flutter_application_kledo/kas%20&%20bank/editbankscreen.dart';
+import 'package:hayami_app/kas%20&%20bank/detailkas.dart';
+import 'package:hayami_app/kas%20&%20bank/editbankscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
