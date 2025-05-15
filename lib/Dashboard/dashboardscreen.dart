@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hayami_app/Login/loginScreen.dart';
 import 'package:hayami_app/Pembelian/pembelianscreen.dart';
 import 'package:hayami_app/Pembelian/pemesananpembelian.dart';
 import 'package:hayami_app/Pembelian/penawaran_pembelian/penawaranpembelian.dart';
@@ -34,12 +35,24 @@ class Dashboardscreen extends StatefulWidget {
 
 class _DashboardscreenState extends State<Dashboardscreen> {
   final List<Map<String, dynamic>> menuItems = [
-    {'icon': Icons.shopping_bag, 'label': 'Penjualan', 'color': Colors.redAccent},
-    {'icon': Icons.shopping_cart, 'label': 'Pembelian', 'color': Colors.blueAccent},
+    {
+      'icon': Icons.shopping_bag,
+      'label': 'Penjualan',
+      'color': Colors.redAccent
+    },
+    {
+      'icon': Icons.shopping_cart,
+      'label': 'Pembelian',
+      'color': Colors.blueAccent
+    },
     {'icon': Icons.money_off, 'label': 'Biaya', 'color': Colors.orangeAccent},
     {'icon': Icons.inventory, 'label': 'Produk', 'color': Colors.green},
     {'icon': Icons.bar_chart, 'label': 'Laporan', 'color': Colors.purple},
-    {'icon': Icons.account_balance, 'label': 'Kas & Bank', 'color': Colors.teal},
+    {
+      'icon': Icons.account_balance,
+      'label': 'Kas & Bank',
+      'color': Colors.teal
+    },
     {'icon': Icons.domain, 'label': 'Aset Tetap', 'color': Colors.indigo},
     {'icon': Icons.contacts, 'label': 'Kontak', 'color': Colors.brown},
   ];
@@ -48,34 +61,32 @@ class _DashboardscreenState extends State<Dashboardscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F8),
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          'Hayami',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.notifications_none, color: Colors.white),
-          )
-        ],
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+appBar: AppBar(
+  elevation: 0,
+  centerTitle: true,
+  title: Image.asset(
+    'assets/image/hayamilogo.png',
+    height: 48,
+    fit: BoxFit.contain,
+  ),
+  iconTheme: const IconThemeData(color: Colors.white),
+  actions: const [
+    Padding(
+      padding: EdgeInsets.only(right: 12),
+      child: Icon(Icons.notifications_none, color: Colors.white),
+    )
+  ],
+  flexibleSpace: Container(
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
+    ),
+  ),
+),
+
       drawer: const KledoDrawer(),
       body: SingleChildScrollView(
         child: Column(
@@ -95,7 +106,10 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Hi pengguna!',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white)),
                   SizedBox(height: 6),
                   Text('Yuk mudahkan keuangan bisnis dengan Hayami',
                       style: TextStyle(color: Colors.white70, fontSize: 14)),
@@ -109,7 +123,10 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4)),
                 ],
               ),
               child: GridView.builder(
@@ -127,42 +144,62 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                     onTap: () {
                       switch (item['label']) {
                         case 'Penjualan':
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (_) => const Penjualanscreen()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const Penjualanscreen()));
                           break;
                         case 'Pembelian':
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (_) => const Pembelianscreen()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const Pembelianscreen()));
                           break;
                         case 'Biaya':
                           Navigator.push(
-                              context, MaterialPageRoute(builder: (_) => const BiayaPage()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const BiayaPage()));
                           break;
                         case 'Produk':
                           Navigator.push(
-                              context, MaterialPageRoute(builder: (_) => const ProdukPage()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const ProdukPage()));
                           break;
                         case 'Laporan':
-                          Navigator.push(
-                              context, MaterialPageRoute(builder: (_) => LaporanPage()));
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => LaporanPage()));
                           break;
                         case 'Kas & Bank':
                           Navigator.push(
-                              context, MaterialPageRoute(builder: (_) => const KasDanBank()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const KasDanBank()));
                           break;
                         case 'Aset Tetap':
                           Navigator.push(
-                              context, MaterialPageRoute(builder: (_) => const AssetPage()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const AssetPage()));
                           break;
                         case 'Kontak':
                           Navigator.push(
-                              context, MaterialPageRoute(builder: (_) => const KontakScreen()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const KontakScreen()));
+                          break;
+                        case 'Keluar':
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const LoginPage()));
                           break;
                         default:
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content:
-                                    Text('Navigasi ke ${item['label']} belum tersedia')),
+                                content: Text(
+                                    'Navigasi ke ${item['label']} belum tersedia')),
                           );
                       }
                     },
@@ -175,11 +212,13 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                             color: item['color']?.withOpacity(0.1),
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(item['icon'], color: item['color'], size: 26),
+                          child: Icon(item['icon'],
+                              color: item['color'], size: 26),
                         ),
                         const SizedBox(height: 6),
                         Text(item['label'],
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                            style: const TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.w500),
                             textAlign: TextAlign.center),
                       ],
                     ),
@@ -346,7 +385,6 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     );
   }
 }
-
 
 class KledoDrawer extends StatefulWidget {
   const KledoDrawer({super.key});
@@ -529,7 +567,6 @@ class _KledoDrawerState extends State<KledoDrawer> {
                                   break;
                               }
 
-
                               if (destination != null) {
                                 Navigator.pushReplacement(
                                   context,
@@ -578,25 +615,27 @@ class _KledoDrawerState extends State<KledoDrawer> {
 
                           if (item['title'] == 'Kas & Bank') {
                             destination = const KasDanBank();
-                            
                           }
 
-                          if (item['title'] == 'Laporan'){
+                          if (item['title'] == 'Laporan') {
                             destination = LaporanPage();
                           }
 
-                          if (item['title'] == 'Aset Tetap'){
+                          if (item['title'] == 'Aset Tetap') {
                             destination = const AssetPage();
                           }
 
-                          if (item['title'] == 'Kontak'){
+                          if (item['title'] == 'Kontak') {
                             destination = const KontakScreen();
                           }
 
                           if (item['title'] == 'Akun') {
                             destination = const Akunscreen();
                           }
-                          // Tambah halaman lainnya sesuai kebutuhan
+
+                          if (item['title'] == 'Keluar') {
+                            destination = const LoginPage();
+                          }
 
                           if (destination != null) {
                             Navigator.pushReplacement(

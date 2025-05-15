@@ -27,8 +27,10 @@ flutter:
   assets:
     #- images/kledo.png
     - assets/image/hayamibaru.png
+    - assets/image/hayamilogo.png
+
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/image/akuntan.jpg"
+  image_path: "assets/image/hayamibaru.png"

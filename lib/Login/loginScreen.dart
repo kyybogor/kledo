@@ -52,11 +52,10 @@ class _LoginPageState extends State<LoginPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Header
               Container(
                 height: 200,
                 width: double.infinity,
-                padding: const EdgeInsets.only(top: 60, left: 16),
+                padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
@@ -65,25 +64,24 @@ class _LoginPageState extends State<LoginPage> {
                     bottomLeft: Radius.circular(50),
                   ),
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Selamat Datang!',
-                      style: TextStyle(
-                        fontSize: 26,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                    Center(
+                      child: Image.asset(
+                        'assets/image/hayamilogo.png',
+                        height: 60,
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text(
+                    const SizedBox(height: 20),
+                    const Text(
                       'Silakan masukkan email dan password\nuntuk masuk ke Hayami.',
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
               ),
+
               const SizedBox(height: 24),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
