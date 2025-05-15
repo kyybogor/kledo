@@ -31,12 +31,12 @@ class _BiayaPageState extends State<BiayaPage> {
     'Transaksi Berulang': 0,
   };
 
-String _formatCurrency(num value) {
-  return value.toString().replaceAllMapped(
-    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-    (Match m) => '${m[1]}.',
-  );
-}
+  String _formatCurrency(num value) {
+    return value.toString().replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]}.',
+        );
+  }
 
   final Map<String, Color> kategoriColors = {
     'Belum Dibayar': Colors.pink,
@@ -45,14 +45,16 @@ String _formatCurrency(num value) {
     'Jatuh Tempo': Colors.black,
     'Transaksi Berulang': Colors.blue,
   };
-  
 
   final Map<String, String> statusEndpoints = {
-    'Belum Dibayar': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1',
-    'Dibayar Sebagian': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3',
+    'Belum Dibayar':
+        'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1',
+    'Dibayar Sebagian':
+        'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=3',
     'Lunas': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=2',
     'Jatuh Tempo': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=4',
-    'Transaksi Berulang': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=5',
+    'Transaksi Berulang':
+        'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=5',
   };
 
   final Map<String, Widget> kategoriPages = {
@@ -71,22 +73,21 @@ String _formatCurrency(num value) {
   }
 
   Future<void> fetchSummaryData() async {
-  final url = Uri.parse('http://192.168.1.23/Hiyami/infocard.php');
-  try {
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        summaryData = data;
-      });
-    } else {
-      print("Gagal fetch summary data: ${response.statusCode}");
+    final url = Uri.parse('http://192.168.1.23/Hiyami/infocard.php');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          summaryData = data;
+        });
+      } else {
+        print("Gagal fetch summary data: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetchSummaryData: $e");
     }
-  } catch (e) {
-    print("Error fetchSummaryData: $e");
   }
-}
-
 
   Future<void> fetchBiayaCounts() async {
     setState(() {
@@ -136,97 +137,132 @@ String _formatCurrency(num value) {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // Action button pressed
         },
         child: const Icon(Icons.add),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
         children: [
-          TextField(
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              hintText: 'Cari',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
+          // Search bar with padding
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: 'Cari',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
           ),
-          const SizedBox(height: 12),
 
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            child: Row(
-  children: [
-    _buildInfoCard(
-      'Bulan Ini',
-      _formatCurrency(summaryData['total_bulan_ini']?['jumlah'] ?? 0),
-      Colors.amber,
-      '${summaryData['total_bulan_ini']?['jumlah_data'] ?? 0}',
-    ),
-    _buildInfoCard(
-      '30 Hari Lalu',
-      _formatCurrency(summaryData['total_30_hari']?['jumlah'] ?? 0),
-      Colors.pink,
-      '${summaryData['total_30_hari']?['jumlah_data'] ?? 0}',
-    ),
-    _buildInfoCard(
-      'Belum Dibayar',
-      _formatCurrency(summaryData['total_belum_dibayar']?['jumlah'] ?? 0),
-      Colors.orange,
-      '${summaryData['total_belum_dibayar']?['jumlah_data'] ?? 0}',
-    ),
-    _buildInfoCard(
-      'Jatuh Tempo',
-      _formatCurrency(summaryData['total_dibayar_sebagian']?['jumlah'] ?? 0),
-      Colors.green,
-      '${summaryData['total_dibayar_sebagian']?['jumlah_data'] ?? 0}',
-    ),
-  ],
-),
-
+          // Info cards
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                children: [
+                  _buildInfoCard(
+                    'Bulan Ini',
+                    _formatCurrency(
+                        summaryData['total_bulan_ini']?['jumlah'] ?? 0),
+                    Colors.amber,
+                    '${summaryData['total_bulan_ini']?['jumlah_data'] ?? 0}',
+                  ),
+                  _buildInfoCard(
+                    '30 Hari Lalu',
+                    _formatCurrency(
+                        summaryData['total_30_hari']?['jumlah'] ?? 0),
+                    Colors.pink,
+                    '${summaryData['total_30_hari']?['jumlah_data'] ?? 0}',
+                  ),
+                  _buildInfoCard(
+                    'Belum Dibayar',
+                    _formatCurrency(
+                        summaryData['total_belum_dibayar']?['jumlah'] ?? 0),
+                    Colors.orange,
+                    '${summaryData['total_belum_dibayar']?['jumlah_data'] ?? 0}',
+                  ),
+                  _buildInfoCard(
+                    'Jatuh Tempo',
+                    _formatCurrency(
+                        summaryData['total_dibayar_sebagian']?['jumlah'] ?? 0),
+                    Colors.green,
+                    '${summaryData['total_dibayar_sebagian']?['jumlah_data'] ?? 0}',
+                  ),
+                ],
+              ),
+            ),
           ),
           const SizedBox(height: 16),
 
-          InkWell(
-            onTap: () {
-              setState(() {
-                _showChart = !_showChart;
-              });
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  _showChart ? 'Sembunyikan' : 'Lihat Selengkapnya',
-                  style: const TextStyle(
-                      color: Colors.blue, fontWeight: FontWeight.bold),
-                ),
-                Icon(_showChart ? Icons.expand_less : Icons.expand_more),
-              ],
+          // Expand/Collapse Chart Button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _showChart = !_showChart;
+                });
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    _showChart ? 'Sembunyikan' : 'Lihat Selengkapnya',
+                    style: const TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                  ),
+                  Icon(_showChart ? Icons.expand_less : Icons.expand_more),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 12),
 
+          // Chart content
           if (_showChart)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(
-                  2,
-                  (index) => _buildChartCard(index + 1, screenWidth),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                    2,
+                    (index) => _buildChartCard(index + 1, screenWidth),
+                  ),
                 ),
               ),
             ),
           if (_showChart) const SizedBox(height: 16),
 
-          ...kategoriPages.keys.map((label) => _buildKategoriItem(
-                label,
-                kategoriColors[label] ?? Colors.grey,
-                '${biayaCounts[label]}',
-                kategoriPages[label],
-              )),
+          // List kategori item + Divider full width
+          ...List.generate(kategoriPages.keys.length, (index) {
+            final label = kategoriPages.keys.elementAt(index);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildKategoriItem(
+                  label,
+                  kategoriColors[label] ?? Colors.grey,
+                  '${biayaCounts[label]}',
+                  kategoriPages[label],
+                ),
+                if (index < kategoriPages.keys.length - 1)
+                  const Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: Colors.grey,
+                    indent: 0,
+                    endIndent: 0,
+                  ),
+              ],
+            );
+          }),
         ],
       ),
     );
