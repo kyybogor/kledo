@@ -68,15 +68,45 @@ String formatRupiah(dynamic amount) {
   }
 }
 
-Future<List<dynamic>> fetchStatCards({required bool isMonthly}) async {
-  final url = isMonthly
-      ? 'http://192.168.1.23/hiyami/penjualan_bulan.php'
-      : 'http://192.168.1.23/Hiyami/penjualan_tahun.php';
-
+Future<List<Map<String, dynamic>>> fetchStatCards({required bool isMonthly}) async {
+  const url = 'http://192.168.1.23/Hiyami/penjualan_bulan.php';
   final response = await http.get(Uri.parse(url));
+
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.body);
-    return jsonData['data'];
+    final selectedData = isMonthly ? jsonData['bulan_lalu'] : jsonData['tahun_ini'];
+    final subtitleText = isMonthly ? 'Bulan Lalu' : 'Tahun Ini';
+
+    return [
+      {
+        'title': 'Total Penjualan',
+        'amount': selectedData['total_penjualan']['total_nilai'],
+        'count': selectedData['total_penjualan']['jumlah_data'].toString(),
+        'subtitle': subtitleText,
+        'growth': ''
+      },
+      {
+        'title': 'Pembayaran Diterima',
+        'amount': selectedData['pembayaran_diterima']['total_nilai'],
+        'count': selectedData['pembayaran_diterima']['jumlah_data'].toString(),
+        'subtitle': subtitleText,
+        'growth': ''
+      },
+      {
+        'title': 'Menunggu Pembayaran',
+        'amount': selectedData['menunggu_pembayaran']['total_nilai'],
+        'count': selectedData['menunggu_pembayaran']['jumlah_data'].toString(),
+        'subtitle': subtitleText,
+        'growth': ''
+      },
+      {
+        'title': 'Jatuh Tempo',
+        'amount': selectedData['jatuh_tempo']['total_nilai'],
+        'count': selectedData['jatuh_tempo']['jumlah_data'].toString(),
+        'subtitle': subtitleText,
+        'growth': ''
+      },
+    ];
   } else {
     throw Exception('Gagal memuat data');
   }
@@ -153,9 +183,9 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 28),
-                    child: const Text(
+                  const Padding(
+                    padding: EdgeInsets.only(top: 28),
+                    child: Text(
                       'Penjualan',
                       style: TextStyle(
                         color: Colors.white,
@@ -164,7 +194,7 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 48), // Ini biar kanan dan kiri seimbang
+                  const SizedBox(width: 48),
                 ],
               ),
             ],
@@ -348,7 +378,7 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.black12,
                               blurRadius: 8,
@@ -359,9 +389,9 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
+                              children: [
                                 Expanded(
                                   child: Text(
                                     'Penjualan Per Produk Bulan Ini',

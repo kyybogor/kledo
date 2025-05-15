@@ -18,9 +18,10 @@ class BiayaPage extends StatefulWidget {
 }
 
 class _BiayaPageState extends State<BiayaPage> {
-  List<dynamic> data = [];
   bool _showChart = true;
   bool isLoading = true;
+
+  Map<String, dynamic> summaryData = {};
 
   Map<String, int> biayaCounts = {
     'Belum Dibayar': 0,
@@ -30,6 +31,13 @@ class _BiayaPageState extends State<BiayaPage> {
     'Transaksi Berulang': 0,
   };
 
+String _formatCurrency(num value) {
+  return value.toString().replaceAllMapped(
+    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+    (Match m) => '${m[1]}.',
+  );
+}
+
   final Map<String, Color> kategoriColors = {
     'Belum Dibayar': Colors.pink,
     'Dibayar Sebagian': Colors.amber,
@@ -37,6 +45,7 @@ class _BiayaPageState extends State<BiayaPage> {
     'Jatuh Tempo': Colors.black,
     'Transaksi Berulang': Colors.blue,
   };
+  
 
   final Map<String, String> statusEndpoints = {
     'Belum Dibayar': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=1',
@@ -46,13 +55,6 @@ class _BiayaPageState extends State<BiayaPage> {
     'Transaksi Berulang': 'https://gmp-system.com/api-hayami/daftar_tagihan.php?sts=5',
   };
 
-final Map<String, Color> infoCardColors = {
-  'Bulan Ini': Colors.amber,
-  '30 Hari Lalu': Colors.pink,
-  'Belum Dibayar': Colors.orange,
-  'Jatuh Tempo': Colors.green,
-};
-
   final Map<String, Widget> kategoriPages = {
     'Belum Dibayar': const BelumDibayarBiaya(),
     'Dibayar Sebagian': const DibayarSebagianBiaya(),
@@ -60,27 +62,31 @@ final Map<String, Color> infoCardColors = {
     'Jatuh Tempo': const JatuhTempoBiaya(),
     'Transaksi Berulang': const TransaksiBerulangBiaya(),
   };
-  
 
   @override
   void initState() {
     super.initState();
     fetchBiayaCounts();
-    fetchData();
+    fetchSummaryData();
   }
 
-Future<void> fetchData() async {
-    final response = await http.get(Uri.parse('http://192.168.1.23/Hiyami/infocard.php'));
-
+  Future<void> fetchSummaryData() async {
+  final url = Uri.parse('http://192.168.1.23/Hiyami/infocard.php');
+  try {
+    final response = await http.get(url);
     if (response.statusCode == 200) {
+      final data = json.decode(response.body);
       setState(() {
-        data = json.decode(response.body);
+        summaryData = data;
       });
     } else {
-      // Handle error
-      print('Failed to load data');
+      print("Gagal fetch summary data: ${response.statusCode}");
     }
+  } catch (e) {
+    print("Error fetchSummaryData: $e");
   }
+}
+
 
   Future<void> fetchBiayaCounts() async {
     setState(() {
@@ -148,22 +154,39 @@ Future<void> fetchData() async {
           ),
           const SizedBox(height: 12),
 
-          // Info Cards - Horizontal Scroll
-SingleChildScrollView(
-  scrollDirection: Axis.horizontal,
-  physics: const BouncingScrollPhysics(),
-  child: Row(
-    children: data.map<Widget>((item) {
-      final String title = item['keterangan'];
-      final String amount = item['jumlah'];
-      final String percent = item['persentase'];
-      final Color color = infoCardColors[title] ?? Colors.grey;
-
-      return _buildInfoCard(title, amount, color, percent);
-    }).toList(),
-  ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+  children: [
+    _buildInfoCard(
+      'Bulan Ini',
+      _formatCurrency(summaryData['total_bulan_ini']?['jumlah'] ?? 0),
+      Colors.amber,
+      '${summaryData['total_bulan_ini']?['jumlah_data'] ?? 0}',
+    ),
+    _buildInfoCard(
+      '30 Hari Lalu',
+      _formatCurrency(summaryData['total_30_hari']?['jumlah'] ?? 0),
+      Colors.pink,
+      '${summaryData['total_30_hari']?['jumlah_data'] ?? 0}',
+    ),
+    _buildInfoCard(
+      'Belum Dibayar',
+      _formatCurrency(summaryData['total_belum_dibayar']?['jumlah'] ?? 0),
+      Colors.orange,
+      '${summaryData['total_belum_dibayar']?['jumlah_data'] ?? 0}',
+    ),
+    _buildInfoCard(
+      'Jatuh Tempo',
+      _formatCurrency(summaryData['total_dibayar_sebagian']?['jumlah'] ?? 0),
+      Colors.green,
+      '${summaryData['total_dibayar_sebagian']?['jumlah_data'] ?? 0}',
+    ),
+  ],
 ),
 
+          ),
           const SizedBox(height: 16),
 
           InkWell(

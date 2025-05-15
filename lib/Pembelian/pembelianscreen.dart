@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_application_kledo/Dashboard/dashboardscreen.dart';
 import 'package:flutter_application_kledo/Pembelian/pemesananpembelian.dart';
 import 'package:flutter_application_kledo/Pembelian/pengirimanpembelian.dart';
 import 'package:flutter_application_kledo/Pembelian/tagihanpembelian.dart';
 import 'package:flutter_application_kledo/penawaran/penawaranscreen.dart';
+import 'package:intl/intl.dart';
 
 
 class Pembelianscreen extends StatefulWidget {
@@ -47,10 +51,69 @@ class Pembelianscreen extends StatefulWidget {
   ];
 
   @override
-  State<Pembelianscreen> createState() => _PenjualanscreenState();
+  State<Pembelianscreen> createState() => _PembelianscreenState();
 }
 
-class _PenjualanscreenState extends State<Pembelianscreen> {
+bool isBulanSelected = true;
+
+String formatRupiah(dynamic amount) {
+  try {
+    final value = double.tryParse(amount.toString()) ?? 0;
+    return NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    ).format(value);
+  } catch (e) {
+    return 'Rp 0';
+  }
+}
+
+Future<List<Map<String, dynamic>>> fetchStatCards({required bool isMonthly}) async {
+  const url = 'http://192.168.1.23/Hiyami/penjualan_bulan.php';
+  final response = await http.get(Uri.parse(url));
+
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    final selectedData = isMonthly ? jsonData['bulan_lalu'] : jsonData['tahun_ini'];
+    final subtitleText = isMonthly ? 'Bulan Lalu' : 'Tahun Ini';
+
+    return [
+      {
+        'title': 'Total Penjualan',
+        'amount': selectedData['total_penjualan']['total_nilai'],
+        'count': selectedData['total_penjualan']['jumlah_data'].toString(),
+        'subtitle': subtitleText,
+        'growth': ''
+      },
+      {
+        'title': 'Pembayaran Diterima',
+        'amount': selectedData['pembayaran_diterima']['total_nilai'],
+        'count': selectedData['pembayaran_diterima']['jumlah_data'].toString(),
+        'subtitle': subtitleText,
+        'growth': ''
+      },
+      {
+        'title': 'Menunggu Pembayaran',
+        'amount': selectedData['menunggu_pembayaran']['total_nilai'],
+        'count': selectedData['menunggu_pembayaran']['jumlah_data'].toString(),
+        'subtitle': subtitleText,
+        'growth': ''
+      },
+      {
+        'title': 'Jatuh Tempo',
+        'amount': selectedData['jatuh_tempo']['total_nilai'],
+        'count': selectedData['jatuh_tempo']['jumlah_data'].toString(),
+        'subtitle': subtitleText,
+        'growth': ''
+      },
+    ];
+  } else {
+    throw Exception('Gagal memuat data');
+  }
+}
+
+class _PembelianscreenState extends State<Pembelianscreen> {
   List<bool> isSelected = [true, false];
   int currentPage = 0;
 
@@ -121,9 +184,9 @@ Row(
         ),
       ),
     ),
-    Padding(
-      padding: const EdgeInsets.only(top: 28),
-      child: const Text(
+    const Padding(
+      padding: EdgeInsets.only(top: 28),
+      child: Text(
         'Pembelian',
         style: TextStyle(
           color: Colors.white,
@@ -216,65 +279,72 @@ Row(
       ),
     );
   }
-
   Widget _buildToggleWaktu() {
-    List<bool> waktuSelected = [true, false];
-
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: ToggleButtons(
-            isSelected: waktuSelected,
-            onPressed: (int index) {
-              setState(() {
-                for (int i = 0; i < waktuSelected.length; i++) {
-                  waktuSelected[i] = i == index;
-                }
-              });
-            },
-            borderRadius: BorderRadius.circular(8),
-            selectedBorderColor: Colors.blue,
-            selectedColor: Colors.blue,
-            fillColor: Colors.blue.withOpacity(0.1),
-            color: Colors.black54,
-            constraints: const BoxConstraints(minHeight: 30, minWidth: 85),
-            children: const [
-              Text('Bulan'),
-              Text('Tahun'),
-            ],
-          ),
-        );
-      },
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ToggleButtons(
+        isSelected: [isBulanSelected, !isBulanSelected],
+        onPressed: (int index) {
+          setState(() {
+            isBulanSelected = index == 0;
+          });
+        },
+        borderRadius: BorderRadius.circular(8),
+        selectedBorderColor: Colors.blue,
+        selectedColor: Colors.blue,
+        fillColor: Colors.blue.withOpacity(0.1),
+        color: Colors.black54,
+        constraints: const BoxConstraints(minHeight: 30, minWidth: 85),
+        children: const [
+          Text('Bulan'),
+          Text('Tahun'),
+        ],
+      ),
     );
   }
 
   Widget _buildStatCards() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Tagihan Penjualan',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(4, (index) {
-              return Container(
-                margin: const EdgeInsets.only(right: 12),
-                width: 200,
-                child: const _StatCard(
-                  title: 'Judul',
-                  amount: 'Rp 0',
-                  growth: '+0%',
-                  count: '0',
-                  subtitle: 'Bulan Lalu',
-                ),
-              );
-            }),
-          ),
-        ),
-      ],
+    return FutureBuilder<List<dynamic>>(
+      future: fetchStatCards(isMonthly: isBulanSelected),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('Tidak ada data'));
+        }
+
+        final statsData = snapshot.data!;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              isBulanSelected ? 'Tagihan Bulanan' : 'Tagihan Tahunan',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: statsData.map((data) {
+                  return Container(
+                    margin: const EdgeInsets.only(right: 12),
+                    width: 200,
+                    child: _StatCard(
+                      title: data['title'] ?? '-',
+                      amount: formatRupiah(data['amount'] ?? '0'),
+                      growth: data['growth'] ?? '-',
+                      count: data['count'] ?? '0',
+                      subtitle: data['subtitle'] ?? '',
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -310,7 +380,7 @@ Row(
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.black12,
                               blurRadius: 8,
@@ -321,9 +391,9 @@ Row(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
+                              children: [
                                 Expanded(
                                   child: Text(
                                     'Penjualan Per Produk Bulan Ini',
