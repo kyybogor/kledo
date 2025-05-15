@@ -51,6 +51,7 @@ class Penjualanscreen extends StatefulWidget {
 
   @override
   State<Penjualanscreen> createState() => _PenjualanscreenState();
+  
 }
 
 bool isBulanSelected = true;
@@ -115,8 +116,15 @@ Future<List<Map<String, dynamic>>> fetchStatCards({required bool isMonthly}) asy
 class _PenjualanscreenState extends State<Penjualanscreen> {
   List<bool> isSelected = [true, false];
   int currentPage = 0;
+  Future<List<Map<String, dynamic>>>? futureStatCards;
 
-  @override
+
+@override
+void initState() {
+  super.initState();
+  futureStatCards = fetchStatCards(isMonthly: isBulanSelected);
+}
+  
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const KledoDrawer(),
@@ -278,11 +286,12 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
       alignment: Alignment.centerLeft,
       child: ToggleButtons(
         isSelected: [isBulanSelected, !isBulanSelected],
-        onPressed: (int index) {
-          setState(() {
-            isBulanSelected = index == 0;
-          });
-        },
+onPressed: (int index) {
+  setState(() {
+    isBulanSelected = index == 0;
+    futureStatCards = fetchStatCards(isMonthly: isBulanSelected);
+  });
+},
         borderRadius: BorderRadius.circular(8),
         selectedBorderColor: Colors.blue,
         selectedColor: Colors.blue,
@@ -297,50 +306,50 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
     );
   }
 
-  Widget _buildStatCards() {
-    return FutureBuilder<List<dynamic>>(
-      future: fetchStatCards(isMonthly: isBulanSelected),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('Tidak ada data'));
-        }
+Widget _buildStatCards() {
+  return FutureBuilder<List<Map<String, dynamic>>>(
+    future: futureStatCards,
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
+      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        return const Center(child: Text('Tidak ada data'));
+      }
 
-        final statsData = snapshot.data!;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              isBulanSelected ? 'Tagihan Bulanan' : 'Tagihan Tahunan',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      final statsData = snapshot.data!;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isBulanSelected ? 'Tagihan Bulanan' : 'Tagihan Tahunan',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: statsData.map((data) {
+                return Container(
+                  margin: const EdgeInsets.only(right: 12),
+                  width: 200,
+                  child: _StatCard(
+                    title: data['title'] ?? '-',
+                    amount: formatRupiah(data['amount'] ?? '0'),
+                    growth: data['growth'] ?? '-',
+                    count: data['count'] ?? '0',
+                    subtitle: data['subtitle'] ?? '',
+                  ),
+                );
+              }).toList(),
             ),
-            const SizedBox(height: 8),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: statsData.map((data) {
-                  return Container(
-                    margin: const EdgeInsets.only(right: 12),
-                    width: 200,
-                    child: _StatCard(
-                      title: data['title'] ?? '-',
-                      amount: formatRupiah(data['amount'] ?? '0'),
-                      growth: data['growth'] ?? '-',
-                      count: data['count'] ?? '0',
-                      subtitle: data['subtitle'] ?? '',
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+          ),
+        ],
+      );
+    },
+  );
+}
 
   Widget _buildPieChartCard() {
     int totalPages = 5;
