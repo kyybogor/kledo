@@ -30,6 +30,8 @@ import 'package:hayami_app/laporanAssetTetap/pelepasanaset.dart';
 import 'package:hayami_app/laporanAssetTetap/ringkasanasset.dart';
 import 'package:hayami_app/pajak/pajakpemotongan.dart';
 import 'package:hayami_app/pajak/pajakpenjualan.dart';
+import 'package:hayami_app/laporan/pembelianperperiode.dart';
+import 'package:hayami_app/laporan/pembelianperproduk.dart';
 
 class LaporanPage extends StatelessWidget {
   final Map<String, List<String>> laporanKategori = {
@@ -190,179 +192,199 @@ class LaporanPage extends StatelessWidget {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => PerubahanModalPage()));
+                                          builder: (context) =>
+                                              PerubahanModalPage()));
                                 } else if (laporan == "Trial Balance") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => TrialBalancePage()));
+                                          builder: (context) =>
+                                              TrialBalancePage()));
                                 } else if (laporan == "Detail Penjualan") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const DetailPenjualanPage()));
+                                          builder: (context) =>
+                                              const DetailPenjualanPage()));
                                 } else if (laporan == "Penjualan per Produk") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const PenjualanPerProdukPage()));
+                                          builder: (context) =>
+                                              const PenjualanPerProdukPage()));
                                 } else if (laporan == "Profibilitas Produk") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const ProfitabilitasProdukPage()));
-                                } else if(laporan == "Tagihan Pelanggan"){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const TagihanPelangganPage()));
-                                } else if(laporan == "Ringkasan Eksekutif"){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const RingkasanEksekutif()
-                                    )
-                                  );
-                                } else if(laporan == "Hutang Piutang per Kontak"){
+                                          builder: (context) =>
+                                              const ProfitabilitasProdukPage()));
+                                } else if (laporan == "Tagihan Pelanggan") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const Hutangpiutangperkontak()
-                                      )
-                                  );
-                                }else if(laporan == "Pelunasan Pembayaran Tagihan"){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const PelunasanListPage()
-                                    )
-                                  );
-                                } else if(laporan == "Ringkasan Inventori"){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const InventorySummaryPage()
-                                    )
-                                  );
-                                } else if(laporan == "Ringkasan Aset Tetap"){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const AsetRingkasanPage()
-                                    )
-                                  );
-                                }else if(laporan == "Pelepasan Aset"){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const PelepasanAsetPage()
-                                    )
-                                  );
-                                } else if(laporan == "Detil Aset Tetap"){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const DetilAsetTetapPage(),
-                                    )
-                                  );
-                                } else if(laporan == "Ringkasan Stok Gudang"){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const RingkasanStokGudangPage(),
-                                    )
-                                  );
-                                } else if(laporan == "Pajak Penjualan"){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const PajakPenjualanPage(),
-                                    )
-                                  );
-                                } else if(laporan == "Ringkasan Bank"){
+                                          builder: (context) =>
+                                              const TagihanPelangganPage()));
+                                } else if (laporan == "Ringkasan Eksekutif") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const RingkasanBank(),
-                                    )
-                                  );
-                                } else if(laporan == "Buku Besar"){
+                                          builder: (context) =>
+                                              const RingkasanEksekutif()));
+                                } else if (laporan ==
+                                    "Hutang Piutang per Kontak") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => BukuBesarScreen(),
-                                    )
-                                  );
-                                } else if(laporan == "Pajak Pemotongan"){
+                                          builder: (context) =>
+                                              const Hutangpiutangperkontak()));
+                                } else if (laporan ==
+                                    "Pelunasan Pembayaran Tagihan") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const PajakPemotonganPage(),
-                                    )
-                                  );
-                                } else if(laporan == "Pendapatan per Pelanggan"){
+                                          builder: (context) =>
+                                              const PelunasanListPage()));
+                                } else if (laporan == "Ringkasan Inventori") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const PendapatanPerpelangganPage(),
-                                    )
-                                  );
-                                } else if(laporan == "Jurnal"){
+                                          builder: (context) =>
+                                              const InventorySummaryPage()));
+                                } else if (laporan == "Ringkasan Aset Tetap") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const JurnalListPage(),
-                                    )
-                                  );
-                                } else if(laporan == "Penjualan Produk per Pelanggan"){
+                                          builder: (context) =>
+                                              const AsetRingkasanPage()));
+                                } else if (laporan == "Pelepasan Aset") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const SalesListPage(),
-                                    )
-                                  );
-                                } else if(laporan == "Penjualan per Kategori Produk"){
+                                          builder: (context) =>
+                                              const PelepasanAsetPage()));
+                                } else if (laporan == "Detil Aset Tetap") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const PenjualanPerKategoriPage(),
-                                    )
-                                  );
-                                } else if(laporan == "Penjualan per Periode"){
+                                        builder: (context) =>
+                                            const DetilAsetTetapPage(),
+                                      ));
+                                } else if (laporan == "Ringkasan Stok Gudang") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const PenjualanPerPeriodePage(),
-                                    )
-                                  );
-                                } else if(laporan == "Umur Piutang"){
+                                        builder: (context) =>
+                                            const RingkasanStokGudangPage(),
+                                      ));
+                                } else if (laporan == "Pajak Penjualan") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const UmurPiutangPage(),
-                                    )
-                                  );
-                                } else if(laporan == "Biaya per Kontak"){
+                                        builder: (context) =>
+                                            const PajakPenjualanPage(),
+                                      ));
+                                } else if (laporan == "Ringkasan Bank") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const Biayaperkontak(),
-                                    )
-                                  );
-                                } else if(laporan == "Pergerakan Stok Inventori"){
+                                        builder: (context) =>
+                                            const RingkasanBank(),
+                                      ));
+                                } else if (laporan == "Buku Besar") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const InventoryMovementPage(),
-                                    )
-                                  );
-                                } else if(laporan == "Pergerakan Stok Gudang"){
+                                        builder: (context) => BukuBesarScreen(),
+                                      ));
+                                } else if (laporan == "Pajak Pemotongan") {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const StockMovementPage(),
-                                    )
-                                  );
+                                        builder: (context) =>
+                                            const PajakPemotonganPage(),
+                                      ));
+                                } else if (laporan ==
+                                    "Pendapatan per Pelanggan") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const PendapatanPerpelangganPage(),
+                                      ));
+                                } else if (laporan == "Jurnal") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const JurnalListPage(),
+                                      ));
+                                } else if (laporan ==
+                                    "Penjualan Produk per Pelanggan") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SalesListPage(),
+                                      ));
+                                } else if (laporan ==
+                                    "Penjualan per Kategori Produk") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const PenjualanPerKategoriPage(),
+                                      ));
+                                } else if (laporan == "Penjualan per Periode") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const PenjualanPerPeriodePage(),
+                                      ));
+                                } else if (laporan == "Umur Piutang") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const UmurPiutangPage(),
+                                      ));
+                                } else if (laporan == "Biaya per Kontak") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const Biayaperkontak(),
+                                      ));
+                                } else if (laporan ==
+                                    "Pergerakan Stok Inventori") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const InventoryMovementPage(),
+                                      ));
+                                } else if (laporan ==
+                                    "Pergerakan Stok Gudang") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const StockMovementPage(),
+                                      ));
+                                } else if (laporan == "Pembelian per Periode") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const PembelianPerPeriodePage(),
+                                      ));
+                                } else if (laporan == "Pembelian per Produk") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const PembelianPerProdukPage(),
+                                      ));
                                 }
                               },
                             ),
