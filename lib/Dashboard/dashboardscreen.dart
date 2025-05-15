@@ -189,12 +189,6 @@ appBar: AppBar(
                               MaterialPageRoute(
                                   builder: (_) => const KontakScreen()));
                           break;
-                        case 'Keluar':
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const LoginPage()));
-                          break;
                         default:
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
