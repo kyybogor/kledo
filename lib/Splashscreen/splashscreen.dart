@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hayami_app/Login/loginScreen.dart';
 
-
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
 
@@ -50,7 +49,10 @@ class _SplashscreenState extends State<Splashscreen>
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+            colors: [
+              Color(0xFF1976D2), // Biru terang
+              Color(0xFF0D47A1), // Biru tua
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -62,14 +64,14 @@ class _SplashscreenState extends State<Splashscreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset(
-                  'assets/image/baru.png', 
-                  width: 160,
+                  'assets/image/hayamibaru.png',
+                  width: 280,
                 ),
                 const SizedBox(height: 20),
                 const Text(
                   'Memudahkan Keuangan Bisnismu',
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: Colors.white,
                     fontSize: 16,
                     fontStyle: FontStyle.italic,
                   ),
