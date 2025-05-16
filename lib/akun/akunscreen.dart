@@ -32,7 +32,7 @@ class _AkunscreenState extends State<Akunscreen> {
   }
 
   Future<void> fetchKasBank() async {
-    final url = Uri.parse('http://192.168.1.9/connect/JSON/kasdanbank.php');
+    final url = Uri.parse('http://192.168.1.21/connect/JSON/kasdanbank.php');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -48,7 +48,7 @@ class _AkunscreenState extends State<Akunscreen> {
   }
 
   Future<void> fetchPiutang() async {
-    final url = Uri.parse('http://192.168.1.9/connect/JSON/piutang.php');
+    final url = Uri.parse('http://192.168.1.21/connect/JSON/piutang.php');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -64,7 +64,7 @@ class _AkunscreenState extends State<Akunscreen> {
   }
 
   Future<void> fetchPersediaan() async {
-    final url = Uri.parse('http://192.168.1.9/connect/JSON/persediaan.php');
+    final url = Uri.parse('http://192.168.1.21/connect/JSON/persediaan.php');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -81,7 +81,7 @@ class _AkunscreenState extends State<Akunscreen> {
 
   Future<void> fetchAktivaLancarLainnya() async {
     final url =
-        Uri.parse('http://192.168.1.9/connect/JSON/aktivalancarlainnya.php');
+        Uri.parse('http://192.168.1.21/connect/JSON/aktivalancarlainnya.php');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

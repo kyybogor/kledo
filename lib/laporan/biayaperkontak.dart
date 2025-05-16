@@ -22,7 +22,7 @@ class _BiayaperkontakState extends State<Biayaperkontak> {
   }
 
   Future<void> _fetchData() async {
-    final url = Uri.parse('http://192.168.1.9/connect/JSON/kontak.php');
+    final url = Uri.parse('http://192.168.1.21/connect/JSON/kontak.php');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
