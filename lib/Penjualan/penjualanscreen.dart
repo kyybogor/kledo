@@ -51,7 +51,6 @@ class Penjualanscreen extends StatefulWidget {
 
   @override
   State<Penjualanscreen> createState() => _PenjualanscreenState();
-  
 }
 
 bool isBulanSelected = true;
@@ -69,13 +68,15 @@ String formatRupiah(dynamic amount) {
   }
 }
 
-Future<List<Map<String, dynamic>>> fetchStatCards({required bool isMonthly}) async {
-  const url = 'http://192.168.1.23/Hiyami/penjualan_bulan.php';
+Future<List<Map<String, dynamic>>> fetchStatCards(
+    {required bool isMonthly}) async {
+  const url = 'http://192.168.1.22/Hiyami/penjualan_bulan.php';
   final response = await http.get(Uri.parse(url));
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.body);
-    final selectedData = isMonthly ? jsonData['bulan_lalu'] : jsonData['tahun_ini'];
+    final selectedData =
+        isMonthly ? jsonData['bulan_lalu'] : jsonData['tahun_ini'];
     final subtitleText = isMonthly ? 'Bulan Lalu' : 'Tahun Ini';
 
     return [
@@ -118,13 +119,12 @@ class _PenjualanscreenState extends State<Penjualanscreen> {
   int currentPage = 0;
   Future<List<Map<String, dynamic>>>? futureStatCards;
 
+  @override
+  void initState() {
+    super.initState();
+    futureStatCards = fetchStatCards(isMonthly: isBulanSelected);
+  }
 
-@override
-void initState() {
-  super.initState();
-  futureStatCards = fetchStatCards(isMonthly: isBulanSelected);
-}
-  
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const KledoDrawer(),
@@ -286,12 +286,12 @@ void initState() {
       alignment: Alignment.centerLeft,
       child: ToggleButtons(
         isSelected: [isBulanSelected, !isBulanSelected],
-onPressed: (int index) {
-  setState(() {
-    isBulanSelected = index == 0;
-    futureStatCards = fetchStatCards(isMonthly: isBulanSelected);
-  });
-},
+        onPressed: (int index) {
+          setState(() {
+            isBulanSelected = index == 0;
+            futureStatCards = fetchStatCards(isMonthly: isBulanSelected);
+          });
+        },
         borderRadius: BorderRadius.circular(8),
         selectedBorderColor: Colors.blue,
         selectedColor: Colors.blue,
@@ -306,50 +306,50 @@ onPressed: (int index) {
     );
   }
 
-Widget _buildStatCards() {
-  return FutureBuilder<List<Map<String, dynamic>>>(
-    future: futureStatCards,
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (snapshot.hasError) {
-        return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
-      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-        return const Center(child: Text('Tidak ada data'));
-      }
+  Widget _buildStatCards() {
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: futureStatCards,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('Tidak ada data'));
+        }
 
-      final statsData = snapshot.data!;
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            isBulanSelected ? 'Tagihan Bulanan' : 'Tagihan Tahunan',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: statsData.map((data) {
-                return Container(
-                  margin: const EdgeInsets.only(right: 12),
-                  width: 200,
-                  child: _StatCard(
-                    title: data['title'] ?? '-',
-                    amount: formatRupiah(data['amount'] ?? '0'),
-                    growth: data['growth'] ?? '-',
-                    count: data['count'] ?? '0',
-                    subtitle: data['subtitle'] ?? '',
-                  ),
-                );
-              }).toList(),
+        final statsData = snapshot.data!;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              isBulanSelected ? 'Tagihan Bulanan' : 'Tagihan Tahunan',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-          ),
-        ],
-      );
-    },
-  );
-}
+            const SizedBox(height: 8),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: statsData.map((data) {
+                  return Container(
+                    margin: const EdgeInsets.only(right: 12),
+                    width: 200,
+                    child: _StatCard(
+                      title: data['title'] ?? '-',
+                      amount: formatRupiah(data['amount'] ?? '0'),
+                      growth: data['growth'] ?? '-',
+                      count: data['count'] ?? '0',
+                      subtitle: data['subtitle'] ?? '',
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _buildPieChartCard() {
     int totalPages = 5;

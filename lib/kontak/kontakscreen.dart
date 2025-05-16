@@ -132,7 +132,7 @@ class DetailKontak extends StatelessWidget {
 
   Future<List<dynamic>> fetchProduct(int id) async {
     final response =
-        await http.get(Uri.parse('http://192.168.1.23/Hiyami/tessss.php'));
+        await http.get(Uri.parse('http://192.168.1.22/Hiyami/tessss.php'));
 
     if (response.statusCode == 200) {
       final jsonBody = json.decode(response.body);

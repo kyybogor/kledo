@@ -21,7 +21,7 @@ class _UmurPiutangPageState extends State<UmurPiutangPage> {
 
   Future<void> fetchPiutangData() async {
     final response =
-        await http.get(Uri.parse('http://192.168.1.23/Hiyami/jurnal.php'));
+        await http.get(Uri.parse('http://192.168.1.22/Hiyami/jurnal.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);

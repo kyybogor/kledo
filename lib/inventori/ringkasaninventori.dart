@@ -23,7 +23,7 @@ class _InventorySummaryPageState extends State<InventorySummaryPage> {
 
   Future<List<Map<String, dynamic>>> fetchProduct() async {
     final response =
-        await http.get(Uri.parse('http://192.168.1.23/hiyami/tessss.php'));
+        await http.get(Uri.parse('http://192.168.1.22/hiyami/tessss.php'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

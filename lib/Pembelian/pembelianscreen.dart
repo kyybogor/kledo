@@ -9,7 +9,6 @@ import 'package:hayami_app/Pembelian/tagihanpembelian.dart';
 import 'package:hayami_app/penawaran/penawaranscreen.dart';
 import 'package:intl/intl.dart';
 
-
 class Pembelianscreen extends StatefulWidget {
   const Pembelianscreen({super.key});
 
@@ -69,13 +68,15 @@ String formatRupiah(dynamic amount) {
   }
 }
 
-Future<List<Map<String, dynamic>>> fetchStatCards({required bool isMonthly}) async {
-  const url = 'http://192.168.1.23/Hiyami/penjualan_bulan.php';
+Future<List<Map<String, dynamic>>> fetchStatCards(
+    {required bool isMonthly}) async {
+  const url = 'http://192.168.1.22/Hiyami/penjualan_bulan.php';
   final response = await http.get(Uri.parse(url));
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.body);
-    final selectedData = isMonthly ? jsonData['bulan_lalu'] : jsonData['tahun_ini'];
+    final selectedData =
+        isMonthly ? jsonData['bulan_lalu'] : jsonData['tahun_ini'];
     final subtitleText = isMonthly ? 'Bulan Lalu' : 'Tahun Ini';
 
     return [
@@ -116,8 +117,14 @@ Future<List<Map<String, dynamic>>> fetchStatCards({required bool isMonthly}) asy
 class _PembelianscreenState extends State<Pembelianscreen> {
   List<bool> isSelected = [true, false];
   int currentPage = 0;
+  Future<List<Map<String, dynamic>>>? futureStatCards;
 
   @override
+  void initState() {
+    super.initState();
+    futureStatCards = fetchStatCards(isMonthly: isBulanSelected);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const KledoDrawer(),
@@ -146,62 +153,60 @@ class _PembelianscreenState extends State<Pembelianscreen> {
     );
   }
 
-Widget _buildAppBar() {
-  return ClipPath(
-    clipper: BottomWaveClipper(),
-    child: Container(
-      height: 130,
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+  Widget _buildAppBar() {
+    return ClipPath(
+      clipper: BottomWaveClipper(),
+      child: Container(
+        height: 130,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
-        child: Column(
-          children: [
-Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    Builder(
-      builder: (context) => Padding(
-        padding: const EdgeInsets.only(top: 28), 
-        child: Container(
-          height: 48,
-          width: 48,
-          child: IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
-            iconSize: 26,
-            onPressed: () => Scaffold.of(context).openDrawer(),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Builder(
+                    builder: (context) => Padding(
+                      padding: const EdgeInsets.only(top: 28),
+                      child: Container(
+                        height: 48,
+                        width: 48,
+                        child: IconButton(
+                          icon: const Icon(Icons.menu, color: Colors.white),
+                          iconSize: 26,
+                          onPressed: () => Scaffold.of(context).openDrawer(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 28),
+                    child: Text(
+                      'Pembelian',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 48), // Ini biar kanan dan kiri seimbang
+                ],
+              ),
+            ],
           ),
         ),
       ),
-    ),
-    const Padding(
-      padding: EdgeInsets.only(top: 28),
-      child: Text(
-        'Pembelian',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-    const SizedBox(width: 48), // Ini biar kanan dan kiri seimbang
-  ],
-),
-
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildIconMenu() {
     return Container(
@@ -275,6 +280,7 @@ Row(
       ),
     );
   }
+
   Widget _buildToggleWaktu() {
     return Align(
       alignment: Alignment.centerLeft,
@@ -283,6 +289,7 @@ Row(
         onPressed: (int index) {
           setState(() {
             isBulanSelected = index == 0;
+            futureStatCards = fetchStatCards(isMonthly: isBulanSelected);
           });
         },
         borderRadius: BorderRadius.circular(8),
@@ -300,8 +307,8 @@ Row(
   }
 
   Widget _buildStatCards() {
-    return FutureBuilder<List<dynamic>>(
-      future: fetchStatCards(isMonthly: isBulanSelected),
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: futureStatCards,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -569,7 +576,8 @@ class BottomWaveClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     final path = Path();
     path.lineTo(0, size.height - 30);
-    path.quadraticBezierTo(size.width / 2, size.height, size.width, size.height - 30);
+    path.quadraticBezierTo(
+        size.width / 2, size.height, size.width, size.height - 30);
     path.lineTo(size.width, 0);
     path.close();
     return path;

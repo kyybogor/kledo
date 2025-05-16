@@ -72,7 +72,7 @@ class _AsetRingkasanPageState extends State<AsetRingkasanPage> {
   }
 
   Future<void> fetchAsetData() async {
-    final url = Uri.parse('http://192.168.1.23/hiyami/asset.php');
+    final url = Uri.parse('http://192.168.1.22/hiyami/asset.php');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

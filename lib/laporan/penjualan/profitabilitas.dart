@@ -21,7 +21,7 @@ class _ProfitabilitasProdukPageState extends State<ProfitabilitasProdukPage> {
   }
 
   Future<void> fetchProduk() async {
-    final response = await http.get(Uri.parse('http://192.168.1.23/hiyami/tessss.php'));
+    final response = await http.get(Uri.parse('http://192.168.1.22/hiyami/tessss.php'));
 
     if (response.statusCode == 200) {
       final jsonMap = jsonDecode(response.body);
