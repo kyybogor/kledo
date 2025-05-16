@@ -32,7 +32,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
   Future<void> fetchInvoices() async {
     try {
       final response = await http
-          .get(Uri.parse('http://192.168.1.22/hiyami/tessss.php'));
+          .get(Uri.parse('http://192.168.1.21/connect/JSON/kontak.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -43,6 +43,7 @@ class _BelumDibayarState extends State<BelumDibayar> {
           return {
             "id": item["id"],
             "name": item["nama"],
+            'instansi': item['instansi'],
             "invoice": item["invoice"],
             "date": item["date"],
             "due": item["due"],

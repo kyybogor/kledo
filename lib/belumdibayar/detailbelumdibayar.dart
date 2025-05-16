@@ -103,6 +103,7 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
   Widget build(BuildContext context) {
     final invoice = widget.invoice;
     final contactName = invoice['name'] ?? 'Tidak diketahui';
+    final instansi = invoice['instansi']?? '-';
     final invoiceNumber = invoice['invoice'] ?? '-';
     final date = invoice['date'] ?? '-';
     final dueDate = invoice['due'] ?? '-';
@@ -132,7 +133,7 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
       ),
       body: Column(
         children: [
-          _buildHeader(invoiceNumber, contactName, address, date, dueDate, status, statusColor),
+          _buildHeader(invoiceNumber, contactName, instansi, address, date, dueDate, status, statusColor),
           const SizedBox(height: 12),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
@@ -236,7 +237,7 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
     );
   }
 
-  Widget _buildHeader(String invoiceNumber, String contactName, String address,
+  Widget _buildHeader(String invoiceNumber, String contactName, String instansi, String address,
       String date, String dueDate, String status, Color statusColor) {
     return Container(
       width: double.infinity,
@@ -259,6 +260,8 @@ class _DetailbelumdibayarState extends State<Detailbelumdibayar> {
           const SizedBox(height: 16),
           Text(contactName,
               style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 2),
+          Text(instansi, style: const TextStyle(fontSize: 13, color: Colors.white)),
           const SizedBox(height: 2),
           Text(address, style: const TextStyle(fontSize: 13, color: Colors.white)),
           const SizedBox(height: 16),
