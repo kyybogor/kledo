@@ -20,8 +20,8 @@ class _RingkasanEksekutifState extends State<RingkasanEksekutif> {
   }
 
   Future<void> fetchData() async {
-    final response = await http.get(Uri.parse(
-        'http://192.168.1.21/connect/JSON/ringkasan_eksekutif.php'));
+    final response = await http.get(
+        Uri.parse('http://192.168.1.21/connect/JSON/ringkasan_eksekutif.php'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -43,7 +43,10 @@ class _RingkasanEksekutifState extends State<RingkasanEksekutif> {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.blueAccent,
-        title: const Text('Ringkasan Eksekutif', style: TextStyle(color: Colors.blueAccent, fontSize: 20),),
+        title: const Text(
+          'Ringkasan Eksekutif',
+          style: TextStyle(color: Colors.blueAccent, fontSize: 20),
+        ),
         centerTitle: true,
       ),
       body: isLoading
@@ -73,7 +76,7 @@ class _RingkasanEksekutifState extends State<RingkasanEksekutif> {
                 ]),
                 const SizedBox(height: 10),
                 buildSection('Pendapatan', data['Pendapatan'], [
-                  'Jumlah tagihan diterbitkan', 
+                  'Jumlah tagihan diterbitkan',
                   'Rata-rata nilai tagihan',
                 ]),
                 const SizedBox(height: 10),
