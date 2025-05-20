@@ -9,9 +9,11 @@ import 'package:hayami_app/Penjualan/penjualanscreen.dart';
 import 'package:hayami_app/akun/akunscreen.dart';
 import 'package:hayami_app/assetetap/assetetap.dart';
 import 'package:hayami_app/biaya/biayascreen.dart';
+import 'package:hayami_app/customer/supplier/customer.dart';
 import 'package:hayami_app/kas%20&%20bank/kasdanbank.dart';
 import 'package:hayami_app/kontak/kontakscreen.dart';
 import 'package:hayami_app/laporan/laporanscreen.dart';
+import 'package:hayami_app/laporan/penjualan/penjualanprodukperpelanggan.dart';
 import 'package:hayami_app/pemesanan/pemesananscreen.dart';
 import 'package:hayami_app/penawaran/penawaranscreen.dart';
 import 'package:hayami_app/produk/produk.dart';
@@ -169,7 +171,7 @@ appBar: AppBar(
                           break;
                         case 'Laporan':
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (_) => LaporanPage()));
+                              MaterialPageRoute(builder: (_) => const Customerscreen()));
                           break;
                         case 'Kas & Bank':
                           Navigator.push(

@@ -19,7 +19,7 @@ class _BukuBesarScreenState extends State<BukuBesarScreen> {
 
   Future<void> fetchBukuBesar() async {
     final response = await http.get(
-      Uri.parse("http://192.168.1.9/connect/JSON/buku_besar.php"),
+      Uri.parse("http://192.168.1.10/connect/JSON/buku_besar.php"),
     );
 
     if (response.statusCode == 200) {

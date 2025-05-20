@@ -23,7 +23,7 @@ class _HutangpiutangperkontakState extends State<Hutangpiutangperkontak> {
 
   Future<void> fetchContacts() async {
     final response =
-        await http.get(Uri.parse("http://192.168.1.9/connect/JSON/kontak.php"));
+        await http.get(Uri.parse("http://192.168.1.10/connect/JSON/kontak.php"));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       setState(() {
