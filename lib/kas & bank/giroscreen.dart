@@ -23,8 +23,8 @@ class _GiroscreenState extends State<Giroscreen> {
   }
 
 Future<void> fetchData() async {
-  final urlHayami = Uri.parse('http://192.168.1.21/connect/JSON/transaksi.php');
-  final urlBank = Uri.parse('http://192.168.1.21/connect/JSON/transaksi_bank.php');
+  final urlHayami = Uri.parse('http://192.168.1.9/connect/JSON/transaksi.php');
+  final urlBank = Uri.parse('http://192.168.1.9/connect/JSON/transaksi_bank.php');
 
   try {
     final responseHayami = await http.get(urlHayami);

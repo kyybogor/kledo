@@ -19,7 +19,7 @@ class _KasDanBankState extends State<KasDanBank> {
   bool isLoading = true;
 
   // Ganti URL di bawah sesuai servermu
-  final String apiUrl = "http://192.168.1.21/connect/JSON/kasdanbank.php";
+  final String apiUrl = "http://192.168.1.9/connect/JSON/kasdanbank.php";
 
   final Map<String, Color> warnaMap = {
     "Kas": Colors.red,

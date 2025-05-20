@@ -52,7 +52,7 @@ class _EditBankScreenState extends State<EditBankScreen> {
     }
 
     final uri =
-        Uri.parse('http://192.168.1.21/connect/JSON/transaksi_bank.php');
+        Uri.parse('http://192.168.1.9/connect/JSON/transaksi_bank.php');
 
     print('Data yang dikirim:');
     print({

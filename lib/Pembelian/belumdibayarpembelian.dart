@@ -32,7 +32,7 @@ class _BelumDibayarPembelianState extends State<BelumDibayarPembelian> {
   Future<void> fetchInvoices() async {
     try {
       final response = await http
-          .get(Uri.parse('http://192.168.1.21/connect/JSON/index.php'));
+          .get(Uri.parse('http://192.168.1.9/connect/JSON/index.php'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
