@@ -29,7 +29,7 @@ flutter:
     #- images/kledo.png
     - assets/image/hayamibaru.png
     - assets/image/hayamilogo.png
-    - assets/placeholder.png
+    #- assets/placeholder.png
 
 
 flutter_icons:
