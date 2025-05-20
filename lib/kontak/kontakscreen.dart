@@ -25,7 +25,7 @@ class _KontakScreenState extends State<KontakScreen> {
 
   Future<void> fetchContacts() async {
     final response =
-        await http.get(Uri.parse("http://192.168.1.10/connect/JSON/kontak.php"));
+        await http.get(Uri.parse("http://192.168.1.21/connect/JSON/kontak.php"));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       setState(() {
@@ -132,7 +132,7 @@ class DetailKontak extends StatelessWidget {
 
   Future<List<dynamic>> fetchProduct(int id) async {
     final response =
-        await http.get(Uri.parse('http://192.168.1.8/Hiyami/tessss.php'));
+        await http.get(Uri.parse('http://192.168.1.22/Hiyami/tessss.php'));
 
     if (response.statusCode == 200) {
       final jsonBody = json.decode(response.body);

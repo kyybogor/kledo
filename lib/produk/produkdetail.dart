@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'pergerakanstok.dart';
 import 'transaksiterkini.dart';
 import 'transfergudang.dart';
+import 'unit.dart';
 
 String formatRupiah(dynamic amount) {
   try {
@@ -17,13 +18,6 @@ String formatRupiah(dynamic amount) {
   }
 }
 
-String displayValue(dynamic value) {
-  if (value == null || value.toString().toLowerCase() == 'null' || value.toString().trim().isEmpty) {
-    return '-';
-  }
-  return value.toString();
-}
-
 class ProductDetailPage extends StatelessWidget {
   final Map<String, dynamic> product;
 
@@ -31,6 +25,7 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Data yang digunakan untuk Transaksi Terkini dan Transfer Gudang
     List<Map<String, String>> transaksiTerkini = [
       {'title': 'Tagihan Penjualan', 'amount': '899.099', 'date': '15/04/2025'},
       {'title': 'Tagihan Penjualan', 'amount': '998.000', 'date': '15/04/2025'},
@@ -47,8 +42,8 @@ class ProductDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Column(
           children: [
-            Text(displayValue(product['produk_name']), style: const TextStyle(fontSize: 20)),
-            Text(displayValue(product['produk_code']), style: const TextStyle(fontSize: 12)),
+            Text(product['produk_name']!, style: const TextStyle(fontSize: 20)),
+            Text(product['produk_code'], style: const TextStyle(fontSize: 12)),
           ],
         ),
         centerTitle: true,
@@ -69,7 +64,8 @@ class ProductDetailPage extends StatelessWidget {
                     context: context,
                     builder: (ctx) => AlertDialog(
                       title: const Text('Lihat Audit'),
-                      content: const Text('Menampilkan log audit untuk produk ini.'),
+                      content:
+                          const Text('Menampilkan log audit untuk produk ini.'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(ctx),
@@ -95,6 +91,16 @@ class ProductDetailPage extends StatelessWidget {
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
+                value: 'audit',
+                child: Row(
+                  children: [
+                    Icon(Icons.history, size: 20),
+                    SizedBox(width: 8),
+                    Text('Lihat Audit'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
                 value: 'ubah',
                 child: Row(
                   children: [
@@ -105,12 +111,32 @@ class ProductDetailPage extends StatelessWidget {
                 ),
               ),
               const PopupMenuItem(
-                value: 'hapus',
+                value: 'duplikat',
                 child: Row(
                   children: [
-                    Icon(Icons.delete_sharp, size: 20),
+                    Icon(Icons.copy, size: 20),
                     SizedBox(width: 8),
-                    Text('Hapus'),
+                    Text('Duplikat'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'konversi',
+                child: Row(
+                  children: [
+                    Icon(Icons.swap_horiz, size: 20),
+                    SizedBox(width: 8),
+                    Text('Konversi Satuan'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'arsipkan',
+                child: Row(
+                  children: [
+                    Icon(Icons.archive, size: 20),
+                    SizedBox(width: 8),
+                    Text('Arsipkan'),
                   ],
                 ),
               ),
@@ -124,13 +150,17 @@ class ProductDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Menampilkan info produk seperti stok, penjualan, dan hpp
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _buildInfoCard('Stok di tangan', displayValue(product['stok']), Colors.pink),
-                  _buildInfoCard('Penjualan', displayValue(product['penjualan']), Colors.orange),
-                  _buildInfoCard('Hpp', displayValue(product['hpp_value']), Colors.blue),
+                  _buildInfoCard('Stok di tangan', product['stok'].toString(),
+                      Colors.pink),
+                  _buildInfoCard('Penjualan', product['penjualan'].toString(),
+                      Colors.orange),
+                  _buildInfoCard(
+                      'Hpp', product['hpp_value'].toString(), Colors.blue),
                 ],
               ),
             ),
@@ -139,7 +169,7 @@ class ProductDetailPage extends StatelessWidget {
               children: [
                 const CircleAvatar(
                   radius: 40,
-                  backgroundImage: AssetImage('./assets/akuntan.jpg'),
+                  backgroundImage: AssetImage('assets/kneel_boots.jpg'),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -149,19 +179,32 @@ class ProductDetailPage extends StatelessWidget {
                       Row(children: [
                         const Icon(Icons.inventory_2),
                         const SizedBox(width: 8),
-                        Text(displayValue(product['produk_name']))
+                        Text(product['produk_name']!)
                       ]),
                       const SizedBox(height: 4),
                       Row(children: [
                         const Icon(Icons.category),
                         const SizedBox(width: 8),
-                        Text('Kategori: ${displayValue(product['kategori'])}')
+                        Text('Kategori: ' +product['kategori']!)
+                      ]),
+                      const SizedBox(height: 4),
+                      const Row(children: [
+                        Icon(Icons.straighten),
+                        SizedBox(width: 8),
+                        Text('Satuan: Pcs')
+                      ]),
+                      const SizedBox(height: 4),
+                      Row(children: [
+                        const Icon(Icons.shopping_bag),
+                        const SizedBox(width: 8),
+                        Text('Harga Beli: ${formatRupiah(product['hpp'])}')
                       ]),
                       const SizedBox(height: 4),
                       Row(children: [
                         const Icon(Icons.sell),
                         const SizedBox(width: 8),
-                        Text('Harga Jual: ${product['harga_jual'] == null ? '-' : formatRupiah(product['harga_jual'])}')
+                        Text(
+                            'Harga Jual: ${formatRupiah(product['harga_jual'])}')
                       ]),
                     ],
                   ),
@@ -169,6 +212,13 @@ class ProductDetailPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
+            _sectionHeaderWithAction(context, 'Unit', 'Tambah konversi satuan',
+                actionColor: Colors.blue),
+            const SizedBox(height: 8),
+            const Text('Satuan Dasar: Pcs'),
+            const SizedBox(
+              height: 8,
+            ),
             _sectionHeader('Gudang'),
             const SizedBox(height: 8),
             if (product['gudang']?['unassigned'] == null &&
@@ -180,37 +230,47 @@ class ProductDetailPage extends StatelessWidget {
               )
             else ...[
               if (product['gudang']?['unassigned'] != null)
-                _buildWarehouseRow('Unassigned', displayValue(product['gudang']['unassigned'])),
+                _buildWarehouseRow(
+                    'Unassigned', product['gudang']['unassigned'].toString()),
               if (product['gudang']?['gudang_utama'] != null)
-                _buildWarehouseRow('Gudang Utama', displayValue(product['gudang']['gudang_utama'])),
+                _buildWarehouseRow('Gudang Utama',
+                    product['gudang']['gudang_utama'].toString()),
               if (product['gudang']?['gudang_elektronik'] != null)
-                _buildWarehouseRow('Gudang Elektronik', displayValue(product['gudang']['gudang_elektronik'])),
+                _buildWarehouseRow('Gudang Elektronik',
+                    product['gudang']['gudang_elektronik'].toString()),
               const Divider(),
-              _buildWarehouseRow('Total', displayValue(product['total_gudang']), isBold: true),
+              _buildWarehouseRow(
+                'Total',
+                product['total_gudang']?.toString() ?? '0',
+                isBold: true,
+              ),
             ],
             const SizedBox(height: 24),
-            _sectionHeaderWithAction(context, 'Transaksi Terkini', 'Lihat Semua', actionColor: Colors.blue),
+            _sectionHeaderWithAction(
+                context, 'Transaksi Terkini', 'Lihat Semua',
+                actionColor: Colors.blue),
             const SizedBox(height: 8),
+            // Menampilkan transaksi terkini
             ...transaksiTerkini.map((trx) {
-              return _buildTransactionRow(
-                displayValue(trx['title']),
-                displayValue(trx['amount']),
-                displayValue(trx['date']),
-              );
+              return _buildTransactionRow(trx['title']!, trx['amount']!,
+                  trx['date']!);
             }).toList(),
             const SizedBox(height: 24),
-            _sectionHeaderWithAction(context, 'Pergerakan Stok', 'Lihat Semua', actionColor: Colors.blue),
+            _sectionHeaderWithAction(context, 'Pergerakan Stok', 'Lihat Semua',
+                actionColor: Colors.blue),
             const SizedBox(height: 8),
             _buildStockMovement('Tagihan Penjualan', '-2', Colors.red),
             _buildStockMovement('Tagihan Pembelian', '+2', Colors.green),
             _buildStockMovement('Tagihan Penjualan', '-3', Colors.red),
             const SizedBox(height: 24),
-            _sectionHeaderWithAction(context, 'Transfer Gudang', 'Lihat Semua', actionColor: Colors.blue),
+            _sectionHeaderWithAction(context, 'Transfer Gudang', 'Lihat Semua',
+                actionColor: Colors.blue),
             const SizedBox(height: 8),
+            // Menampilkan transfer gudang
             ...transferGudang.map((transfer) {
               return ListTile(
-                title: Text(displayValue(transfer['kode'])),
-                subtitle: Text(displayValue(transfer['tanggal'])),
+                title: Text(transfer['kode']!),
+                subtitle: Text(transfer['tanggal']!),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               );
@@ -222,6 +282,7 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  // Widget untuk menampilkan info card
   Widget _buildInfoCard(String title, String value, Color color) {
     return Container(
       width: 200,
@@ -253,27 +314,35 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  // Widget untuk menampilkan row gudang
   Widget _buildWarehouseRow(String name, String qty, {bool isBold = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(name, style: isBold ? const TextStyle(fontWeight: FontWeight.bold) : null),
-          Text(qty, style: isBold ? const TextStyle(fontWeight: FontWeight.bold) : null),
+          Text(name,
+              style:
+                  isBold ? const TextStyle(fontWeight: FontWeight.bold) : null),
+          Text(qty,
+              style:
+                  isBold ? const TextStyle(fontWeight: FontWeight.bold) : null),
         ],
       ),
     );
   }
 
+  // Widget untuk menampilkan transaksi terkini
   Widget _buildTransactionRow(String title, String amount, String date) {
     return ListTile(
       title: Text(title),
       subtitle: Text(date),
-      trailing: Text(amount, style: const TextStyle(fontWeight: FontWeight.bold)),
+      trailing:
+          Text(amount, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 
+  // Widget untuk menampilkan pergerakan stok
   Widget _buildStockMovement(String title, String qty, Color color) {
     return ListTile(
       title: Text(title),
@@ -288,6 +357,7 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
+  // Widget untuk menampilkan header
   Widget _sectionHeader(String title) {
     return Container(
       width: double.infinity,
@@ -300,7 +370,10 @@ class ProductDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _sectionHeaderWithAction(BuildContext context, String title, String actionText, {Color actionColor = Colors.black}) {
+  // Widget untuk menampilkan header dengan aksi
+  Widget _sectionHeaderWithAction(
+      BuildContext context, String title, String actionText,
+      {Color actionColor = Colors.black}) {
     return Container(
       width: double.infinity,
       color: Colors.grey.shade200,
@@ -308,15 +381,31 @@ class ProductDetailPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(title,
+              style:
+                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           InkWell(
             onTap: () {
-              if (title == 'Transaksi Terkini') {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => TransaksiTerkiniPage(product: product)));
+              if (title == 'Unit') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const KonversiSatuanPage()),
+                );
+              } else if (title == 'Transaksi Terkini') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => TransaksiTerkiniPage(product: product,)),
+                );
               } else if (title == 'Pergerakan Stok') {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => PergerakanstokPage(product: product)));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => PergerakanstokPage(product: product)),
+                );
               } else if (title == 'Transfer Gudang') {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => TransferGudangPage(product: product)));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => TransferGudangPage(product: product,)),
+                );
               }
             },
             child: Text(

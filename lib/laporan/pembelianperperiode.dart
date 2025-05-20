@@ -23,7 +23,7 @@ class _PembelianPerPeriodePageState extends State<PembelianPerPeriodePage> {
 
   Future<void> fetchData() async {
     final response = await http.get(Uri.parse(
-        'http://localhost/CONNNECT/JSON/get_pembelian_periode.php')); // ganti URL sesuai hosting-mu
+        'http://192.168.1.13/CONNNECT/JSON/get_pembelian_periode.php')); // ganti URL sesuai hosting-mu
 
     if (response.statusCode == 200) {
       final result = json.decode(response.body);
@@ -99,7 +99,6 @@ class _PembelianPerPeriodePageState extends State<PembelianPerPeriodePage> {
                     ],
                   ),
                 ),
-                _shortDivider(),
               ],
             ),
       floatingActionButton: Column(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hayami_app/produk/tambahproduk.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -41,7 +40,7 @@ class _ProdukPageState extends State<ProdukPage> {
   }
 
   Future<void> _fetchProduk() async {
-    final url = Uri.parse('http://192.168.1.8/hiyami/tessss.php');
+    final url = Uri.parse('http://192.168.1.22/hiyami/tessss.php');
 
     try {
       final response = await http.get(url);
@@ -109,20 +108,12 @@ class _ProdukPageState extends State<ProdukPage> {
           )
         ],
       ),
-floatingActionButton: FloatingActionButton(
-  onPressed: () async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const TambahProdukPage()),
-    );
-
-    if (result == true) {
-      _fetchProduk(); // Refresh data setelah tambah
-    }
-  },
-  child: const Icon(Icons.add),
-),
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Tambah Produk
+        },
+        child: const Icon(Icons.add),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -197,8 +188,10 @@ floatingActionButton: FloatingActionButton(
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${formatRupiah(produk['harga_jual'])}'),
-          Text('${produk['kategori']}'),        ],
+          Text('${formatRupiah(produk['hpp'])} → ${formatRupiah(produk['harga_jual'])}'),
+          Text('${produk['hpp_value']} (HPP)'),
+          Text('${produk['produk_code']}', style: const TextStyle(fontSize: 12)),
+        ],
       ),
       onTap: () {
         Navigator.push(
