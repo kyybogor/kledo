@@ -33,6 +33,7 @@ import 'package:hayami_app/pajak/pajakpenjualan.dart';
 import 'package:hayami_app/laporan/pembelianperperiode.dart';
 import 'package:hayami_app/laporan/pembelianperproduk.dart';
 import 'package:hayami_app/laporan/detilklaimbiaya.dart';
+import 'package:hayami_app/laporan/umurhutang.dart';
 
 class LaporanPage extends StatelessWidget {
   final Map<String, List<String>> laporanKategori = {
@@ -392,6 +393,12 @@ class LaporanPage extends StatelessWidget {
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             DetailKlaimBiayaPage(),
+                                      ));
+                                } else if (laporan == "Umur Hutang") {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UmurHutangPage(),
                                       ));
                                 }
                               },

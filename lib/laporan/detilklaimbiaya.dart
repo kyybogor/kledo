@@ -66,6 +66,12 @@ class _DetailKlaimBiayaPageState extends State<DetailKlaimBiayaPage> {
         iconTheme: IconThemeData(color: Colors.blue),
         backgroundColor: Colors.white,
         elevation: 1,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_alt_outlined),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())

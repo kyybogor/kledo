@@ -18,6 +18,7 @@ import 'package:hayami_app/produk/produk.dart';
 import 'package:hayami_app/tagihan/tagihanscreen.dart';
 import 'package:hayami_app/pengiriman/pengirimanscreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hayami_app/kasbank/kasbank.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -61,32 +62,31 @@ class _DashboardscreenState extends State<Dashboardscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F8),
-appBar: AppBar(
-  elevation: 0,
-  centerTitle: true,
-  title: Image.asset(
-    'assets/image/hayamilogo.png',
-    height: 48,
-    fit: BoxFit.contain,
-  ),
-  iconTheme: const IconThemeData(color: Colors.white),
-  actions: const [
-    Padding(
-      padding: EdgeInsets.only(right: 12),
-      child: Icon(Icons.notifications_none, color: Colors.white),
-    )
-  ],
-  flexibleSpace: Container(
-    decoration: const BoxDecoration(
-      gradient: LinearGradient(
-        colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        title: Image.asset(
+          'assets/image/hayamilogo.png',
+          height: 48,
+          fit: BoxFit.contain,
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 12),
+            child: Icon(Icons.notifications_none, color: Colors.white),
+          )
+        ],
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
       ),
-    ),
-  ),
-),
-
       drawer: const KledoDrawer(),
       body: SingleChildScrollView(
         child: Column(
@@ -172,10 +172,8 @@ appBar: AppBar(
                               MaterialPageRoute(builder: (_) => LaporanPage()));
                           break;
                         case 'Kas & Bank':
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const KasDanBank()));
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => KasBankPage()));
                           break;
                         case 'Aset Tetap':
                           Navigator.push(
