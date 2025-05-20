@@ -28,7 +28,7 @@ class _PembelianPerProdukPageState extends State<PembelianPerProdukPage> {
 
   Future<void> fetchPembelian() async {
     final response = await http.get(Uri.parse(
-        "http://localhost/CONNNECT/JSON/get_pembelian_produk.php")); // Ganti sesuai IP/server kamu
+        "http://192.168.1.13/CONNNECT/JSON/get_pembelian_produk.php")); // Ganti sesuai IP/server kamu
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
