@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hayami_app/produk/tambahproduk.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -108,12 +109,20 @@ class _ProdukPageState extends State<ProdukPage> {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Tambah Produk
-        },
-        child: const Icon(Icons.add),
-      ),
+floatingActionButton: FloatingActionButton(
+  onPressed: () async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const TambahProdukPage()),
+    );
+
+    if (result == true) {
+      _fetchProduk(); // Refresh data setelah tambah
+    }
+  },
+  child: const Icon(Icons.add),
+),
+
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -188,10 +197,8 @@ class _ProdukPageState extends State<ProdukPage> {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${formatRupiah(produk['hpp'])} → ${formatRupiah(produk['harga_jual'])}'),
-          Text('${produk['hpp_value']} (HPP)'),
-          Text('${produk['produk_code']}', style: const TextStyle(fontSize: 12)),
-        ],
+          Text('${formatRupiah(produk['harga_jual'])}'),
+          Text('${produk['kategori']}'),        ],
       ),
       onTap: () {
         Navigator.push(
