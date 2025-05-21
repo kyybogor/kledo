@@ -1,17 +1,20 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hayami_app/customer/editcustomer.dart';
 import 'package:http/http.dart' as http;
 
 class Customerdetailscreen extends StatelessWidget {
   final Map<String, dynamic> customer;
 
-  const Customerdetailscreen({Key? key, required this.customer}) : super(key: key);
+  const Customerdetailscreen({Key? key, required this.customer})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Detail Customer", style: TextStyle(color: Colors.blue)),
+        title:
+            const Text("Detail Customer", style: TextStyle(color: Colors.blue)),
         centerTitle: true,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.blue),
@@ -19,9 +22,23 @@ class Customerdetailscreen extends StatelessWidget {
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert, color: Colors.blue),
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'edit') {
-                // TODO: implement edit
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        EditCustomerScreen(customer: customer),
+                  ),
+                );
+
+                if (result != null && result is Map<String, dynamic>) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Data berhasil diperbarui")),
+                  );
+                  Navigator.of(context)
+                      .pop(result); // kirim data edit ke Customerscreen
+                }
               } else if (value == 'delete') {
                 _confirmDelete(context);
               }
@@ -105,7 +122,8 @@ class Customerdetailscreen extends StatelessWidget {
 
   Future<void> _deleteCustomerFromAPI(BuildContext context) async {
     final id = customer['id'];
-    final url = Uri.parse("http://192.168.1.10/connect/JSON/delete_customer.php"); // Ganti IP/server kamu
+    final url = Uri.parse(
+        "http://192.168.1.10/connect/JSON/delete_customer.php"); // Ganti IP/server kamu
 
     try {
       final response = await http.post(url, body: {
