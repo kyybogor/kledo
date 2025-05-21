@@ -1,0 +1,2 @@
+C:/Users/ACER/Documents/kledo/android/app/.cxx/RelWithDebInfo/3m391o4l/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/ACER/Documents/kledo/android/app/.cxx/RelWithDebInfo/3m391o4l/arm64-v8a/CMakeFiles/rebuild_cache.dir
