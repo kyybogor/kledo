@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hayami_app/produk/tambahproduk.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -110,10 +111,17 @@ class _ProdukPageState extends State<ProdukPage> {
       ),
 floatingActionButton: FloatingActionButton(
   onPressed: () async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const TambahProdukPage()),
+    );
+
+    if (result == true) {
+      _fetchProduk(); // Refresh list setelah tambah
+    }
   },
   child: const Icon(Icons.add),
 ),
-
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
