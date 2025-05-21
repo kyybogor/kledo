@@ -26,37 +26,40 @@ class _CustomerscreenState extends State<Customerscreen> {
   }
 
   Future<void> fetchCustomers() async {
-    try {
-      final response = await http
-          .get(Uri.parse('http://192.168.1.10/connect/JSON/customer.php'));
+  try {
+    final response = await http.get(
+      Uri.parse('http://192.168.1.10/nindo/get_supplier.php'),
+    );
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body); // ← langsung decode ke list
 
-        customers = data.map<Map<String, dynamic>>((item) {
-          return {
-            "id": item["id"],
-            "name": item["name"],
-            "jenis": item["jenis"],
-            "phone": item["phone"],
-            "address": item["address"],
-          };
-        }).toList();
+      customers = data.map<Map<String, dynamic>>((item) {
+        return {
+          "id": item["id_supp"],
+          "name": item["nm_supp"],
+          "jenis": item["jenis"],
+          "phone": item["hp"],
+          "address": item["alamat"],
+        };
+      }).toList();
 
-        setState(() {
-          filteredCustomers = customers;
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Gagal mengambil data');
-      }
-    } catch (e) {
-      print("Error: $e");
       setState(() {
+        filteredCustomers = customers;
         isLoading = false;
       });
+    } else {
+      throw Exception('Gagal mengambil data');
     }
+  } catch (e) {
+    print("Error: $e");
+    setState(() {
+      isLoading = false;
+    });
   }
+}
+
+
 
   void _onSearchChanged() {
     String keyword = _searchController.text.toLowerCase();
@@ -114,57 +117,66 @@ class _CustomerscreenState extends State<Customerscreen> {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : filteredCustomers.isEmpty
-                      ? const Center(child: Text("Tidak ada data ditemukan"))
-                      : ListView.builder(
-                          itemCount: filteredCustomers.length,
-                          itemBuilder: (context, index) {
-                            final customer = filteredCustomers[index];
-                            return ListTile(
-                              title: Text(customer["name"] ?? ''),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(customer["jenis"] ?? ''),
-                                  Text(customer["phone"] ?? ''),
-                                ],
-                              ),
-                              trailing: const Icon(Icons.arrow_forward_ios,
-                                  size: 16, color: Colors.grey),
-                              onTap: () async {
-                                final result = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Customerdetailscreen(
-                                        customer: customer),
-                                  ),
-                                );
+  child: isLoading
+      ? const Center(child: CircularProgressIndicator())
+      : RefreshIndicator(
+          onRefresh: fetchCustomers,
+          child: filteredCustomers.isEmpty
+              ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: const [
+                    SizedBox(height: 100),
+                    Center(child: Text("Tidak ada data ditemukan")),
+                  ],
+                )
+              : ListView.builder(
+                  itemCount: filteredCustomers.length,
+                  itemBuilder: (context, index) {
+                    final customer = filteredCustomers[index];
+                    return ListTile(
+                      title: Text(customer["name"] ?? ''),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(customer["jenis"] ?? ''),
+                          Text(customer["phone"] ?? ''),
+                        ],
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios,
+                          size: 16, color: Colors.grey),
+                      onTap: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                Customerdetailscreen(customer: customer),
+                          ),
+                        );
 
-                                if (result == 'deleted') {
-                                  await fetchCustomers();
-                                  setState(() {
-                                    dataChanged = true;
-                                  });
-                                } else if (result != null &&
-                                    result is Map<String, dynamic>) {
-                                  setState(() {
-                                    // cari index dari customer yang diedit
-                                    int i = customers.indexWhere(
-                                        (c) => c["id"] == result["id"]);
-                                    if (i != -1) {
-                                      customers[i] = result;
-                                      _onSearchChanged(); // perbarui hasil pencarian
-                                      dataChanged = true;
-                                    }
-                                  });
-                                }
-                              },
-                            );
-                          },
-                        ),
-            ),
+                        if (result == 'deleted') {
+                          await fetchCustomers();
+                          setState(() {
+                            dataChanged = true;
+                          });
+                        } else if (result != null &&
+                            result is Map<String, dynamic>) {
+                          setState(() {
+                            int i = customers
+                                .indexWhere((c) => c["id"] == result["id"]);
+                            if (i != -1) {
+                              customers[i] = result;
+                              _onSearchChanged();
+                              dataChanged = true;
+                            }
+                          });
+                        }
+                      },
+                    );
+                  },
+                ),
+        ),
+),
+
           ],
         ),
         floatingActionButton: FloatingActionButton(

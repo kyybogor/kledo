@@ -28,25 +28,26 @@ class _BankDetailPageState extends State<BankDetailPage> {
     final result = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Edit Data Bank'),
+        title: const Text('Edit Data Bank'),
         content: SingleChildScrollView(
           child: Column(
             children: [
               TextField(
                 controller: namaBankController,
-                decoration: InputDecoration(labelText: 'Nama Bank'),
+                decoration: const InputDecoration(labelText: 'Nama Bank'),
               ),
               TextField(
                 controller: noRekeningController,
-                decoration: InputDecoration(labelText: 'No. Rekening'),
+                decoration: const InputDecoration(labelText: 'No. Rekening'),
               ),
             ],
           ),
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text('Batal')),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
           ElevatedButton(
             onPressed: () async {
               final response = await http.post(
@@ -68,11 +69,11 @@ class _BankDetailPageState extends State<BankDetailPage> {
               } else {
                 Navigator.pop(context, false);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Gagal update data')),
+                  const SnackBar(content: Text('Gagal update data')),
                 );
               }
             },
-            child: Text('Simpan'),
+            child: const Text('Simpan'),
           ),
         ],
       ),
@@ -80,7 +81,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
 
     if (result == true) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Data berhasil diupdate')),
+        const SnackBar(content: Text('Data berhasil diupdate')),
       );
     }
   }
@@ -90,25 +91,26 @@ class _BankDetailPageState extends State<BankDetailPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Detail Bank', style: TextStyle(color: Colors.blue)),
+        title: const Text('Detail Bank', style: TextStyle(color: Colors.blue)),
         backgroundColor: Colors.grey[100],
-        iconTheme: IconThemeData(color: Colors.blue),
+        iconTheme: const IconThemeData(color: Colors.blue),
+        elevation: 1,
         actions: [
-          PopupMenuButton<String>(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            onSelected: (value) {
-              if (value == 'edit') _editBankDialog();
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              PopupMenuItem(
-                  value: 'edit',
-                  child: Row(children: [
-                    Icon(Icons.edit),
-                    SizedBox(width: 10),
-                    Text('Edit')
-                  ])),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: OutlinedButton.icon(
+              onPressed: _editBankDialog,
+              icon: const Icon(Icons.edit, color: Colors.blue, size: 18),
+              label: const Text("Edit", style: TextStyle(color: Colors.blue)),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.blue),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+            ),
           ),
         ],
       ),
@@ -124,13 +126,15 @@ class _BankDetailPageState extends State<BankDetailPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildInfoTile(
-                    icon: Icons.account_balance,
-                    label: 'Nama Bank',
-                    value: bank['nama_bank'] ?? ''),
+                  icon: Icons.account_balance,
+                  label: 'Nama Bank',
+                  value: bank['nama_bank'] ?? '',
+                ),
                 _buildInfoTile(
-                    icon: Icons.credit_card,
-                    label: 'No. Rekening',
-                    value: bank['no_rekening'] ?? ''),
+                  icon: Icons.credit_card,
+                  label: 'No. Rekening',
+                  value: bank['no_rekening'] ?? '',
+                ),
               ],
             ),
           ),
@@ -152,24 +156,24 @@ class _BankDetailPageState extends State<BankDetailPage> {
               backgroundColor: Colors.blue[50],
               child: Icon(icon, color: Colors.blue),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(label,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 4),
-                  Text(value, style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 4),
+                  Text(value, style: const TextStyle(fontSize: 16)),
                 ],
               ),
             ),
           ],
         ),
-        SizedBox(height: 16),
-        Divider(),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
+        const Divider(),
+        const SizedBox(height: 16),
       ],
     );
   }

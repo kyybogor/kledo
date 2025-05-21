@@ -18,37 +18,41 @@ class _TambahCustomerScreenState extends State<TambahCustomerScreen> {
   final List<String> jenisList = ['Customer', 'Supplier'];
 
   Future<void> _saveData() async {
-    final data = {
-      "jenis": selectedJenis,
-      "name": _nameController.text,
-      "phone": _phoneController.text,
-      "address": _addressController.text,
-    };
+  final data = {
+    "jenis": selectedJenis,
+    "nm_supp": _nameController.text,
+    "hp": _phoneController.text,
+    "email": "", // Kosongkan jika tidak diinput
+    "alamat": _addressController.text,
+  };
 
-    final response = await http.post(
-      Uri.parse("http://192.168.1.10/connect/JSON/add_customer.php"),
-      headers: {"Content-Type": "application/json"},
-      body: json.encode(data),
-    );
+  final response = await http.post(
+    Uri.parse("http://192.168.1.10/nindo/get_supplier.php"),
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: data,
+  );
 
-    if (response.statusCode == 200) {
-      final result = json.decode(response.body);
-      if (result["success"]) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Data berhasil disimpan")),
-        );
-        Navigator.pop(context, true);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result["message"])),
-        );
-      }
+  if (response.statusCode == 200) {
+    final result = json.decode(response.body);
+    if (result["status"] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Data berhasil disimpan")),
+      );
+      Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gagal menyimpan data ke server")),
+        SnackBar(content: Text(result["message"] ?? "Gagal menyimpan")),
       );
     }
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Gagal menyimpan data ke server")),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

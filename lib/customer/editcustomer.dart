@@ -30,49 +30,54 @@ class _EditCustomerScreenState extends State<EditCustomerScreen> {
   }
 
   Future<void> _updateCustomer() async {
-    final url = Uri.parse("http://192.168.1.10/connect/JSON/edit_customer.php");
+  final url = Uri.parse("http://192.168.1.10/nindo/get_supplier.php");
 
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "id": widget.customer['id'].toString(),
-        "name": _nameController.text,
-        "jenis": selectedJenis,
-        "phone": _phoneController.text,
-        "address": _addressController.text,
-      }),
-    );
+  final response = await http.post(
+    url,
+    body: {
+      "id_supp": widget.customer['id'].toString(), // wajib untuk edit
+      "nm_supp": _nameController.text,
+      "jenis": selectedJenis,
+      "hp": _phoneController.text,
+      "alamat": _addressController.text,
+      "email": widget.customer['email'] ?? "", // Tambahkan jika ada
+    },
+  );
 
-    print("RESPONSE: ${response.body}"); // DEBUG
+  print("RESPONSE: ${response.body}");
 
-    if (response.statusCode == 200) {
-      try {
-        final result = json.decode(response.body);
-        if (result["success"]) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(result["message"])),
-          );
-          Navigator.pop(context, {
-            'id': widget.customer['id'],
-            'name': _nameController.text,
-            'jenis': selectedJenis,
-            'phone': _phoneController.text,
-            'address': _addressController.text,
-          });
-        }
-      } catch (e) {
-        print("JSON error: $e");
+  if (response.statusCode == 200) {
+    try {
+      final result = json.decode(response.body);
+      if (result["status"] == true) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Respon tidak valid dari server")),
+          SnackBar(content: Text(result["message"] ?? "Berhasil")),
+        );
+        Navigator.pop(context, {
+          'id': widget.customer['id'],
+          'nm_supp': _nameController.text,
+          'jenis': selectedJenis,
+          'hp': _phoneController.text,
+          'alamat': _addressController.text,
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result["message"] ?? "Gagal memperbarui")),
         );
       }
-    } else {
+    } catch (e) {
+      print("JSON error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gagal menghubungi server")),
+        const SnackBar(content: Text("Respon tidak valid dari server")),
       );
     }
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Gagal menghubungi server")),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
