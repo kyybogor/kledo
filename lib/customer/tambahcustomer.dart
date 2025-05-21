@@ -26,7 +26,7 @@ class _TambahCustomerScreenState extends State<TambahCustomerScreen> {
     };
 
     final response = await http.post(
-      Uri.parse("http://192.168.1.10/connect/JSON/add_customer.php"), // ganti IP jika perlu
+      Uri.parse("http://192.168.1.10/connect/JSON/add_customer.php"),
       headers: {"Content-Type": "application/json"},
       body: json.encode(data),
     );
@@ -53,19 +53,24 @@ class _TambahCustomerScreenState extends State<TambahCustomerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-          centerTitle: true,
-          title: const Text("Tambah Customer/Supplier",
-              style: TextStyle(color: Colors.blue, fontSize: 20)),
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.blue),
-            onPressed: () => Navigator.pop(context),
-          )),
-      body: Padding(
+        centerTitle: true,
+        title: const Text(
+          "Tambah Customer/Supplier",
+          style: TextStyle(color: Colors.blue, fontSize: 20),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.blue),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             DropdownButtonFormField<String>(
               value: selectedJenis,
@@ -113,37 +118,38 @@ class _TambahCustomerScreenState extends State<TambahCustomerScreen> {
             ),
             const SizedBox(height: 32),
             Row(
-  mainAxisAlignment: MainAxisAlignment.end,
-  children: [
-    OutlinedButton(
-      onPressed: () => Navigator.pop(context),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: Colors.grey[700],
-        side: BorderSide(color: Colors.grey[400]!),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      ),
-      child: const Text("Cancel"),
-    ),
-    const SizedBox(width: 12),
-    ElevatedButton(
-      onPressed: _saveData,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-        elevation: 2,
-      ),
-      child: const Text("Save"),
-    ),
-  ],
-),
-
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.grey[700],
+                    side: BorderSide(color: Colors.grey[400]!),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                  ),
+                  child: const Text("Cancel"),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: _saveData,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 28, vertical: 12),
+                    elevation: 2,
+                  ),
+                  child: const Text("Save"),
+                ),
+              ],
+            ),
           ],
         ),
       ),

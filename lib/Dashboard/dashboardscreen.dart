@@ -9,7 +9,7 @@ import 'package:hayami_app/Penjualan/penjualanscreen.dart';
 import 'package:hayami_app/akun/akunscreen.dart';
 import 'package:hayami_app/assetetap/assetetap.dart';
 import 'package:hayami_app/biaya/biayascreen.dart';
-import 'package:hayami_app/customer/supplier/customer.dart';
+import 'package:hayami_app/customer/customer.dart';
 import 'package:hayami_app/kas%20&%20bank/kasdanbank.dart';
 import 'package:hayami_app/kasbank/kasbank.dart';
 import 'package:hayami_app/kontak/kontakscreen.dart';
@@ -53,7 +53,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
     {'icon': Icons.bar_chart, 'label': 'Laporan', 'color': Colors.purple},
     {
       'icon': Icons.account_balance,
-      'label': 'Kas & Bank',
+      'label': 'Bank',
       'color': Colors.teal
     },
     {'icon': Icons.domain, 'label': 'Aset Tetap', 'color': Colors.indigo},
@@ -175,7 +175,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
                               MaterialPageRoute(
                                   builder: (_) => const Customerscreen()));
                           break;
-                        case 'Kas & Bank':
+                        case 'Bank':
                           Navigator.push(context,
                               MaterialPageRoute(builder: (_) => KasBankPage()));
                           break;
@@ -226,7 +226,7 @@ class _DashboardscreenState extends State<Dashboardscreen> {
             // SISA ISI TETAP (Kas & Bank, Performa Bisnis, Button)
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('Kas & Bank',
+              child: Text('Bank',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 8),
@@ -421,7 +421,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
     {'icon': Icons.inventory_2, 'title': 'Produk'},
     {'icon': Icons.local_shipping, 'title': 'Inventori'},
     {'icon': Icons.bar_chart, 'title': 'Laporan'},
-    {'icon': Icons.account_balance, 'title': 'Kas & Bank'},
+    {'icon': Icons.account_balance, 'title': 'Bank'},
     {'icon': Icons.person, 'title': 'Akun'},
     {'icon': Icons.domain, 'title': 'Aset Tetap'},
     {'icon': Icons.contacts, 'title': 'Kontak'},
@@ -609,7 +609,7 @@ class _KledoDrawerState extends State<KledoDrawer> {
                             destination = const ProdukPage();
                           }
 
-                          if (item['title'] == 'Kas & Bank') {
+                          if (item['title'] == 'Bank') {
                             destination = KasBankPage();
                           }
 
