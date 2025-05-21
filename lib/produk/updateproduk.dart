@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class TambahProdukPage extends StatefulWidget {
-  const TambahProdukPage({super.key});
+class EditProductPage extends StatefulWidget {
+  final Map<String, dynamic> product;
+
+  const EditProductPage({super.key, required this.product});
 
   @override
-  State<TambahProdukPage> createState() => _TambahProdukPageState();
+  State<EditProductPage> createState() => _EditProductPageState();
 }
 
-class _TambahProdukPageState extends State<TambahProdukPage> {
+class _EditProductPageState extends State<EditProductPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _namaController = TextEditingController();
-  final TextEditingController _hargaController = TextEditingController();
-  final TextEditingController _minimController = TextEditingController();
-  final TextEditingController _maximController = TextEditingController();
-  final TextEditingController _brandController = TextEditingController();
+  late TextEditingController _namaController;
+  late TextEditingController _hargaController;
+  late TextEditingController _minimController;
+  late TextEditingController _maximController;
+  late TextEditingController _brandController;
 
   String? _selectedKategori;
   List<String> _kategoriList = [];
@@ -24,7 +26,23 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
   @override
   void initState() {
     super.initState();
+    _namaController = TextEditingController(text: widget.product['nm_product'] ?? '');
+    _hargaController = TextEditingController(text: widget.product['price']?.toString() ?? '');
+    _minimController = TextEditingController(text: widget.product['minim']?.toString() ?? '');
+    _maximController = TextEditingController(text: widget.product['maxim']?.toString() ?? '');
+    _brandController = TextEditingController(text: widget.product['brand'] ?? '');
+    _selectedKategori = widget.product['brand'];
     _fetchKategori();
+  }
+
+  @override
+  void dispose() {
+    _namaController.dispose();
+    _hargaController.dispose();
+    _minimController.dispose();
+    _maximController.dispose();
+    _brandController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchKategori() async {
@@ -37,6 +55,9 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
           _kategoriList = kategoriData
               .map((kategori) => kategori['nama_kategori'] as String)
               .toList();
+          if (_selectedKategori != null && !_kategoriList.contains(_selectedKategori)) {
+            _kategoriList.add(_selectedKategori!);
+          }
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -50,7 +71,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
     }
   }
 
-  Future<void> _submitProduk() async {
+  Future<void> _submitEdit() async {
     if (_formKey.currentState!.validate()) {
       if (_brandController.text.isEmpty && _selectedKategori == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -59,30 +80,33 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
         return;
       }
 
-      final url = Uri.parse('http://192.168.1.8/nindo2/tambah_produk.php');
+      final url = Uri.parse('http://192.168.1.8/nindo2/edit_produk.php');
       try {
-        final response = await http.post(url, body: {
-          'nm_product': _namaController.text,
-          'gambar': '',
-          'minim': _minimController.text,
-          'maxim': _maximController.text,
-          'price': _hargaController.text,
-          'brand': _brandController.text.isNotEmpty
-              ? _brandController.text
-              : (_selectedKategori ?? ''),
-          'id_cabang': 'pusat',
-        });
+final response = await http.post(url, body: {
+  'id_product': widget.product['id_product'].toString(),
+  'nm_product': _namaController.text,
+  'gambar': '', // kosong sementara, bisa diisi kalau kamu pakai upload
+  'qty': widget.product['qty'].toString(), // default nilai awal, bisa ditambahkan form jika perlu
+  'minim': _minimController.text,
+  'maxim': _maximController.text,
+  'price': _hargaController.text,
+  'brand': _brandController.text.isNotEmpty
+      ? _brandController.text
+      : (_selectedKategori ?? ''),
+  'id_cabang': 'pusat',
+});
+
 
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
           if (data['status'] == 'success') {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Produk berhasil ditambahkan')),
+              const SnackBar(content: Text('Produk berhasil diperbarui')),
             );
             Navigator.pop(context, true);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Gagal menambahkan produk: ${data['message']}')),
+              SnackBar(content: Text('Gagal mengubah produk: ${data['message']}')),
             );
           }
         } else {
@@ -102,8 +126,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
   Widget build(BuildContext context) {
     InputDecoration inputDecoration(String label) => InputDecoration(
           labelText: label,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+          contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
           border: InputBorder.none,
         );
 
@@ -127,7 +150,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
         );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Tambah Produk')),
+      appBar: AppBar(title: const Text('Ubah Produk')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -137,32 +160,28 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
               buildTextField(
                 controller: _namaController,
                 label: 'Nama Produk',
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Masukkan nama produk' : null,
+                validator: (v) => (v == null || v.isEmpty) ? 'Masukkan nama produk' : null,
               ),
               const SizedBox(height: 16),
               buildTextField(
                 controller: _hargaController,
                 label: 'Harga Jual',
                 keyboardType: TextInputType.number,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Masukkan harga jual' : null,
+                validator: (v) => (v == null || v.isEmpty) ? 'Masukkan harga jual' : null,
               ),
               const SizedBox(height: 16),
               buildTextField(
                 controller: _minimController,
                 label: 'Minimal Stok',
                 keyboardType: TextInputType.number,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Masukkan minimal stok' : null,
+                validator: (v) => (v == null || v.isEmpty) ? 'Masukkan minimal stok' : null,
               ),
               const SizedBox(height: 16),
               buildTextField(
                 controller: _maximController,
                 label: 'Maksimal Stok',
                 keyboardType: TextInputType.number,
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Masukkan maksimal stok' : null,
+                validator: (v) => (v == null || v.isEmpty) ? 'Masukkan maksimal stok' : null,
               ),
               const SizedBox(height: 16),
               Container(
@@ -178,15 +197,13 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
                     });
                   },
                   items: _kategoriList
-                      .map(
-                        (kategori) => DropdownMenuItem<String>(
-                          value: kategori,
-                          child: Text(kategori),
-                        ),
-                      )
+                      .map((kategori) => DropdownMenuItem<String>(
+                            value: kategori,
+                            child: Text(kategori),
+                          ))
                       .toList(),
                   decoration: inputDecoration('Kategori'),
-                  validator: (v) => v == null ? 'Pilih kategori' : null,
+                  validator: (v) => v == null || v.isEmpty ? 'Pilih kategori' : null,
                 ),
               ),
               const SizedBox(height: 16),
@@ -200,9 +217,10 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
                 borderRadius: BorderRadius.circular(30),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48)),
-                  onPressed: _submitProduk,
-                  child: const Text('Simpan Produk'),
+                    minimumSize: const Size.fromHeight(48),
+                  ),
+                  onPressed: _submitEdit,
+                  child: const Text('Simpan Perubahan'),
                 ),
               ),
             ],

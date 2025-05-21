@@ -40,29 +40,26 @@ class _ProdukPageState extends State<ProdukPage> {
     }
   }
 
-  Future<void> _fetchProduk() async {
-    final url = Uri.parse('http://192.168.1.8/hiyami/tessss.php');
+Future<void> _fetchProduk() async {
+  final url = Uri.parse('http://192.168.1.8/nindo2/barang.php');
 
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonResponse = json.decode(response.body);
-        if (jsonResponse['status'] == 'success') {
-          final List<dynamic> data = jsonResponse['data'];
-          setState(() {
-            _produkList = data.map((e) => Map<String, dynamic>.from(e)).toList();
-            _calculateProduk();
-          });
-        } else {
-          print('Status not success');
-        }
-      } else {
-        print('Failed to load produk');
-      }
-    } catch (e) {
-      print('Error: $e');
+  try {
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      // decode langsung jadi List karena root JSON array
+      final List<dynamic> data = json.decode(response.body);
+      setState(() {
+        _produkList = data.map((e) => Map<String, dynamic>.from(e)).toList();
+        _calculateProduk();
+      });
+    } else {
+      print('Failed to load produk');
     }
+  } catch (e) {
+    print('Error: $e');
   }
+}
+
 
   void _calculateProduk() {
     int total = 0;
@@ -109,19 +106,19 @@ class _ProdukPageState extends State<ProdukPage> {
           )
         ],
       ),
-floatingActionButton: FloatingActionButton(
-  onPressed: () async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const TambahProdukPage()),
-    );
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const TambahProdukPage()),
+          );
 
-    if (result == true) {
-      _fetchProduk(); // Refresh list setelah tambah
-    }
-  },
-  child: const Icon(Icons.add),
-),
+          if (result == true) {
+            _fetchProduk(); // Refresh list setelah tambah
+          }
+        },
+        child: const Icon(Icons.add),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -143,10 +140,16 @@ floatingActionButton: FloatingActionButton(
             physics: const BouncingScrollPhysics(),
             child: Row(
               children: [
-                _buildStatusCard('Produk Tersedia', (totalProduk - produkHampirHabis - produkHabis).toString(), Colors.green),
-                _buildStatusCard('Produk Hampir Habis', produkHampirHabis.toString(), Colors.orange),
-                _buildStatusCard('Produk Habis', produkHabis.toString(), Colors.red),
-                _buildStatusCard('Total Produk', totalProduk.toString(), Colors.blue),
+                _buildStatusCard(
+                    'Produk Tersedia',
+                    (totalProduk - produkHampirHabis - produkHabis).toString(),
+                    Colors.green),
+                _buildStatusCard('Produk Hampir Habis',
+                    produkHampirHabis.toString(), Colors.orange),
+                _buildStatusCard(
+                    'Produk Habis', produkHabis.toString(), Colors.red),
+                _buildStatusCard(
+                    'Total Produk', totalProduk.toString(), Colors.blue),
               ],
             ),
           ),
@@ -163,7 +166,8 @@ floatingActionButton: FloatingActionButton(
               children: [
                 Text(
                   _showChart ? 'Sembunyikan' : 'Lihat Selengkapnya',
-                  style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
                 Icon(_showChart ? Icons.expand_less : Icons.expand_more),
               ],
@@ -190,25 +194,31 @@ floatingActionButton: FloatingActionButton(
     );
   }
 
-  Widget _buildProductItem(Map<String, dynamic> produk) {
-    return ListTile(
-      title: Text(produk['produk_name'] ?? ''),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('${formatRupiah(produk['harga_jual'])}'),
-          Text('${produk['kategori']}'),        ],
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProductDetailPage(product: produk),
-          ),
-        );
-      },
-    );
-  }
+Widget _buildProductItem(Map<String, dynamic> produk) {
+  return ListTile(
+    title: Text(produk['nm_product'] ?? ''), // sesuai key PHP "nm_product"
+    subtitle: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('${formatRupiah(produk['price'])}'), // sesuai key PHP "price"
+        Text('${produk['nm_kategori'] ?? '-'}'),  // sesuai key PHP "nm_kategori"
+      ],
+    ),
+    onTap: () async {
+      final result = await Navigator.push<bool>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProductDetailPage(product: produk),
+        ),
+      );
+
+      if (result == true) {
+        _fetchProduk(); // Refresh data setelah edit berhasil
+      }
+    },
+  );
+}
+
 
   Widget _buildStatusCard(String title, String count, Color color) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -245,7 +255,8 @@ floatingActionButton: FloatingActionButton(
                 const SizedBox(height: 4),
                 Text(
                   count,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
