@@ -13,6 +13,7 @@ class _KasBankPageState extends State<KasBankPage> {
   List<Map<String, dynamic>> bankData = [];
   bool isLoading = true;
   String searchQuery = '';
+  String selectedFilter = 'Nama Bank';
 
   @override
   void initState() {
@@ -136,20 +137,18 @@ class _KasBankPageState extends State<KasBankPage> {
     }
   }
 
-  Future<void> _refreshAfterDetail() async {
-    await fetchBankData();
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Filter data berdasarkan searchQuery
     final filteredBankData = bankData.where((bank) {
-      final namaBank = bank['nama_bank']?.toLowerCase() ?? '';
-      final namaRekening = bank['nama_rekening']?.toLowerCase() ?? '';
-      final noRekening = bank['no_rekening']?.toLowerCase() ?? '';
-      return namaBank.contains(searchQuery) ||
-          namaRekening.contains(searchQuery) ||
-          noRekening.contains(searchQuery);
+      final query = searchQuery.toLowerCase();
+      if (selectedFilter == 'Nama Bank') {
+        return (bank['nama_bank'] ?? '').toLowerCase().contains(query);
+      } else if (selectedFilter == 'Nama Rekening') {
+        return (bank['nama_rekening'] ?? '').toLowerCase().contains(query);
+      } else if (selectedFilter == 'No. Rekening') {
+        return (bank['no_rekening'] ?? '').toLowerCase().contains(query);
+      }
+      return true;
     }).toList();
 
     return Scaffold(
@@ -165,7 +164,59 @@ class _KasBankPageState extends State<KasBankPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.filter_alt_outlined, color: Colors.blue),
-            onPressed: () {},
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                builder: (context) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Filter',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                        SizedBox(height: 16),
+                        DropdownButtonFormField<String>(
+                          value: selectedFilter,
+                          items: ['Nama Bank', 'Nama Rekening', 'No. Rekening']
+                              .map((filter) => DropdownMenuItem(
+                                    value: filter,
+                                    child: Text(filter),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                selectedFilter = value;
+                              });
+                            }
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Urutkan',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Terapkan'),
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: Size(double.infinity, 48),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
@@ -203,8 +254,13 @@ class _KasBankPageState extends State<KasBankPage> {
                         return ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Colors.blueAccent,
+                            child: Icon(
+                              Icons.credit_card,
+                              color: Colors.white,
+                            ),
                           ),
-                          title: Text('${bank['nama_bank']}'),
+                          title: Text('${bank['nama_bank']}',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                           subtitle: Text('${bank['no_rekening']}'),
                           trailing: Icon(Icons.arrow_forward_ios, size: 16),
                           onTap: () async {
