@@ -22,8 +22,6 @@ class _BankDetailPageState extends State<BankDetailPage> {
   Future<void> _editBankDialog() async {
     TextEditingController namaBankController =
         TextEditingController(text: bank['nama_bank']);
-    TextEditingController namaRekeningController =
-        TextEditingController(text: bank['nama_rekening']);
     TextEditingController noRekeningController =
         TextEditingController(text: bank['no_rekening']);
 
@@ -37,10 +35,6 @@ class _BankDetailPageState extends State<BankDetailPage> {
               TextField(
                 controller: namaBankController,
                 decoration: InputDecoration(labelText: 'Nama Bank'),
-              ),
-              TextField(
-                controller: namaRekeningController,
-                decoration: InputDecoration(labelText: 'Nama Rekening'),
               ),
               TextField(
                 controller: noRekeningController,
@@ -57,11 +51,10 @@ class _BankDetailPageState extends State<BankDetailPage> {
             onPressed: () async {
               final response = await http.post(
                 Uri.parse(
-                    'http://192.168.1.13/CONNNECT/JSON/bank/edit_bank.php'),
+                    'http://192.168.1.13/nindo/bank/bank_api.php?action=edit'),
                 body: {
                   'id': bank['id'].toString(),
                   'nama_bank': namaBankController.text,
-                  'nama_rekening': namaRekeningController.text,
                   'no_rekening': noRekeningController.text,
                 },
               );
@@ -69,7 +62,6 @@ class _BankDetailPageState extends State<BankDetailPage> {
               if (response.statusCode == 200) {
                 setState(() {
                   bank['nama_bank'] = namaBankController.text;
-                  bank['nama_rekening'] = namaRekeningController.text;
                   bank['no_rekening'] = noRekeningController.text;
                 });
                 Navigator.pop(context, true);
@@ -93,48 +85,6 @@ class _BankDetailPageState extends State<BankDetailPage> {
     }
   }
 
-  Future<void> _deleteBank() async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Hapus Data'),
-        content: Text('Apakah Anda yakin ingin menghapus data ini?'),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text('Batal')),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: Text('Hapus'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm == true) {
-      final response = await http.post(
-        Uri.parse('http://192.168.1.13/CONNNECT/JSON/bank/delete_bank.php'),
-        body: {'id': bank['id'].toString()},
-      );
-
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Berhasil menghapus data'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-
-        Navigator.pop(context, true); // kembali dan trigger refresh
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal menghapus data')),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,7 +99,6 @@ class _BankDetailPageState extends State<BankDetailPage> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             onSelected: (value) {
               if (value == 'edit') _editBankDialog();
-              if (value == 'delete') _deleteBank();
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               PopupMenuItem(
@@ -158,13 +107,6 @@ class _BankDetailPageState extends State<BankDetailPage> {
                     Icon(Icons.edit),
                     SizedBox(width: 10),
                     Text('Edit')
-                  ])),
-              PopupMenuItem(
-                  value: 'delete',
-                  child: Row(children: [
-                    Icon(Icons.delete, color: Colors.red),
-                    SizedBox(width: 10),
-                    Text('Delete')
                   ])),
             ],
           ),
@@ -185,10 +127,6 @@ class _BankDetailPageState extends State<BankDetailPage> {
                     icon: Icons.account_balance,
                     label: 'Nama Bank',
                     value: bank['nama_bank'] ?? ''),
-                _buildInfoTile(
-                    icon: Icons.person,
-                    label: 'Nama Rekening',
-                    value: bank['nama_rekening'] ?? ''),
                 _buildInfoTile(
                     icon: Icons.credit_card,
                     label: 'No. Rekening',
