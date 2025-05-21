@@ -24,7 +24,7 @@ class _KasBankPageState extends State<KasBankPage> {
   Future<void> fetchBankData() async {
     setState(() => isLoading = true);
     final response = await http.get(
-      Uri.parse('http://192.168.1.13/CONNNECT/JSON/bank/get_bank_data.php'),
+      Uri.parse('http://192.168.1.13/nindo/bank/bank_api.php?action=get'),
     );
 
     if (response.statusCode == 200) {
@@ -44,7 +44,6 @@ class _KasBankPageState extends State<KasBankPage> {
   Future<void> _showAddBankDialog() async {
     final _formKey = GlobalKey<FormState>();
     String namaBank = '';
-    String namaRekening = '';
     String noRekening = '';
 
     await showDialog(
@@ -64,13 +63,6 @@ class _KasBankPageState extends State<KasBankPage> {
                         ? 'Masukkan nama bank'
                         : null,
                     onSaved: (value) => namaBank = value!.trim(),
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Nama Rekening'),
-                    validator: (value) => value == null || value.isEmpty
-                        ? 'Masukkan nama rekening'
-                        : null,
-                    onSaved: (value) => namaRekening = value!.trim(),
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'No. Rekening'),
@@ -95,7 +87,7 @@ class _KasBankPageState extends State<KasBankPage> {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
                   Navigator.pop(context);
-                  await _submitNewBank(namaBank, namaRekening, noRekening);
+                  await _submitNewBank(namaBank, noRekening);
                 }
               },
               child: Text('Simpan'),
@@ -106,15 +98,13 @@ class _KasBankPageState extends State<KasBankPage> {
     );
   }
 
-  Future<void> _submitNewBank(
-      String namaBank, String namaRekening, String noRekening) async {
+  Future<void> _submitNewBank(String namaBank, String noRekening) async {
     final url =
-        Uri.parse('http://192.168.1.13/CONNNECT/JSON/bank/insert_bank.php');
+        Uri.parse('http://192.168.1.13/nindo/bank/bank_api.php?action=insert');
 
     try {
       final response = await http.post(url, body: {
         'nama_bank': namaBank,
-        'nama_rekening': namaRekening,
         'no_rekening': noRekening,
       });
 
@@ -143,8 +133,6 @@ class _KasBankPageState extends State<KasBankPage> {
       final query = searchQuery.toLowerCase();
       if (selectedFilter == 'Nama Bank') {
         return (bank['nama_bank'] ?? '').toLowerCase().contains(query);
-      } else if (selectedFilter == 'Nama Rekening') {
-        return (bank['nama_rekening'] ?? '').toLowerCase().contains(query);
       } else if (selectedFilter == 'No. Rekening') {
         return (bank['no_rekening'] ?? '').toLowerCase().contains(query);
       }
@@ -155,7 +143,7 @@ class _KasBankPageState extends State<KasBankPage> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.white,
-        title: Text('Kas & Bank', style: TextStyle(color: Colors.blue)),
+        title: Text('Bank', style: TextStyle(color: Colors.blue)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.blue),
           onPressed: () => Navigator.pop(context),
@@ -182,7 +170,7 @@ class _KasBankPageState extends State<KasBankPage> {
                         SizedBox(height: 16),
                         DropdownButtonFormField<String>(
                           value: selectedFilter,
-                          items: ['Nama Bank', 'Nama Rekening', 'No. Rekening']
+                          items: ['Nama Bank', 'No. Rekening']
                               .map((filter) => DropdownMenuItem(
                                     value: filter,
                                     child: Text(filter),
@@ -264,20 +252,14 @@ class _KasBankPageState extends State<KasBankPage> {
                           subtitle: Text('${bank['no_rekening']}'),
                           trailing: Icon(Icons.arrow_forward_ios, size: 16),
                           onTap: () async {
-                            final result = await Navigator.push(
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
                                     BankDetailPage(bank: bank),
                               ),
                             );
-                            if (result == true) {
-                              await fetchBankData();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text('Berhasil menghapus data')),
-                              );
-                            }
+                            await fetchBankData(); // Refresh data setelah kembali
                           },
                         );
                       },
