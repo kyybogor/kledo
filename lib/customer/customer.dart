@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hayami_app/customer/supplier/detailcustomer.dart';
-import 'package:hayami_app/customer/supplier/tambahcustomer.dart';
+import 'package:hayami_app/customer/detailcustomer.dart';
+import 'package:hayami_app/customer/tambahcustomer.dart';
 import 'package:http/http.dart' as http;
 
 class Customerscreen extends StatefulWidget {
@@ -134,22 +134,33 @@ class _CustomerscreenState extends State<Customerscreen> {
                               trailing: const Icon(Icons.arrow_forward_ios,
                                   size: 16, color: Colors.grey),
                               onTap: () async {
-  final result = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => Customerdetailscreen(customer: customer),
-    ),
-  );
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Customerdetailscreen(
+                                        customer: customer),
+                                  ),
+                                );
 
-  if (result == 'deleted') {
-    await fetchCustomers(); // refresh data dari API
-    setState(() {
-      dataChanged = true;
-    });
-  }
-},
-
-                              
+                                if (result == 'deleted') {
+                                  await fetchCustomers();
+                                  setState(() {
+                                    dataChanged = true;
+                                  });
+                                } else if (result != null &&
+                                    result is Map<String, dynamic>) {
+                                  setState(() {
+                                    // cari index dari customer yang diedit
+                                    int i = customers.indexWhere(
+                                        (c) => c["id"] == result["id"]);
+                                    if (i != -1) {
+                                      customers[i] = result;
+                                      _onSearchChanged(); // perbarui hasil pencarian
+                                      dataChanged = true;
+                                    }
+                                  });
+                                }
+                              },
                             );
                           },
                         ),
@@ -157,25 +168,25 @@ class _CustomerscreenState extends State<Customerscreen> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-  onPressed: () async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const TambahCustomerScreen()),
-    );
-    if (result == true) {
-      fetchCustomers(); // refresh data setelah tambah
-      setState(() {
-        dataChanged = true;
-      });
-    }
-  },
-  backgroundColor: Colors.blue,
-  child: const Icon(Icons.add, color: Colors.white),
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(16),
-  ),
-),
-
+          onPressed: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const TambahCustomerScreen()),
+            );
+            if (result == true) {
+              fetchCustomers(); // refresh data setelah tambah
+              setState(() {
+                dataChanged = true;
+              });
+            }
+          },
+          backgroundColor: Colors.blue,
+          child: const Icon(Icons.add, color: Colors.white),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
       ),
     );
   }
